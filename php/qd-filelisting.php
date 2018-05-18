@@ -6,7 +6,7 @@
     *   --metadata.info
     *   ---[Metadata]
     *   ----title="Title Tag Contents"
-    *   ----headgin="H2 Tag Contents"
+    *   ----heading="H2 Tag Contents"
     *   ---[Files]
     *   ----filename="Listing Name Override"
     *
