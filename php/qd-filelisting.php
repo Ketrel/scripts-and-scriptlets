@@ -1,4 +1,17 @@
 <?php
+    /* * * * * * * * * * * * * * * * * * * * * *
+    *
+    *  QD File Listing
+    *   -Special Files
+    *   --metadata.info
+    *   ---[Metadata]
+    *   ----title="Title Tag Contents"
+    *   ----headgin="H2 Tag Contents"
+    *   ---[Files]
+    *   ----filename="Listing Name Override"
+    *
+    * * * * * * * * * * * * * * * * * * * * * */
+
     $indent=function($t="",$n=1,$ts="    "){
         return str_repeat($ts,$n).$t;
     };
