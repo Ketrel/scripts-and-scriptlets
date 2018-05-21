@@ -1,0 +1,2 @@
+#!/bin/sh
+fortune | cowthink | lolcat -a
