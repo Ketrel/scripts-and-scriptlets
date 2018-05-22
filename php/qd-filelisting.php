@@ -36,14 +36,9 @@
 
 
     if (count($dir)>=1){
-//        $output.=$indent("<ul>\n",0);
         foreach ($dir as $val){
-//            $output.=$indent("<li><a href=\"./${val}\">",3);
-//            $output.=(isset($metadata['Files'][$val]) ? $metadata['Files'][$val] : ${val});
-//            $output.="</a></li>\n";
             $filelist[${val}] = isset($metadata['Files'][${val}]) ? $metadata['Files'][${val}] : ${val};
         }
-//        $output.=$indent("</ul>\n",2);
     }
 ?>
 <!DOCTYPE html>
@@ -57,7 +52,7 @@
         <ul>
 <?php
     foreach ($filelist as $key=>$val){
-        echo $indent("<li><a href=\"${val}\">${key}</a></li>\n",3);
+        echo $indent("<li><a href=\"${key}\">${val}</a></li>\n",3);
     }
 ?>
         </ul>
