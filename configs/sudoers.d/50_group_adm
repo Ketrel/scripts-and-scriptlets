@@ -1,0 +1,3 @@
+# Admin Group Settings
+%adm ALL=(ALL) ALL
+%adm ALL=(ALL) NOPASSWD:/usr/bin/apt-get *, /usr/bin/apt *, /sbin/reboot *, /sbin/shutdown *
