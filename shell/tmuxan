@@ -8,6 +8,25 @@ tputFunc(){
     fi
 }
 
+if [ "${1}" = "--help" ] || [ "${1}" = "-h" ]; then
+    echo " TmuxAN (Tmux [A]ttach [N]ew)" 
+    echo
+    echo " Requirements"
+    echo "   tput"
+    echo "   tmux"
+    echo 
+    echo " Usage: tmuxan <session name>"
+    echo "   Will attach to an existing session or will"
+    echo "   create a new one if the specified session does not exist."
+    echo
+    echo " Special Uses"
+    echo "   'tmuxan ls' - List Existing Sessions"
+    echo "   'tmuxan ls --force' -  Create or attach to a session named 'ls'"
+    echo "   'tmuxan --help' or 'tmuxan -h' - Print this help message and exit"
+    echo 
+    exit 0
+fi
+
 if [ $(which tput) ]; then
     tmuxan_foundTput=true
 else
@@ -23,11 +42,13 @@ if [ ! $(which tmux) ]; then
     exit 1
 fi
 
-if [ -z ${1} ]; then
-    tputFunc setaf 1
-    tputFunc bold
-    printf "%b\n" "Error: You must specify a new or existing session name."
-    tputFunc sgr0
+if [ -z ${1} ] || ([ "${1}" = "ls" ] && [ ! "${2}" = "--force" ]); then
+    if [ ! "${1}" = "ls" ]; then
+        tputFunc setaf 1
+        tputFunc bold
+        printf "%b\n" "Error: You must specify a new or existing session name."
+        tputFunc sgr0
+    fi
     tmux ls
 else
     tmux a -t "${1}" 2>/dev/null || tmux new -s "${1}"
