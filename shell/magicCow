@@ -4,7 +4,7 @@ if [ -t 0 ] ; then
 else
     text=$(cat)
 fi
-if [ -z $text ] ; then
+if [ -z "$text" ] ; then
     exit
 fi
 echo "${text}" | cowthink | lolcat -a
