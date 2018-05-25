@@ -41,6 +41,7 @@ case ${1} in
         $tputBin setaf 1
         $tputBin bold
         printf "%b\n" "Error: You must specify a new or existing session name."
+        printf "%b\n" "  Use -h or --help for usage instructions."
         $tputBin sgr0
         running=$(tmux ls 2>/dev/null)
         if [ ! -z "${running}" ]; then
