@@ -1,0 +1,19 @@
+#!/bin/sh
+if [ -t 0 ]; then
+    text=${1}
+else
+    text=$(cat)
+fi
+screenWidth=$(tput cols)
+textWidth=$(wc -L <<EOF
+${text}
+EOF
+)
+begin=$(( (${screenWidth} / 2) - (${textWidth} / 2) ))
+if [ $(( $begin + $textWidth )) -gt $screenWidth ]; then
+    begin=0
+fi
+
+i=0
+padding=$(while [ $i -lt $begin ]; do printf '%s' ' '; i=$(( $i + 1 )); done )
+echo "${text}" | sed -e "s/^/${padding}/"
