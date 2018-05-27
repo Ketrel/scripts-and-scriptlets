@@ -15,5 +15,7 @@ if [ $(( $begin + $textWidth )) -gt $screenWidth ]; then
 fi
 
 i=0
-padding=$(while [ $i -lt $begin ]; do printf '%s' ' '; i=$(( $i + 1 )); done )
+#padding=$(while [ $i -lt $begin ]; do printf '%s' ' '; i=$(( $i + 1 )); done )
+#Better Way Below
+padding=$(printf '%*s' ${begin} '')
 echo "${text}" | sed -e "s/^/${padding}/"
