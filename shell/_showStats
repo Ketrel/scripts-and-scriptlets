@@ -1,0 +1,15 @@
+#!/bin/sh
+echo
+echo "Machine Stats"
+echo "----"
+echo
+echo "IP Info"
+echo "----"
+_showIP
+echo "----"
+echo
+echo "Battery Info"
+echo "----"
+_showBattery
+echo "----"
+echo

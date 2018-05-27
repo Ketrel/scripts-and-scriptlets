@@ -1,0 +1,8 @@
+#!/bin/sh
+coninfo=$(nmcli connection show --active | grep -vE "NAME\s+UUID" | sed -E 's/(.+)? [a-f0-9-]+ .+/\1/')
+if [ ! -z "${coninfo}" ]; then
+    printf "Connected To: %b\n----\n" "${coninfo}"
+fi
+ip -4 addr | grep -oE "inet [0-9./]+" | sed "s/inet //" 
+#printf "%b" "Connected To: "
+
