@@ -1,4 +1,10 @@
 #!/bin/sh
+if [ ! $(which upower) ]; then
+    echo "The upower binary was not found in path"
+    echo "Doing nothing and exiting"
+    exit
+fi
+
 upower -i /org/freedesktop/UPower/devices/battery_BAT0 \
 | grep -E 'model|state|percentage|time to|capacity' \
 | sed -r -e 's/^\s+//' -e 's/model: /model:/' -e '/^model/! s/^/ /'
