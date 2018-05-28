@@ -1,5 +1,6 @@
 "filetype plugin on
 syntax on
+set backspace=eol,indent,start
 set expandtab
 set tabstop=4
 set shiftwidth=4
