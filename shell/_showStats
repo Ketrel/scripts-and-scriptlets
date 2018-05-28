@@ -11,5 +11,5 @@ echo
 echo "Battery Info"
 echo "----"
 _showBattery
-echo "----"
+#echo "----"
 echo
