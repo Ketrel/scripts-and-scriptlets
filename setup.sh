@@ -1,4 +1,5 @@
 #!/bin/sh
+scriptdir=$(dirname ${0})
 checkBinary()
 {
     if [ "${1}" = "tput" ]; then
@@ -55,17 +56,57 @@ dialog \
     --backtitle "Setup" \
     --clear \
     --menu \
-    "Automated Setup Options" \
+    "Automated Setup Options\n---\n\$HOME=${HOME}" \
     ${mainHeight} \
     ${mainWidth} \
     ${menuHeight} \
-    "1" "Copy Scripts To:  '<home>/Scripts/'" \
-    "2" "Copy dotfiles To: '<home>/<file>'" \
+    "1" "Copy Scripts To:  \$HOME/Scripts/<file(s)>" \
+    "2" "Copy dotfiles To: \$HOME/<file(s)>" \
+    "3" "Copy dotfiles (Except .profile) To: \$HOME/<file(s)>" \
+    "4" "(Currently Unused Option, Does Nothing)" \
+    "5" "(Currently Unused Option, Does Nothing)" \
     2>&1 1>&3)
 ${tputBin} clear
+# if [ ! -z "${menuSelection}" ]; then
+#     echo "Selected: ${menuSelection}"
+# else
+#     echo "Canceled or Escaped Out of Menu"
+# fi
+case ${menuSelection} in
+    1)
+        printf "$(${tputBin} setaf 2)%b$(${tputBin} sgr0)\n" \
+            "Copying included scripts to \"${HOME}/Scripts\""
+        echo "Dry Run: Not Doing Anything for Real"
+        echo 
+        # find ${scriptdir}/shell -type f -exec echo cp -t \"${HOME}/Scripts\" {} +
+    ;;
+    2)
+        printf "$(${tputBin} setaf 2)%b$(${tputBin} sgr0)\n" \
+            "Copying dotfiles to: \"${HOME}\""
+        echo "Dry Run: Not Doing Anything for Real"
+        echo
+        # find ${scriptdir}/dotfiles -type f -exec echo cp -t \"${HOME}/\" {} +
+    ;; 
+    3)
+        printf "$(${tputBin} setaf 2)%b$(${tputBin} sgr0)\n" \
+            "Copying dotfiles (excuding .profile) to: \"${HOME}\""
+        echo "Dry Run: Not Doing Anything for Real"
+        echo
+        find ${scriptdir}/dotfiles -type f ! -name ".profile" -exec echo cp -t \"${HOME}/\" {} +
+    ;; 
+    4)
+        results=$(dialog --backtitle "Test" --checklist "Select Test" \
+            ${mainHeight} \
+            ${mainWidth} \
+            ${menuHeight} \
+            "1" "Item 1" "off" \
+            "2" "Item 2" "off" \
+            "3" "Item 3" "on" \
+            "4" "Item 4" "off" \
+            2>&1 1>&3)
+        clear
+        echo "--${results}--"
+    ;;
+esac
+
 exec 3>&-
-if [ ! -z "${menuSelection}" ]; then
-    echo "Selected: ${menuSelection}"
-else
-    echo "Canceled or Ctrl-C'd Out of Menu"
-fi
