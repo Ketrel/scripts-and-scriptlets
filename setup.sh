@@ -1,5 +1,6 @@
 #!/bin/sh
 scriptdir=$(dirname ${0})
+supportdir="${scriptdir}/support_files"
 checkBinary()
 {
     if [ "${1}" = "tput" ]; then
@@ -53,7 +54,7 @@ infoMsg=''
 
 # Generate Menu
 exec 3>&1
-menuSelection=$(DIALOGRC="${scriptdir}/setup_files/mainRC" \
+menuSelection=$(DIALOGRC="${supportdir}/mainRC" \
 dialog \
     --backtitle "Setup" \
     --clear \
@@ -111,7 +112,7 @@ case ${menuSelection} in
         done <<EOF
 ${fileList}
 EOF
-            results=$(eval "DIALOGRC="${scriptdir}/setup_files/mainRC" dialog --backtitle 'Setup' \
+            results=$(eval "DIALOGRC="${supportdir}/mainRC" dialog --backtitle 'Setup' \
                 --title 'File Select' \
                 --checklist \"Select DotFiles To Copy\" \
                 ${mainHeight} \
@@ -143,6 +144,6 @@ EOFF
     ;;
 esac
 if [ ! -z "${infoMsg}" ]; then
-    DIALOGRC="${scriptdir}/setup_files/dialogMsgBox" dialog  --backtitle "Setup Results" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
+    DIALOGRC="${supportdir}/dialogMsgBox" dialog  --backtitle "Setup Results" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
 fi
 exec 3>&-
