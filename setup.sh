@@ -1,6 +1,12 @@
 #!/bin/sh
+
 scriptdir=$(dirname ${0})
 supportdir="${scriptdir}/support_files"
+scriptsDir="${scriptdir}/shell"
+dotfilesDir="${scriptdir}/dotfiles"
+scriptsDestDir="${HOME}/Scripts"
+dotfilesDestDir="${HOME}"
+
 checkBinary()
 {
     if [ "${1}" = "tput" ]; then
@@ -36,6 +42,58 @@ configDimensions()
     mainHeight=$(( $(${tputBin} lines) / 10 * 8 ))
     menuHeight=$(( ${mainHeight} - 3 ))
 }
+generateSelect()
+{
+    if [ -z "${1}" ] || [ -z "${2}" ]; then
+        echo "Script Failure\nNeeds Debugging"
+        exit 5
+    fi
+    cd ${1}
+    fileList=$(find . -type f -exec sh -c 'printf "%s\n" "$(basename {})"' \; | sort)
+    cd - 1>/dev/null
+    i=0
+    checkList=''
+    while read -r line
+    do
+        i=$(($i+1))
+        checkList="${checkList}\"${i}\" \"${line}\" \"off\" "
+    done <<EOF
+${fileList}
+EOF
+    results=$(eval "DIALOGRC="${supportdir}/mainRC" dialog --backtitle 'Setup' \
+            --title 'File Select' \
+            --checklist \"Select DotFiles To Copy\" \
+            ${mainHeight} \
+            ${mainWidth} \
+            ${menuHeight} \
+            ${checkList} \
+            2>&1 1>&3")
+    clear
+    if [ ! -z "${results}" ]; then
+        chosen=$(echo "${results}" | sed -e 's/ /\n/g')
+        i=1
+            
+        # Blank out infoMsg for fresh use
+        infoMsg=''
+        while read -r line 
+        do
+            if grep -E "\\b${i}\\b" >/dev/null <<EOF
+${results}
+EOF
+            then
+                infoMsg="${infoMsg}Copied "${line}" to ${2}\n"
+                infoMsg="${infoMsg}  DRY RUN: cp \"${1}/${line}\" \"${2}/${line}\"\n"
+            fi
+            i=$(($i+1))
+        done <<EOFF
+${fileList}
+EOFF
+    else
+        printf "$($tputBin setaf 1)%b$(${tputBin} sgr0)\n" "Error: No Files Selected"
+        exit 1
+    fi
+}
+
 # Set up the tputBin variable
 if [ -z "${tputBin}" ] ; then
     checkBinary "tput"
@@ -55,98 +113,72 @@ infoMsg=''
 
 # Generate Menu
 exec 3>&1
-menuSelection=$(DIALOGRC="${supportdir}/mainRC" \
-dialog \
-    --backtitle "Setup" \
-    --clear \
-    --colors \
-    --menu \
-    "Automated Setup Options\n---\nIn the menu below\n  \$HOME=${HOME}" \
-    ${mainHeight} \
-    ${mainWidth} \
-    ${menuHeight} \
-    "1" "Copy Scripts To:  \$HOME/Scripts/<file(s)>" \
-    "2" "Copy dotfiles To: \$HOME/<file(s)>" \
-    "3" "Copy dotfiles (Except .profile) To: \$HOME/<file(s)>" \
-    "4" "Copy specific dotfiles To: \$HOME/<file(s)>" \
-    "5" "(Currently Unused Option, Does Nothing)" \
-    2>&1 1>&3)
+menuSelection="0"
+while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ]; do
+    menuSelection=$(DIALOGRC="${supportdir}/mainRC" \
+        dialog \
+        --backtitle "Setup" \
+        --clear \
+        --menu \
+        "Automated Setup Options\n---\nIn the menu below\n  \$HOME refers to \"${HOME}\"" \
+        ${mainHeight} \
+        ${mainWidth} \
+        ${menuHeight} \
+        "1" "Copy Scripts To:   \$HOME/Scripts/<file(s)>" \
+        "2" "Copy dotfiles To:  \$HOME/<file(s)>" \
+        "3" "Copy dotfiles (Except .profile) To: \$HOME/<file(s)>" \
+        "4" "Copy specific dotfiles To: \$HOME/<file(s)>" \
+        "5" "Copy specific scripts To:  \$HOME/Scripts/<file(s)>" \
+        "-" "----------" \
+        "0" "Setup Paths (Not Implimented)" \
+        2>&1 1>&3)
+
+    menuConfigSelect="x"
+    while [ "${menuSelection}" = "0" ] && [ ! -z "${menuConfigSelect}" ] && [ ! "${menuConfigSelect}" = "0" ]; do
+        menuConfigSelect=$(DIALOGRC="${supportdir}/mainRC" \
+            dialog \
+            --backtitle "Setup" \
+            --clear \
+            --menu \
+            "Configuration Options" \
+            ${mainHeight} \
+            ${mainWidth} \
+            ${menuHeight} \
+            "1" "Set Scripts Destination Directory" \
+            "2" "Set Dotfiles Destination Directory" \
+            "-" "----------" \
+            "0" "Return" \
+            2>&1 1>&3)
+    done
+done
 ${tputBin} clear
 case ${menuSelection} in
     1)
         infoMsg="${infoMsg}Copying included scripts to \"${HOME}/Scripts\""
         infoMsg="${infoMsg}\n    Dry Run: Not Doing Anything for Real"
-        #printf "$(${tputBin} setaf 2)%b$(${tputBin} sgr0)\n" \
-        #    "Copying included scripts to \"${HOME}/Scripts\""
-        #echo "Dry Run: Not Doing Anything for Real"
-        #echo 
         
         # find ${scriptdir}/shell -type f -exec echo cp -t \"${HOME}/Scripts\" {} +
     ;;
     2)
         infoMsg="${infoMsg}Copying dotfiles to: \"${HOME}\""
         infoMsg="${infoMsg}\n    Dry Run: Not Doing Anything for Real"
-        #printf "$(${tputBin} setaf 2)%b$(${tputBin} sgr0)\n" \
-        #    "Copying dotfiles to: \"${HOME}\""
-        #echo "Dry Run: Not Doing Anything for Real"
-        #echo
 
         # find ${scriptdir}/dotfiles -type f -exec echo cp -t \"${HOME}/\" {} +
     ;; 
     3)
         infoMsg="${infoMsg}Copying dotfiles (excuding .profile) to: \"${HOME}\""
         infoMsg="${infoMsg}\n    Dry Run: Not Doing Anything for Real"
-        #printf "$(${tputBin} setaf 2)%b$(${tputBin} sgr0)\n" \
-        #    "Copying dotfiles (excuding .profile) to: \"${HOME}\""
-        #echo "Dry Run: Not Doing Anything for Real"
-        #echo
-        find ${scriptdir}/dotfiles -type f ! -name ".profile" -exec echo cp -t \"${HOME}/\" {} +
-    ;; 
+        
+        # find ${scriptdir}/dotfiles -type f ! -name ".profile" -exec echo cp -t \"${HOME}/\" {} +
+    ;;
     4)
-        cd ${scriptdir}/dotfiles
-        fileList=$(find . -type f -exec sh -c 'printf "%s\n" "$(basename {})"' \;)
-        cd - 1>/dev/null
-        i=0
-        checkList=''
-        while read -r line
-        do
-            i=$(($i+1))
-            checkList="${checkList}\"${i}\" \"${line}\" \"off\" "
-        done <<EOF
-${fileList}
-EOF
-            results=$(eval "DIALOGRC="${supportdir}/mainRC" dialog --backtitle 'Setup' \
-                --title 'File Select' \
-                --checklist \"Select DotFiles To Copy\" \
-                ${mainHeight} \
-                ${mainWidth} \
-                ${menuHeight} \
-                ${checkList} \
-                2>&1 1>&3")
-        clear
-        if [ ! -z "${results}" ]; then
-            chosen=$(echo "${results}" | sed -e 's/ /\n/g')
-            i=1
-            
-            # Blank out infoMsg for fresh use
-            infoMsg=''
-            while read -r line 
-            do
-                if grep -E "\\b${i}\\b" >/dev/null <<EOF
-${results}
-EOF
-                then
-                    infoMsg="${infoMsg}Copied "${line}" to $HOME\n"
-                    infoMsg="${infoMsg}  DRY RUN: cp \"${scriptdir}/dotfiles/${line}\" \"\$HOME/${line}\"\n"
-                fi
-                i=$(($i+1))
-            done <<EOFF
-${fileList}
-EOFF
-        else
-            printf "$($tputBin setaf 1)%b$(${tputBin} sgr0)\n" "Error: No Files Selected"
-            exit 1
-        fi
+        infoMsg=''
+        generateSelect "${dotfilesDir}" "${HOME}"
+    ;; 
+    5)
+        infoMsg=''
+        generateSelect "${scriptsDir}" "${HOME}/Scripts"
+
     ;;
 esac
 if [ ! -z "${infoMsg}" ]; then
