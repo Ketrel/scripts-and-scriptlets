@@ -50,6 +50,7 @@ fi
 # Setup Dimensions
 configDimensions
 
+# Ensure infoMsg is empty at this point
 infoMsg=''
 
 # Generate Menu
@@ -93,10 +94,12 @@ case ${menuSelection} in
         # find ${scriptdir}/dotfiles -type f -exec echo cp -t \"${HOME}/\" {} +
     ;; 
     3)
-        printf "$(${tputBin} setaf 2)%b$(${tputBin} sgr0)\n" \
-            "Copying dotfiles (excuding .profile) to: \"${HOME}\""
-        echo "Dry Run: Not Doing Anything for Real"
-        echo
+        infoMsg="${infoMsg}Copying dotfiles (excuding .profile) to: \"${HOME}\""
+        infoMsg="${infoMsg}\n    Dry Run: Not Doing Anything for Real"
+        #printf "$(${tputBin} setaf 2)%b$(${tputBin} sgr0)\n" \
+        #    "Copying dotfiles (excuding .profile) to: \"${HOME}\""
+        #echo "Dry Run: Not Doing Anything for Real"
+        #echo
         find ${scriptdir}/dotfiles -type f ! -name ".profile" -exec echo cp -t \"${HOME}/\" {} +
     ;; 
     4)
@@ -124,6 +127,9 @@ EOF
         if [ ! -z "${results}" ]; then
             chosen=$(echo "${results}" | sed -e 's/ /\n/g')
             i=1
+            
+            # Blank out infoMsg for fresh use
+            infoMsg=''
             while read -r line 
             do
                 if grep -E "\\b${i}\\b" >/dev/null <<EOF
