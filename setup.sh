@@ -49,14 +49,17 @@ fi
 # Setup Dimensions
 configDimensions
 
+infoMsg=''
+
 # Generate Menu
 exec 3>&1
-menuSelection=$(DIALOGRC="${scriptdir}/support_files/dialogMsgBox" \
+menuSelection=$(DIALOGRC="${scriptdir}/setup_files/mainRC" \
 dialog \
     --backtitle "Setup" \
     --clear \
+    --colors \
     --menu \
-    "Automated Setup Options\n---\n\$HOME=${HOME}" \
+    "Automated Setup Options\n---\nIn the menu below\n  \$HOME=${HOME}" \
     ${mainHeight} \
     ${mainWidth} \
     ${menuHeight} \
@@ -69,19 +72,23 @@ dialog \
 ${tputBin} clear
 case ${menuSelection} in
     1)
+        infoMsg="${infoMsg}Copying included scripts to \"${HOME}/Scripts\""
+        infoMsg="${infoMsg}\n    Dry Run: Not Doing Anything for Real"
+        #printf "$(${tputBin} setaf 2)%b$(${tputBin} sgr0)\n" \
+        #    "Copying included scripts to \"${HOME}/Scripts\""
+        #echo "Dry Run: Not Doing Anything for Real"
+        #echo 
         
-
-        printf "$(${tputBin} setaf 2)%b$(${tputBin} sgr0)\n" \
-            "Copying included scripts to \"${HOME}/Scripts\""
-        echo "Dry Run: Not Doing Anything for Real"
-        echo 
         # find ${scriptdir}/shell -type f -exec echo cp -t \"${HOME}/Scripts\" {} +
     ;;
     2)
-        printf "$(${tputBin} setaf 2)%b$(${tputBin} sgr0)\n" \
-            "Copying dotfiles to: \"${HOME}\""
-        echo "Dry Run: Not Doing Anything for Real"
-        echo
+        infoMsg="${infoMsg}Copying dotfiles to: \"${HOME}\""
+        infoMsg="${infoMsg}\n    Dry Run: Not Doing Anything for Real"
+        #printf "$(${tputBin} setaf 2)%b$(${tputBin} sgr0)\n" \
+        #    "Copying dotfiles to: \"${HOME}\""
+        #echo "Dry Run: Not Doing Anything for Real"
+        #echo
+
         # find ${scriptdir}/dotfiles -type f -exec echo cp -t \"${HOME}/\" {} +
     ;; 
     3)
@@ -104,9 +111,9 @@ case ${menuSelection} in
         done <<EOF
 ${fileList}
 EOF
-            results=$(eval "DIALOGRC="${scriptdir}/support_files/dialogMsgBox" dialog --backtitle 'Setup' \
+            results=$(eval "DIALOGRC="${scriptdir}/setup_files/mainRC" dialog --backtitle 'Setup' \
                 --title 'File Select' \
-                --checklist 'Select DotFiles' \
+                --checklist \"Select DotFiles To Copy\" \
                 ${mainHeight} \
                 ${mainWidth} \
                 ${menuHeight} \
@@ -116,7 +123,6 @@ EOF
         if [ ! -z "${results}" ]; then
             chosen=$(echo "${results}" | sed -e 's/ /\n/g')
             i=1
-            infoMsg=''
             while read -r line 
             do
                 if grep -E "\\b${i}\\b" >/dev/null <<EOF
@@ -137,6 +143,6 @@ EOFF
     ;;
 esac
 if [ ! -z "${infoMsg}" ]; then
-    DIALOGRC="${scriptdir}/support_files/dialogMsgBox" dialog  --backtitle "Setup Results" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
+    DIALOGRC="${scriptdir}/setup_files/dialogMsgBox" dialog  --backtitle "Setup Results" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
 fi
 exec 3>&-
