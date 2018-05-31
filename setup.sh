@@ -40,8 +40,8 @@ configDimensions()
         menuHeight=12
         return 0
     fi
-    mainWidth=$(( $(${tputBin} cols) / 10 * 8 ))
-    mainHeight=$(( $(${tputBin} lines) / 10 * 8 ))
+    mainWidth=$(( $(${tputBin} cols) * 8 / 10 ))
+    mainHeight=$(( $(${tputBin} lines) * 8 / 10 ))
     menuHeight=$(( ${mainHeight} - 3 ))
 }
 msgBox()
