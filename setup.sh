@@ -98,12 +98,12 @@ ${fileList}
 EOFF
     else
         printf "$($tputBin setaf 1)%b$(${tputBin} sgr0)\n" "Error: No Files Selected"
-        exit 400 
+        exit 40 
     fi
 }
 
 # Make sure 'which' exists before proceding
-which which || exit 404
+which which || exit 44
 
 # Set up the tputBin variable
 if [ -z "${tputBin}" ] ; then
