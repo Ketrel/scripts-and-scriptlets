@@ -24,9 +24,9 @@ checkBinary()
     else
         printf "$($tputBin setaf 1)%b$($tputBin sgr0)\\n" "Error: Specifcied Binary '${1}' Not Found." 
         if [ "${2}" = "optional" ]; then
-            printf "$($tputBin setaf 1)%b$($tputBin sgr0)\\n\\n" "----\nWhile the script will work without it, functionality may be limited." 
+            printf "$($tputBin setaf 1)%b$($tputBin sgr0)\\n\\n" "----\\nWhile the script will work without it, functionality may be limited." 
         else
-            printf "$($tputBin setaf 1)%b$($tputBin sgr0)\\n\\n" "----\nThis binary is required for this script to function.\n If the binary is present on our machine,\n please ensure it's accessible via your PATH." 
+            printf "$($tputBin setaf 1)%b$($tputBin sgr0)\\n\\n" "----\\nThis binary is required for this script to function.\\n If the binary is present on our machine,\\n please ensure it's accessible via your PATH." 
         fi
         return 1
     fi
