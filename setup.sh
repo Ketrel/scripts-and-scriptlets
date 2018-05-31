@@ -222,7 +222,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                             msgBox "Current Config\\n----------\\n\\nDestination for scripts:\\n  ${scriptsDestDir}\n\nDestination for dotfiles:\\n  ${dotfilesDestDir}"
                         ;;
                         'C')
-                            if yesnoBox "Create The Following Directories?\n(If They Don't Exist)\n\n${dotfilesDestDir}\n${scriptsDestDir}"; then
+                            if yesnoBox "Create The Following Directories?\\n(If They Don't Exist)\\n\\n${dotfilesDestDir}\\n${scriptsDestDir}"; then
                                 msgBox "Would Create Directories"
                             fi 
                         ;;
