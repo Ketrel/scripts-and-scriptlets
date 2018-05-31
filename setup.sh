@@ -51,7 +51,7 @@ generateSelect()
         exit 5
     fi
     cd "${1}" || exit 1
-    fileList=$(find . -type f -exec sh -c 'printf "%s\n" "$(basename {})"' \; | sort)
+    fileList=$(find . -type f -exec sh -c 'printf "%s\n" "$(basename "${1}")"' sh {} \; | sort)
     cd - 1>/dev/null || exit 1
     i=0
     checkList=''
@@ -70,7 +70,7 @@ EOF
             ${menuHeight} \
             ${checkList} \
             2>&1 1>&3")
-    printf '\033c' ''
+    printf '\033c'
     if [ -n "${results}" ]; then
         chosen=$(echo "${results}" | sed -e 's/ /\n/g')
         i=1
@@ -213,14 +213,14 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                             fi 
                         ;;
                         'Q')
-                            printf '\033c' ''
+                            printf '\033c'
                             exit 0
                         ;;
                     esac
                 done
             ;;
             'Q')
-                printf '\033c' ''
+                printf '\033c'
                 exit 0
             ;;
         esac
@@ -255,6 +255,6 @@ case "${menuSelection}" in
 esac
 if [ -n "${infoMsg}" ]; then
     DIALOGRC="${dialogRC}" dialog  --backtitle "Setup Results" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
-    printf '\033c' ''
+    printf '\033c'
 fi
 exec 3>&-
