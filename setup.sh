@@ -199,7 +199,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                                 2>&1 1>&3)
                             # && [ -d ${tempDir} ]
                             if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
-                                msgBox "Scripts Destination Changed.\n Was: ${scriptsDestDir}\n Is Now: ${tempDir}"
+                                msgBox "Scripts Destination Changed.\\n Was: ${scriptsDestDir}\\n Is Now: ${tempDir}"
                                 scriptsDestDir=${tempDir%/}
                             fi
                         ;;
@@ -214,12 +214,12 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                                 2>&1 1>&3)
                             # && [ -d ${tempDir} ]
                             if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
-                                msgBox "Dotfiles Destination Changed.\n Was: ${dotfilesDestDir}\n Is Now: ${tempDir}"
+                                msgBox "Dotfiles Destination Changed.\\n Was: ${dotfilesDestDir}\\n Is Now: ${tempDir}"
                                 dotfilesDestDir=${tempDir%/}
                             fi
                         ;;
                         '?')
-                            msgBox "Current Config\n----------\n\nDestination for scripts:\n  ${scriptsDestDir}\n\nDestination for dotfiles:\n  ${dotfilesDestDir}"
+                            msgBox "Current Config\\n----------\\n\\nDestination for scripts:\\n  ${scriptsDestDir}\n\nDestination for dotfiles:\\n  ${dotfilesDestDir}"
                         ;;
                         'C')
                             if yesnoBox "Create The Following Directories?\n(If They Don't Exist)\n\n${dotfilesDestDir}\n${scriptsDestDir}"; then
