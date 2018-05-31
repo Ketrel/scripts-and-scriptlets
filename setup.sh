@@ -98,12 +98,12 @@ ${fileList}
 EOFF
     else
         printf "$($tputBin setaf 1)%b$(${tputBin} sgr0)\n" "Error: No Files Selected"
-        exit 1
+        exit 400 
     fi
 }
 
 # Make sure 'which' exists before proceding
-which which || exit 7
+which which || exit 404
 
 # Set up the tputBin variable
 if [ -z "${tputBin}" ] ; then
@@ -139,6 +139,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
             ${menuHeight} \
             "1" "Copy Scripts To Scripts Dir" \
             "2" "Copy Specific Scripts To Scripts Dir" \
+            "-" "----------" \
             "3" "Copy Dotfiles To Dotfiles Dir" \
             "4" "Copy Dotfiles (Except .profile) Dotfiles Dir" \
             "5" "Copy Specific Dotfiles To Dotfiles Dir" \
