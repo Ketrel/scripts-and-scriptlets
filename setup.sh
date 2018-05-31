@@ -28,7 +28,7 @@ configDimensions()
     # 80x25 is the safe assumption
     mainWidth=$(( $(tput cols 2>/dev/null || printf '70' ) * 8 / 10 ))
     mainHeight=$(( $(tput lines 2>/dev/null || printf '15' ) * 8 / 10 ))
-    menuHeight=$(( ${mainHeight} - 3 ))
+    menuHeight=$(( mainHeight - 3 ))
 }
 msgBox()
 {
@@ -57,7 +57,7 @@ generateSelect()
     checkList=''
     while read -r line
     do
-        i=$(($i+1))
+        i=$((i+1))
         checkList="${checkList}\"${i}\" \"${line}\" \"off\" "
     done <<EOF
 ${fileList}
@@ -87,7 +87,7 @@ EOF
                 infoMsg="${infoMsg}  DRY RUN: cp \"${1}/${line}\" \"${2}/${line}\"\\n"
                 # cp "${1}/${line}" "${2}/${line}" || { printf "${cRed}%b${cReset}\\n" "Error Copying Files"; exit 41; }
             fi
-            i=$(($i+1))
+            i=$((i+1))
         done <<EOFF
 ${fileList}
 EOFF
