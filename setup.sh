@@ -12,14 +12,14 @@ dialogRC="${supportdir}/dialogRC"
 checkBinary()
 {
     if [ "${1}" = "tput" ]; then
-        if [ $(command -v tput) ]; then
+        if [ "$(command -v tput)" ]; then
             tputBin=$(command -v tput)
             return 0
         else
             tputBin=':'
             return 1
         fi
-    elif [ $(command -v "${1}") ]; then
+    elif [ "$(command -v "${1}")" ]; then
         return 0        
     else
         printf "$($tputBin setaf 1)%b$($tputBin sgr0)\\n" "Error: Specifcied Binary '${1}' Not Found." 
