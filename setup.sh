@@ -168,6 +168,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
             "2" "Set Dotfiles Destination Directory" \
             "-" "----------" \
             "0" "Return" \
+            "?" "Show Current Config" \
             2>&1 1>&3)
 
         case "${menuConfigSelect}" in
@@ -198,6 +199,9 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                     msgBox "Dotfiles Destination Changed.\n Was: ${dotfilesDestDir}\n Is Now: ${tempDir}"
                     dotfilesDestDir=${tempDir%/}
                 fi
+            ;;
+            "?")
+                msgBox "Current Config\n----------\n\nDestination for scripts:\n  ${scriptsDestDir}\n\nDestination for dotfiles:\n  ${dotfilesDestDir}"
             ;;
         esac
     done
