@@ -84,7 +84,7 @@ EOF
             ${menuHeight} \
             ${checkList} \
             2>&1 1>&3")
-    clear
+    printf '\033c' ''
     if [ -n "${results}" ]; then
         chosen=$(echo "${results}" | sed -e 's/ /\n/g')
         i=1
@@ -227,14 +227,14 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                             fi 
                         ;;
                         'Q')
-                            clear
+                            printf '\033c' ''
                             exit 0
                         ;;
                     esac
                 done
             ;;
             'Q')
-                clear
+                printf '\033c' ''
                 exit 0
             ;;
         esac
@@ -269,6 +269,6 @@ case "${menuSelection}" in
 esac
 if [ -n "${infoMsg}" ]; then
     DIALOGRC="${dialogRC}" dialog  --backtitle "Setup Results" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
-    clear
+    printf '\033c' ''
 fi
 exec 3>&-
