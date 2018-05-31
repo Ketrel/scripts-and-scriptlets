@@ -61,12 +61,12 @@ yesnoBox()
 generateSelect()
 {
     if [ -z "${1}" ] || [ -z "${2}" ]; then
-        echo "Unrecoverable Script Failure\nNeeds Debugging"
+        printf "%b\\n" "Unrecoverable Script Failure\\nNeeds Debugging"
         exit 5
     fi
-    cd ${1}
+    cd ${1} || exit 1
     fileList=$(find . -type f -exec sh -c 'printf "%s\n" "$(basename {})"' \; | sort)
-    cd - 1>/dev/null
+    cd - 1>/dev/null || exit 1
     i=0
     checkList=''
     while read -r line
@@ -76,7 +76,7 @@ generateSelect()
     done <<EOF
 ${fileList}
 EOF
-    results=$(eval "DIALOGRC="${mainRC}" dialog --backtitle 'Setup' \
+    results=$(eval "DIALOGRC=\"${mainRC}\" dialog --backtitle 'Setup' \
             --title 'File Select' \
             --checklist \"Select Files\" \
             ${mainHeight} \
@@ -94,11 +94,11 @@ EOF
         while read -r line 
         do
             if grep -E "\\b${i}\\b" >/dev/null <<EOF
-${results}
+${chosen}
 EOF
             then
-                infoMsg="${infoMsg}Copied "${line}" to ${2}\n"
-                infoMsg="${infoMsg}  DRY RUN: cp \"${1}/${line}\" \"${2}/${line}\"\n"
+                infoMsg="${infoMsg}Copied "${line}" to ${2}\\n"
+                infoMsg="${infoMsg}  DRY RUN: cp \"${1}/${line}\" \"${2}/${line}\"\\n"
                 # cp "${1}/${line}" "${2}/${line}" || { printf "$($tputBin setaf 1)%b$(${tputBin} sgr0)\n" "Error Copying Files"; exit 41; }
             fi
             i=$(($i+1))
@@ -106,13 +106,14 @@ EOF
 ${fileList}
 EOFF
     else
-        printf "$($tputBin setaf 1)%b$(${tputBin} sgr0)\n" "Error: No Files Selected"
+        printf "$($tputBin setaf 1)%b$(${tputBin} sgr0)\\n" "Error: No Files Selected"
         exit 40 
     fi
 }
 
 # Make sure 'which' exists before proceding
-which which || exit 44
+# which which || exit 44
+# not needed if using command -v
 
 # Set up the tputBin variable
 if [ -z "${tputBin}" ] ; then
@@ -142,7 +143,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
         --backtitle "Setup" \
         --clear \
         --menu \
-            "Automated Setup Options\n---\n" \
+            "Automated Setup Options\\n---\\n" \
             ${mainHeight} \
             ${mainWidth} \
             ${menuHeight} \
