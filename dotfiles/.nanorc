@@ -1,0 +1,5 @@
+set const
+set tabstospaces
+set tabsize 4
+include ~/.nanorc.html.nanorc
+include ~/.nanorc.ini.nanorc
