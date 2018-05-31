@@ -1,6 +1,6 @@
 #!/bin/sh
 
-scriptdir=$(dirname ${0})
+scriptdir=$(dirname "${0}")
 supportdir="${scriptdir}/support_files"
 scriptsDir="${scriptdir}/shell"
 dotfilesDir="${scriptdir}/dotfiles"
@@ -22,11 +22,11 @@ checkBinary()
     elif [ $(command -v "${1}") ]; then
         return 0        
     else
-        printf "$($tputBin setaf 1)%b$($tputBin sgr0)\n" "Error: Specifcied Binary '${1}' Not Found." 
+        printf "$($tputBin setaf 1)%b$($tputBin sgr0)\\n" "Error: Specifcied Binary '${1}' Not Found." 
         if [ "${2}" = "optional" ]; then
-            printf "$($tputBin setaf 1)%b$($tputBin sgr0)\n\n" "----\nWhile the script will work without it, functionality may be limited." 
+            printf "$($tputBin setaf 1)%b$($tputBin sgr0)\\n\\n" "----\nWhile the script will work without it, functionality may be limited." 
         else
-            printf "$($tputBin setaf 1)%b$($tputBin sgr0)\n\n" "----\nThis binary is required for this script to function.\n If the binary is present on our machine,\n please ensure it's accessible via your PATH." 
+            printf "$($tputBin setaf 1)%b$($tputBin sgr0)\\n\\n" "----\nThis binary is required for this script to function.\n If the binary is present on our machine,\n please ensure it's accessible via your PATH." 
         fi
         return 1
     fi
@@ -241,7 +241,7 @@ done
 case "${menuSelection}" in
     '1')
         infoMsg="${infoMsg}Copying included scripts to \"${scriptsDestDir}\""
-        infoMsg="${infoMsg}\n    Dry Run: Not Doing Anything for Real"
+        infoMsg="${infoMsg}\\n    Dry Run: Not Doing Anything for Real"
         
         # find ${scriptsDir} -type f -exec cp -t "${scriptsDestDir}/" {} +
     ;;
@@ -251,13 +251,13 @@ case "${menuSelection}" in
     ;;
     '3')
         infoMsg="${infoMsg}Copying dotfiles to: \"${dotfilesDestDir}\""
-        infoMsg="${infoMsg}\n    Dry Run: Not Doing Anything for Real"
+        infoMsg="${infoMsg}\\n    Dry Run: Not Doing Anything for Real"
 
         # find ${scriptisDir} -type f -exec cp -t "${dotfilesDestDir}/" {} +
     ;; 
     '4')
         infoMsg="${infoMsg}Copying dotfiles (excuding .profile) to: \"${dotfilesDestDir}\""
-        infoMsg="${infoMsg}\n    Dry Run: Not Doing Anything for Real"
+        infoMsg="${infoMsg}\\n    Dry Run: Not Doing Anything for Real"
         
         # find ${dotfilesDir} -type f ! -name ".profile" -exec cp -t "${dotfilesDestDir}/" {} +
     ;;
