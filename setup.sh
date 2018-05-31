@@ -254,7 +254,7 @@ case "${menuSelection}" in
         infoMsg="${infoMsg}Copying dotfiles to: \"${dotfilesDestDir}\""
         infoMsg="${infoMsg}\\n    Dry Run: Not Doing Anything for Real"
 
-        # find ${scriptisDir} -type f -exec cp {} "${dotfilesDestDir}/" \;
+        # find ${scriptsDir} -type f -exec cp {} "${dotfilesDestDir}/" \;
     ;; 
     '4')
         infoMsg="${infoMsg}Copying dotfiles (excuding .profile) to: \"${dotfilesDestDir}\""
