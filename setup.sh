@@ -50,6 +50,14 @@ msgBox()
         DIALOGRC="${dialogRC}" dialog --msgbox "${1}" ${mainHeight} ${mainWidth}
     fi
 }
+yesnoBox()
+{
+    if [ -n "${1}" ]; then
+        DIALOGRC="${dialogRC}" dialog --yesno "${1}" ${mainHeight} ${mainWidth}
+        result=$?
+        return ${result}
+    fi
+}
 generateSelect()
 {
     if [ -z "${1}" ] || [ -z "${2}" ]; then
@@ -145,7 +153,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
             "4" "Copy Dotfiles (Except .profile) Dotfiles Dir" \
             "5" "Copy Specific Dotfiles To Dotfiles Dir" \
             "-" "----------" \
-            "0" "Modify Destination Paths" \
+            "0" "Configuration Options" \
             "?" "Show Current Config" \
             "-" "----------" \
             "Q" "Quit" \
@@ -173,6 +181,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                         "-" "----------" \
                         "0" "Return" \
                         "?" "Show Current Config" \
+                        "C" "Create Missing Directories" \
                         "-" "----------" \
                         "Q" "Quit" \
                         2>&1 1>&3)
@@ -187,7 +196,8 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                                     ${mainHeight} \
                                     ${mainWidth} \
                                 2>&1 1>&3)
-                            if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ] && [ -d ${tempDir} ]; then
+                            # && [ -d ${tempDir} ]
+                            if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
                                 msgBox "Scripts Destination Changed.\n Was: ${scriptsDestDir}\n Is Now: ${tempDir}"
                                 scriptsDestDir=${tempDir%/}
                             fi
@@ -201,13 +211,19 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                                     ${mainHeight} \
                                     ${mainWidth} \
                                 2>&1 1>&3)
-                            if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ] && [ -d ${tempDir} ]; then
+                            # && [ -d ${tempDir} ]
+                            if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
                                 msgBox "Dotfiles Destination Changed.\n Was: ${dotfilesDestDir}\n Is Now: ${tempDir}"
                                 dotfilesDestDir=${tempDir%/}
                             fi
                         ;;
                         '?')
                             msgBox "Current Config\n----------\n\nDestination for scripts:\n  ${scriptsDestDir}\n\nDestination for dotfiles:\n  ${dotfilesDestDir}"
+                        ;;
+                        'C')
+                            if yesnoBox "Create The Following Directories?\n(If They Don't Exist)\n\n${dotfilesDestDir}\n${scriptsDestDir}"; then
+                                msgBox "Would Create Directories"
+                            fi 
                         ;;
                         'Q')
                             clear
