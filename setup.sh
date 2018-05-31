@@ -64,7 +64,7 @@ generateSelect()
         printf "%b\\n" "Unrecoverable Script Failure\\nNeeds Debugging"
         exit 5
     fi
-    cd ${1} || exit 1
+    cd "${1}" || exit 1
     fileList=$(find . -type f -exec sh -c 'printf "%s\n" "$(basename {})"' \; | sort)
     cd - 1>/dev/null || exit 1
     i=0
@@ -97,7 +97,7 @@ EOF
 ${chosen}
 EOF
             then
-                infoMsg="${infoMsg}Copied "${line}" to ${2}\\n"
+                infoMsg="${infoMsg}Copied \"${line}\" to ${2}\\n"
                 infoMsg="${infoMsg}  DRY RUN: cp \"${1}/${line}\" \"${2}/${line}\"\\n"
                 # cp "${1}/${line}" "${2}/${line}" || { printf "$($tputBin setaf 1)%b$(${tputBin} sgr0)\n" "Error Copying Files"; exit 41; }
             fi
@@ -163,7 +163,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
 
         case "$menuSelection" in
             '?')
-                msgBox "Current Config\n----------\n\nDestination for scripts:\n  ${scriptsDestDir}\n\nDestination for dotfiles:\n  ${dotfilesDestDir}"
+                msgBox "Current Config\\n----------\\n\\nDestination for scripts:\\n  ${scriptsDestDir}\\n\\nDestination for dotfiles:\\n  ${dotfilesDestDir}"
             ;;
             '0')
                 menuConfigSelect="x"
