@@ -244,7 +244,7 @@ case "${menuSelection}" in
         infoMsg="${infoMsg}Copying included scripts to \"${scriptsDestDir}\""
         infoMsg="${infoMsg}\\n    Dry Run: Not Doing Anything for Real"
         
-        # find ${scriptsDir} -type f -exec cp -t "${scriptsDestDir}/" {} +
+        # find ${scriptsDir} -type f -exec cp {} "${scriptsDestDir}/" \;
     ;;
     '2')
         infoMsg=''
@@ -254,13 +254,13 @@ case "${menuSelection}" in
         infoMsg="${infoMsg}Copying dotfiles to: \"${dotfilesDestDir}\""
         infoMsg="${infoMsg}\\n    Dry Run: Not Doing Anything for Real"
 
-        # find ${scriptisDir} -type f -exec cp -t "${dotfilesDestDir}/" {} +
+        # find ${scriptisDir} -type f -exec cp {} "${dotfilesDestDir}/" \;
     ;; 
     '4')
         infoMsg="${infoMsg}Copying dotfiles (excuding .profile) to: \"${dotfilesDestDir}\""
         infoMsg="${infoMsg}\\n    Dry Run: Not Doing Anything for Real"
         
-        # find ${dotfilesDir} -type f ! -name ".profile" -exec cp -t "${dotfilesDestDir}/" {} +
+        # find ${dotfilesDir} -type f ! -name ".profile" -exec cp {} "${dotfilesDestDir}/" \;
     ;;
     '5')
         infoMsg=''
