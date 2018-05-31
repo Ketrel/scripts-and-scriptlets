@@ -242,7 +242,7 @@ case "${menuSelection}" in
     '1')
         infoMsg="${infoMsg}Copying included scripts to \"${scriptsDestDir}\""
         
-        find ${scriptsDir} -type f -exec cp {} "${scriptsDestDir}/" \;
+        find "${scriptsDir}" -type f -exec cp {} "${scriptsDestDir}/" \;
     ;;
     '2')
         infoMsg=''
@@ -251,12 +251,12 @@ case "${menuSelection}" in
     '3')
         infoMsg="${infoMsg}Copying dotfiles to: \"${dotfilesDestDir}\""
 
-        find ${scriptsDir} -type f -exec cp {} "${dotfilesDestDir}/" \;
+        find "${scriptsDir}" -type f -exec cp {} "${dotfilesDestDir}/" \;
     ;; 
     '4')
         infoMsg="${infoMsg}Copying dotfiles (excuding .profile) to: \"${dotfilesDestDir}\""
         
-        find ${dotfilesDir} -type f ! -name ".profile" -exec cp {} "${dotfilesDestDir}/" \;
+        find "${dotfilesDir}" -type f ! -name ".profile" -exec cp {} "${dotfilesDestDir}/" \;
     ;;
     '5')
         infoMsg=''
