@@ -146,65 +146,81 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
             "-" "----------" \
             "0" "Modify Destination Paths" \
             "?" "Show Current Config" \
+            "-" "----------" \
+            "Q" "Quit" \
         2>&1 1>&3)
         #In the menu below\n  \$HOME refers to \"${HOME}\"" \
 
-    if [ "${menuSelection}" = "?" ]; then
-        msgBox "Current Config\n----------\n\nDestination for scripts:\n  ${scriptsDestDir}\n\nDestination for dotfiles:\n  ${dotfilesDestDir}"
-    fi
-
-    menuConfigSelect="x"
-    while [ "${menuSelection}" = "0" ] && [ -n "${menuConfigSelect}" ] && [ ! "${menuConfigSelect}" = "0" ]; do
-        menuConfigSelect=$(DIALOGRC="${mainRC}" \
-            dialog \
-            --backtitle "Setup" \
-            --clear \
-            --menu \
-                "Configuration Options" \
-                ${mainHeight} \
-                ${mainWidth} \
-                ${menuHeight} \
-            "1" "Set Scripts Destination Directory" \
-            "2" "Set Dotfiles Destination Directory" \
-            "-" "----------" \
-            "0" "Return" \
-            "?" "Show Current Config" \
-            2>&1 1>&3)
-
-        case "${menuConfigSelect}" in
-            "1")
-                tempDir=$(DIALOGRC=${mainRC} dialog \
-                    --backtitle "Setup" \
-                    --clear \
-                    --dselect \
-                        "${HOME}/" \
-                        ${mainHeight} \
-                        ${mainWidth} \
-                    2>&1 1>&3)
-                if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ] && [ -d ${tempDir} ]; then
-                    msgBox "Scripts Destination Changed.\n Was: ${scriptsDestDir}\n Is Now: ${tempDir}"
-                    scriptsDestDir=${tempDir%/}
-                fi
-            ;;
-            "2")
-                tempDir=$(DIALOGRC=${mainRC} dialog \
-                    --backtitle "Setup" \
-                    --clear \
-                    --dselect \
-                        "${HOME}/" \
-                        ${mainHeight} \
-                        ${mainWidth} \
-                    2>&1 1>&3)
-                if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ] && [ -d ${tempDir} ]; then
-                    msgBox "Dotfiles Destination Changed.\n Was: ${dotfilesDestDir}\n Is Now: ${tempDir}"
-                    dotfilesDestDir=${tempDir%/}
-                fi
-            ;;
-            "?")
+        case "$menuSelection" in
+            '?')
                 msgBox "Current Config\n----------\n\nDestination for scripts:\n  ${scriptsDestDir}\n\nDestination for dotfiles:\n  ${dotfilesDestDir}"
             ;;
+            '0')
+                menuConfigSelect="x"
+                while [ -n "${menuConfigSelect}" ] && [ ! "${menuConfigSelect}" = "0" ]; do
+                    menuConfigSelect=$(DIALOGRC="${mainRC}" \
+                        dialog \
+                        --backtitle "Setup" \
+                        --clear \
+                        --menu \
+                            "Configuration Options" \
+                            ${mainHeight} \
+                            ${mainWidth} \
+                            ${menuHeight} \
+                        "1" "Set Scripts Destination Directory" \
+                        "2" "Set Dotfiles Destination Directory" \
+                        "-" "----------" \
+                        "0" "Return" \
+                        "?" "Show Current Config" \
+                        "-" "----------" \
+                        "Q" "Quit" \
+                        2>&1 1>&3)
+
+                    case "${menuConfigSelect}" in
+                        '1')
+                            tempDir=$(DIALOGRC=${mainRC} dialog \
+                                --backtitle "Setup" \
+                                --clear \
+                                --dselect \
+                                    "${HOME}/" \
+                                    ${mainHeight} \
+                                    ${mainWidth} \
+                                2>&1 1>&3)
+                            if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ] && [ -d ${tempDir} ]; then
+                                msgBox "Scripts Destination Changed.\n Was: ${scriptsDestDir}\n Is Now: ${tempDir}"
+                                scriptsDestDir=${tempDir%/}
+                            fi
+                        ;;
+                        '2')
+                            tempDir=$(DIALOGRC=${mainRC} dialog \
+                                --backtitle "Setup" \
+                                --clear \
+                                --dselect \
+                                    "${HOME}/" \
+                                    ${mainHeight} \
+                                    ${mainWidth} \
+                                2>&1 1>&3)
+                            if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ] && [ -d ${tempDir} ]; then
+                                msgBox "Dotfiles Destination Changed.\n Was: ${dotfilesDestDir}\n Is Now: ${tempDir}"
+                                dotfilesDestDir=${tempDir%/}
+                            fi
+                        ;;
+                        '?')
+                            msgBox "Current Config\n----------\n\nDestination for scripts:\n  ${scriptsDestDir}\n\nDestination for dotfiles:\n  ${dotfilesDestDir}"
+                        ;;
+                        'Q')
+                            clear
+                            exit 0
+                        ;;
+                    esac
+                done
+            ;;
+            'Q')
+                clear
+                exit 0
+            ;;
         esac
-    done
+
 done
 ${tputBin} clear
 case "${menuSelection}" in
