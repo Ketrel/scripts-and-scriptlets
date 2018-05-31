@@ -171,7 +171,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
 
         case "${menuConfigSelect}" in
             "1")
-                scriptsDestDirTemp=$(DIALOGRC=${mainRC} dialog \
+                tempDir=$(DIALOGRC=${mainRC} dialog \
                     --backtitle "Setup" \
                     --clear \
                     --dselect \
@@ -179,13 +179,13 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                         ${mainHeight} \
                         ${mainWidth} \
                     2>&1 1>&3)
-                if [ -n "${scriptsDestDirTemp}" ] && [ -d ${scriptsDestDirTemp} ]; then
-                    msgBox "Scripts Destination Changed.\n Was: ${scriptsDestDir}\n Is Now: ${scriptsDestDirTemp}"
-                    scriptsDestDir=${scriptsDestDirTemp%/}
+                if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ] && [ -d ${tempDir} ]; then
+                    msgBox "Scripts Destination Changed.\n Was: ${scriptsDestDir}\n Is Now: ${tempDir}"
+                    scriptsDestDir=${tempDir%/}
                 fi
             ;;
             "2")
-                dotfilesDestDirTemp=$(DIALOGRC=${mainRC} dialog \
+                tempDir=$(DIALOGRC=${mainRC} dialog \
                     --backtitle "Setup" \
                     --clear \
                     --dselect \
@@ -193,9 +193,9 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                         ${mainHeight} \
                         ${mainWidth} \
                     2>&1 1>&3)
-                if [ -n "${dotfilesDestDirTemp}" ] && [ -d ${dotfilesDestTempDir} ]; then
-                    msgBox "Scripts Destination Changed.\n Was: ${dotfilesDestDir}\n Is Now: ${dotfilesDestDirTemp}"
-                    dotfilesDestDir=${dotfilesDestDirTemp%/}
+                if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ] && [ -d ${tempDir} ]; then
+                    msgBox "Dotfiles Destination Changed.\n Was: ${dotfilesDestDir}\n Is Now: ${tempDir}"
+                    dotfilesDestDir=${tempDir%/}
                 fi
             ;;
         esac
