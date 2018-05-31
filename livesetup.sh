@@ -1,6 +1,6 @@
 #!/bin/sh
 
-scriptdir=$(dirname ${0})
+scriptdir=$(dirname "${0}")
 supportdir="${scriptdir}/support_files"
 scriptsDir="${scriptdir}/shell"
 dotfilesDir="${scriptdir}/dotfiles"
@@ -12,21 +12,21 @@ dialogRC="${supportdir}/dialogRC"
 checkBinary()
 {
     if [ "${1}" = "tput" ]; then
-        if [ $(which tput) ]; then
-            tputBin=$(which tput)
+        if [ "$(command -v tput)" ]; then
+            tputBin=$(command -v tput)
             return 0
         else
             tputBin=':'
             return 1
         fi
-    elif [ $(which ${1}) ]; then
+    elif [ "$(command -v "${1}")" ]; then
         return 0        
     else
-        printf "$($tputBin setaf 1)%b$($tputBin sgr0)\n" "Error: Specifcied Binary '${1}' Not Found." 
+        printf "$($tputBin setaf 1)%b$($tputBin sgr0)\\n" "Error: Specifcied Binary '${1}' Not Found." 
         if [ "${2}" = "optional" ]; then
-            printf "$($tputBin setaf 1)%b$($tputBin sgr0)\n\n" "----\nWhile the script will work without it, functionality may be limited." 
+            printf "$($tputBin setaf 1)%b$($tputBin sgr0)\\n\\n" "----\\nWhile the script will work without it, functionality may be limited." 
         else
-            printf "$($tputBin setaf 1)%b$($tputBin sgr0)\n\n" "----\nThis binary is required for this script to function.\n If the binary is present on our machine,\n please ensure it's accessible via your PATH." 
+            printf "$($tputBin setaf 1)%b$($tputBin sgr0)\\n\\n" "----\\nThis binary is required for this script to function.\\n If the binary is present on our machine,\\n please ensure it's accessible via your PATH." 
         fi
         return 1
     fi
@@ -40,8 +40,8 @@ configDimensions()
         menuHeight=12
         return 0
     fi
-    mainWidth=$(( $(${tputBin} cols) / 10 * 8 ))
-    mainHeight=$(( $(${tputBin} lines) / 10 * 8 ))
+    mainWidth=$(( $(${tputBin} cols) * 8 / 10 ))
+    mainHeight=$(( $(${tputBin} lines) * 8 / 10 ))
     menuHeight=$(( ${mainHeight} - 3 ))
 }
 msgBox()
@@ -50,15 +50,23 @@ msgBox()
         DIALOGRC="${dialogRC}" dialog --msgbox "${1}" ${mainHeight} ${mainWidth}
     fi
 }
+yesnoBox()
+{
+    if [ -n "${1}" ]; then
+        DIALOGRC="${dialogRC}" dialog --yesno "${1}" ${mainHeight} ${mainWidth}
+        result=$?
+        return ${result}
+    fi
+}
 generateSelect()
 {
     if [ -z "${1}" ] || [ -z "${2}" ]; then
-        echo "Unrecoverable Script Failure\nNeeds Debugging"
+        printf "%b\\n" "Unrecoverable Script Failure\\nNeeds Debugging"
         exit 5
     fi
-    cd ${1}
+    cd "${1}" || exit 1
     fileList=$(find . -type f -exec sh -c 'printf "%s\n" "$(basename {})"' \; | sort)
-    cd - 1>/dev/null
+    cd - 1>/dev/null || exit 1
     i=0
     checkList=''
     while read -r line
@@ -68,7 +76,7 @@ generateSelect()
     done <<EOF
 ${fileList}
 EOF
-    results=$(eval "DIALOGRC="${mainRC}" dialog --backtitle 'Setup' \
+    results=$(eval "DIALOGRC=\"${mainRC}\" dialog --backtitle 'Setup' \
             --title 'File Select' \
             --checklist \"Select Files\" \
             ${mainHeight} \
@@ -76,7 +84,7 @@ EOF
             ${menuHeight} \
             ${checkList} \
             2>&1 1>&3")
-    clear
+    printf '\033c' ''
     if [ -n "${results}" ]; then
         chosen=$(echo "${results}" | sed -e 's/ /\n/g')
         i=1
@@ -86,10 +94,10 @@ EOF
         while read -r line 
         do
             if grep -E "\\b${i}\\b" >/dev/null <<EOF
-${results}
+${chosen}
 EOF
             then
-                infoMsg="${infoMsg}Copied "${line}" to ${2}\n"
+                infoMsg="${infoMsg}Copied \"${line}\" to ${2}\\n"
                 cp "${1}/${line}" "${2}/${line}" || { printf "$($tputBin setaf 1)%b$(${tputBin} sgr0)\n" "Error Copying Files"; exit 41; }
             fi
             i=$(($i+1))
@@ -97,13 +105,14 @@ EOF
 ${fileList}
 EOFF
     else
-        printf "$($tputBin setaf 1)%b$(${tputBin} sgr0)\n" "Error: No Files Selected"
+        printf "$($tputBin setaf 1)%b$(${tputBin} sgr0)\\n" "Error: No Files Selected"
         exit 40 
     fi
 }
 
 # Make sure 'which' exists before proceding
-which which || exit 44
+# which which || exit 44
+# not needed if using command -v
 
 # Set up the tputBin variable
 if [ -z "${tputBin}" ] ; then
@@ -133,7 +142,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
         --backtitle "Setup" \
         --clear \
         --menu \
-            "Automated Setup Options\n---\n" \
+            "Automated Setup Options\\n---\\n" \
             ${mainHeight} \
             ${mainWidth} \
             ${menuHeight} \
@@ -144,7 +153,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
             "4" "Copy Dotfiles (Except .profile) Dotfiles Dir" \
             "5" "Copy Specific Dotfiles To Dotfiles Dir" \
             "-" "----------" \
-            "0" "Modify Destination Paths" \
+            "0" "Configuration Options" \
             "?" "Show Current Config" \
             "-" "----------" \
             "Q" "Quit" \
@@ -153,7 +162,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
 
         case "$menuSelection" in
             '?')
-                msgBox "Current Config\n----------\n\nDestination for scripts:\n  ${scriptsDestDir}\n\nDestination for dotfiles:\n  ${dotfilesDestDir}"
+                msgBox "Current Config\\n----------\\n\\nDestination for scripts:\\n  ${scriptsDestDir}\\n\\nDestination for dotfiles:\\n  ${dotfilesDestDir}"
             ;;
             '0')
                 menuConfigSelect="x"
@@ -172,6 +181,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                         "-" "----------" \
                         "0" "Return" \
                         "?" "Show Current Config" \
+                        "C" "Create Missing Directories" \
                         "-" "----------" \
                         "Q" "Quit" \
                         2>&1 1>&3)
@@ -186,8 +196,9 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                                     ${mainHeight} \
                                     ${mainWidth} \
                                 2>&1 1>&3)
-                            if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ] && [ -d ${tempDir} ]; then
-                                msgBox "Scripts Destination Changed.\n Was: ${scriptsDestDir}\n Is Now: ${tempDir}"
+                            # && [ -d ${tempDir} ]
+                            if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
+                                msgBox "Scripts Destination Changed.\\n Was: ${scriptsDestDir}\\n Is Now: ${tempDir}"
                                 scriptsDestDir=${tempDir%/}
                             fi
                         ;;
@@ -200,23 +211,29 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                                     ${mainHeight} \
                                     ${mainWidth} \
                                 2>&1 1>&3)
-                            if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ] && [ -d ${tempDir} ]; then
-                                msgBox "Dotfiles Destination Changed.\n Was: ${dotfilesDestDir}\n Is Now: ${tempDir}"
+                            # && [ -d ${tempDir} ]
+                            if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
+                                msgBox "Dotfiles Destination Changed.\\n Was: ${dotfilesDestDir}\\n Is Now: ${tempDir}"
                                 dotfilesDestDir=${tempDir%/}
                             fi
                         ;;
                         '?')
-                            msgBox "Current Config\n----------\n\nDestination for scripts:\n  ${scriptsDestDir}\n\nDestination for dotfiles:\n  ${dotfilesDestDir}"
+                            msgBox "Current Config\\n----------\\n\\nDestination for scripts:\\n  ${scriptsDestDir}\\n\\nDestination for dotfiles:\\n  ${dotfilesDestDir}"
+                        ;;
+                        'C')
+                            if yesnoBox "Create The Following Directories?\\n(If They Don't Exist)\\n\\n${dotfilesDestDir}\\n${scriptsDestDir}"; then
+                                msgBox "Would Create Directories"
+                            fi 
                         ;;
                         'Q')
-                            clear
+                            printf '\033c' ''
                             exit 0
                         ;;
                     esac
                 done
             ;;
             'Q')
-                clear
+                printf '\033c' ''
                 exit 0
             ;;
         esac
@@ -224,7 +241,8 @@ done
 case "${menuSelection}" in
     '1')
         infoMsg="${infoMsg}Copying included scripts to \"${scriptsDestDir}\""
-        find ${scriptsDir} -type f -exec cp -t "${scriptsDestDir}/" {} +
+        
+        find ${scriptsDir} -type f -exec cp {} "${scriptsDestDir}/" \;
     ;;
     '2')
         infoMsg=''
@@ -232,11 +250,13 @@ case "${menuSelection}" in
     ;;
     '3')
         infoMsg="${infoMsg}Copying dotfiles to: \"${dotfilesDestDir}\""
-        find ${scriptisDir} -type f -exec cp -t "${dotfilesDestDir}/" {} +
+
+        find ${scriptisDir} -type f -exec cp {} "${dotfilesDestDir}/" \;
     ;; 
     '4')
         infoMsg="${infoMsg}Copying dotfiles (excuding .profile) to: \"${dotfilesDestDir}\""
-        find ${dotfilesDir} -type f ! -name ".profile" -exec cp -t "${dotfilesDestDir}/" {} +
+        
+        find ${dotfilesDir} -type f ! -name ".profile" -exec cp {} "${dotfilesDestDir}/" \;
     ;;
     '5')
         infoMsg=''
@@ -245,6 +265,6 @@ case "${menuSelection}" in
 esac
 if [ -n "${infoMsg}" ]; then
     DIALOGRC="${dialogRC}" dialog  --backtitle "Setup Results" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
-    clear
+    printf '\033c' ''
 fi
 exec 3>&-
