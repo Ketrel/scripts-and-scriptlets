@@ -221,9 +221,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                 exit 0
             ;;
         esac
-
 done
-${tputBin} clear
 case "${menuSelection}" in
     '1')
         infoMsg="${infoMsg}Copying included scripts to \"${scriptsDestDir}\""
