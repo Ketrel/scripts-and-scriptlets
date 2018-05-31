@@ -91,6 +91,7 @@ EOF
             then
                 infoMsg="${infoMsg}Copied "${line}" to ${2}\n"
                 infoMsg="${infoMsg}  DRY RUN: cp \"${1}/${line}\" \"${2}/${line}\"\n"
+                # cp "${1}/${line}" "${2}/${line}" || { printf "$($tputBin setaf 1)%b$(${tputBin} sgr0)\n" "Error Copying Files"; exit 41; }
             fi
             i=$(($i+1))
         done <<EOFF
@@ -212,7 +213,7 @@ case "${menuSelection}" in
         infoMsg="${infoMsg}Copying included scripts to \"${scriptsDestDir}\""
         infoMsg="${infoMsg}\n    Dry Run: Not Doing Anything for Real"
         
-        # find ${scriptsDir} -type f -exec echo cp -t \"${scriptsDestDir}\" {} +
+        # find ${scriptsDir} -type f -exec cp -t "${scriptsDestDir}/" {} +
     ;;
     '2')
         infoMsg=''
@@ -222,13 +223,13 @@ case "${menuSelection}" in
         infoMsg="${infoMsg}Copying dotfiles to: \"${dotfilesDestDir}\""
         infoMsg="${infoMsg}\n    Dry Run: Not Doing Anything for Real"
 
-        # find ${scriptisDir} -type f -exec echo cp -t \"${HOME}/\" {} +
+        # find ${scriptisDir} -type f -exec cp -t "${dotfilesDestDir}/" {} +
     ;; 
     '4')
         infoMsg="${infoMsg}Copying dotfiles (excuding .profile) to: \"${dotfilesDestDir}\""
         infoMsg="${infoMsg}\n    Dry Run: Not Doing Anything for Real"
         
-        # find ${dotfilesDir} -type f ! -name ".profile" -exec echo cp -t \"${dotfilesDestDir}/\" {} +
+        # find ${dotfilesDir} -type f ! -name ".profile" -exec cp -t "${dotfilesDestDir}/" {} +
     ;;
     '5')
         infoMsg=''
