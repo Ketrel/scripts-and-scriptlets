@@ -143,7 +143,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
             "4" "Copy Dotfiles (Except .profile) Dotfiles Dir" \
             "5" "Copy Specific Dotfiles To Dotfiles Dir" \
             "-" "----------" \
-            "0" "Setup Paths (Not Implimented)" \
+            "0" "Modify Destination Paths" \
             "?" "Show Current Config" \
         2>&1 1>&3)
         #In the menu below\n  \$HOME refers to \"${HOME}\"" \
