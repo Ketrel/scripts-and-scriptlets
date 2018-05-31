@@ -11,37 +11,23 @@ dialogRC="${supportdir}/dialogRC"
 
 checkBinary()
 {
-    if [ "${1}" = "tput" ]; then
-        if [ "$(command -v tput)" ]; then
-            tputBin=$(command -v tput)
-            return 0
-        else
-            tputBin=':'
-            return 1
-        fi
-    elif [ "$(command -v "${1}")" ]; then
+    if [ "$(command -v "${1}")" ]; then
         return 0        
     else
-        printf "$($tputBin setaf 1)%b$($tputBin sgr0)\\n" "Error: Specifcied Binary '${1}' Not Found." 
+        printf "${cRed}%b${cReset}\\n" "Error: Specifcied Binary '${1}' Not Found." 
         if [ "${2}" = "optional" ]; then
-            printf "$($tputBin setaf 1)%b$($tputBin sgr0)\\n\\n" "----\\nWhile the script will work without it, functionality may be limited." 
+            printf "${cRed}%b${cReset}\\n\\n" "----\\nWhile the script will work without it, functionality may be limited." 
         else
-            printf "$($tputBin setaf 1)%b$($tputBin sgr0)\\n\\n" "----\\nThis binary is required for this script to function.\\n If the binary is present on our machine,\\n please ensure it's accessible via your PATH." 
+            printf "${cRed}%b${cReset}\\n\\n" "----\\nThis binary is required for this script to function.\\n If the binary is present on our machine,\\n please ensure it's accessible via your PATH." 
         fi
         return 1
     fi
 }
 configDimensions()
 {
-    if [ "${tputBin}" = ":" ]; then
-        #80x25 is the safe assumption
-        mainWidth=70
-        mainHeight=15
-        menuHeight=12
-        return 0
-    fi
-    mainWidth=$(( $(${tputBin} cols) * 8 / 10 ))
-    mainHeight=$(( $(${tputBin} lines) * 8 / 10 ))
+    # 80x25 is the safe assumption
+    mainWidth=$(( $(tput cols 2>/dev/null || printf '70' ) * 8 / 10 ))
+    mainHeight=$(( $(tput lines 2>/dev/null || printf '15' ) * 8 / 10 ))
     menuHeight=$(( ${mainHeight} - 3 ))
 }
 msgBox()
@@ -98,14 +84,14 @@ ${chosen}
 EOF
             then
                 infoMsg="${infoMsg}Copied \"${line}\" to ${2}\\n"
-                cp "${1}/${line}" "${2}/${line}" || { printf "$($tputBin setaf 1)%b$(${tputBin} sgr0)\n" "Error Copying Files"; exit 41; }
+                cp "${1}/${line}" "${2}/${line}" || { printf "${cRed}%b${cReset}\\n" "Error Copying Files"; exit 41; }
             fi
             i=$(($i+1))
         done <<EOFF
 ${fileList}
 EOFF
     else
-        printf "$($tputBin setaf 1)%b$(${tputBin} sgr0)\\n" "Error: No Files Selected"
+        printf "${cRed}%b${cReset}\\n" "Error: No Files Selected"
         exit 40 
     fi
 }
@@ -114,10 +100,10 @@ EOFF
 # which which || exit 44
 # not needed if using command -v
 
-# Set up the tputBin variable
-if [ -z "${tputBin}" ] ; then
-    checkBinary "tput"
-fi
+# Set up some colors
+cRed=$(tput setaf 1 2>/dev/null || printf '' )
+cReset=$(tput sgr0 2>/dev/null || printf '' )
+cBold=$(tput bold 2>/dev/null || printf '' )
 
 # Ensure dialog is present
 if ! checkBinary "dialog" ; then
@@ -181,7 +167,7 @@ while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuS
                         "-" "----------" \
                         "0" "Return" \
                         "?" "Show Current Config" \
-                        "C" "Create Missing Directories" \
+                        "C" "Create Missing Directories (Not Implimented)" \
                         "-" "----------" \
                         "Q" "Quit" \
                         2>&1 1>&3)
