@@ -1,0 +1,21 @@
+#!/bin/sh
+echo
+echo "Machine Stats"
+echo "----"
+echo
+echo "IP Info"
+echo "----"
+tput setaf 2
+tput bold
+_showIP
+tput sgr0
+echo "----"
+echo
+echo "Battery Info"
+echo "----"
+tput setaf 2
+tput bold
+_showBattery
+tput sgr0
+#echo "----"
+echo
