@@ -1,6 +1,5 @@
 #!/bin/sh
-
-case ${1} in
+case "${1}" in
    "-h"|"--help")
         echo " TmuxAN (Tmux [A]ttach [N]ew)" 
         echo
@@ -20,32 +19,25 @@ case ${1} in
         exit 0
     ;;
 esac
+errMsg(){
+    printf "%b\\n" "${tpBold}${tpRed}${1}${tpReset}"
+}
 
-tputBin=$(which tput)
-if [ -z "$tputBin" ]; then
-    printf "%b\n\n" "Warning: Script prefers 'tput' to be present for full functionality."
-    tputBin=":"
-fi
+tpRed=$(tput setaf 1 2>/dev/null || printf '')
+tpBold=$(tput bold 2>/dev/null || printf '')
+tpReset=$(tput sgr0 2>/dev/null || printf '')
 
-if [ ! $(which tmux) ]; then
-    $tputBin setaf 1
-    $tputBin bold
-    printf "%b\n" "Error: Tmux binary is not present in path."
-    printf "%b\n" "This script is a wrapper for Tmux, and is useless without it."
-    $tputBin sgr0
+if [ ! "$(command -v tmux)" ]; then
+    errMsg "Error: Tmux binary is not present in path.\\nThis script is a wrapper for Tmux, and is useless without it."
     exit 1
 fi
 
 case ${1} in
     "")
-        $tputBin setaf 1
-        $tputBin bold
-        printf "%b\n" "Error: You must specify a new or existing session name."
-        printf "%b\n" "  Use -h or --help for usage instructions."
-        $tputBin sgr0
+        errMsg "Error: You must specify a new or existing session name.\\n  Use -h or --help for usage instructions."
         running=$(tmux ls 2>/dev/null)
         if [ ! -z "${running}" ]; then
-            printf "\nCurrent Running Sessions\n------------------------\n%b\n\n" "${running}"
+            printf "\\nCurrent Running Sessions\\n------------------------\\n%b\\n\\n" "${running}"
         fi
         exit 1
     ;;
@@ -53,7 +45,7 @@ case ${1} in
         if [ ! "${2}" = "--force" ]; then
             running=$(tmux ls 2>/dev/null)
             if [ ! -z "${running}" ]; then
-            printf "Current Running Sessions\n------------------------\n%b\n\n" "${running}"
+            printf "Current Running Sessions\\n------------------------\\n%b\\n\\n" "${running}"
             exit 0
             fi
         fi
