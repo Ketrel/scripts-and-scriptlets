@@ -1,21 +1,13 @@
 #!/bin/sh
-echo
-echo "Machine Stats"
-echo "----"
-echo
-echo "IP Info"
-echo "----"
-tput setaf 2
-tput bold
-_showIP
-tput sgr0
-echo "----"
-echo
-echo "Battery Info"
-echo "----"
-tput setaf 2
-tput bold
+ssc_green=$(tput setaf 2)
+ssc_blue=$(tput setaf 4)
+ssc_reset=$(tput sgr0)
+ssc_bold=$(tput bold)
+ss_header="\\n----\\n"
+printf "%b" "Machine Stats${ss_header}"
+printf "\\n%b" "IP Info${ss_header}"
+_showIP | sed -re 's/^ ([[:digit:].]+)\/([[:digit:]]+)/ '"${ssc_green}${ssc_bold}\\1${ssc_reset}\\/${ssc_blue}${ssc_bold}\\2${ssc_reset}/"
+printf "%s\\n" '----'
+printf "\\n%b" "Battery Info${ss_header}"
 _showBattery
-tput sgr0
-#echo "----"
 echo
