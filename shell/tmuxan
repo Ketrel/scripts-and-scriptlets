@@ -20,7 +20,7 @@ case "${1}" in
     ;;
 esac
 errMsg(){
-    printf "%b\\n" "${tpBold}${tpRed}${1}${tpReset}"
+    printf '%b\n' "${tpBold}${tpRed}${1}${tpReset}"
 }
 
 tpRed=$(tput setaf 1 2>/dev/null || printf '')
@@ -37,7 +37,7 @@ case ${1} in
         errMsg "Error: You must specify a new or existing session name.\\n  Use -h or --help for usage instructions."
         running=$(tmux ls 2>/dev/null)
         if [ ! -z "${running}" ]; then
-            printf "\\nCurrent Running Sessions\\n------------------------\\n%b\\n\\n" "${running}"
+            printf '\nCurrent Running Sessions\n------------------------\n%b\n\n' "${running}"
         fi
         exit 1
     ;;
@@ -45,7 +45,7 @@ case ${1} in
         if [ ! "${2}" = "--force" ]; then
             running=$(tmux ls 2>/dev/null)
             if [ ! -z "${running}" ]; then
-            printf "Current Running Sessions\\n------------------------\\n%b\\n\\n" "${running}"
+            printf 'Current Running Sessions\n------------------------\n%b\n\n' "${running}"
             exit 0
             fi
         fi
