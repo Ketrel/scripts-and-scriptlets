@@ -1,6 +1,6 @@
 #!/bin/sh
-    cat /dev/urandom | \
-    tr -dc 'a-zA-Z0-9!@#$%^&*' | \
+# < /dev/urandom tr vs cat /dev/urandom | tr
+< /dev/urandom tr -dc 'a-zA-Z0-9!@#$%^&*' | \
     fold -w 512 | \
     sed -e 's/[oO]/0/g' | \
     fold -w 64 | \

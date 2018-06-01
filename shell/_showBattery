@@ -1,5 +1,5 @@
 #!/bin/sh
-if [ ! $(which upower) ]; then
+if [ ! "$(command -v upower)" ]; then
     echo "The upower binary was not found in path"
     echo "Doing nothing and exiting"
     exit
