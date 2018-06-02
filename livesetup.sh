@@ -121,136 +121,144 @@ infoMsg=''
 exec 3>&1
 
 # Generate Menu
-menuSelection="0"
-while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuSelection}" = "?" ]; do
-    menuSelection=$(DIALOGRC="${mainRC}" \
-        dialog \
-        --backtitle "Setup" \
-        --clear \
-        --menu \
-            "Automated Setup Options\\n---\\n" \
-            ${mainHeight} \
-            ${mainWidth} \
-            ${menuHeight} \
-            "1" "Copy Scripts To Scripts Dir" \
-            "2" "Copy Specific Scripts To Scripts Dir" \
-            "-" "----------" \
-            "3" "Copy Dotfiles To Dotfiles Dir" \
-            "4" "Copy Dotfiles (Except .profile) Dotfiles Dir" \
-            "5" "Copy Specific Dotfiles To Dotfiles Dir" \
-            "-" "----------" \
-            "0" "Configuration Options" \
-            "?" "Show Current Config" \
-            "-" "----------" \
-            "Q" "Quit" \
-        2>&1 1>&3)
-        #In the menu below\n  \$HOME refers to \"${HOME}\"" \
+main()
+{
+    menuSelection="0"
+    while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuSelection}" = "?" ]; do
+        menuSelection=$(DIALOGRC="${mainRC}" \
+            dialog \
+            --backtitle "Setup" \
+            --clear \
+            --menu \
+                "Automated Setup Options\\n---\\n" \
+                ${mainHeight} \
+                ${mainWidth} \
+                ${menuHeight} \
+                "1" "Copy Scripts To Scripts Dir" \
+                "2" "Copy Specific Scripts To Scripts Dir" \
+                "-" "----------" \
+                "3" "Copy Dotfiles To Dotfiles Dir" \
+                "4" "Copy Dotfiles (Except .profile) Dotfiles Dir" \
+                "5" "Copy Specific Dotfiles To Dotfiles Dir" \
+                "-" "----------" \
+                "0" "Configuration Options" \
+                "?" "Show Current Config" \
+                "-" "----------" \
+                "Q" "Quit" \
+            2>&1 1>&3)
+            #In the menu below\n  \$HOME refers to \"${HOME}\"" \
 
-        case "$menuSelection" in
-            '?')
-                msgBox "Current Config\\n----------\\n\\nDestination for scripts:\\n  ${scriptsDestDir}\\n\\nDestination for dotfiles:\\n  ${dotfilesDestDir}"
-            ;;
-            '0')
-                menuConfigSelect="x"
-                while [ -n "${menuConfigSelect}" ] && [ ! "${menuConfigSelect}" = "0" ]; do
-                    menuConfigSelect=$(DIALOGRC="${mainRC}" \
-                        dialog \
-                        --backtitle "Setup" \
-                        --clear \
-                        --menu \
-                            "Configuration Options" \
-                            ${mainHeight} \
-                            ${mainWidth} \
-                            ${menuHeight} \
-                        "1" "Set Scripts Destination Directory" \
-                        "2" "Set Dotfiles Destination Directory" \
-                        "-" "----------" \
-                        "0" "Return" \
-                        "?" "Show Current Config" \
-                        "C" "Create Missing Directories (Not Implimented)" \
-                        "-" "----------" \
-                        "Q" "Quit" \
-                        2>&1 1>&3)
+            case "$menuSelection" in
+                '?')
+                    msgBox "Current Config\\n----------\\n\\nDestination for scripts:\\n  ${scriptsDestDir}\\n\\nDestination for dotfiles:\\n  ${dotfilesDestDir}"
+                ;;
+                '0')
+                    menuConfigSelect="x"
+                    while [ -n "${menuConfigSelect}" ] && [ ! "${menuConfigSelect}" = "0" ]; do
+                        menuConfigSelect=$(DIALOGRC="${mainRC}" \
+                            dialog \
+                            --backtitle "Setup" \
+                            --clear \
+                            --menu \
+                                "Configuration Options" \
+                                ${mainHeight} \
+                                ${mainWidth} \
+                                ${menuHeight} \
+                            "1" "Set Scripts Destination Directory" \
+                            "2" "Set Dotfiles Destination Directory" \
+                            "-" "----------" \
+                            "0" "Return" \
+                            "?" "Show Current Config" \
+                            "C" "Create Missing Directories (Not Implimented)" \
+                            "-" "----------" \
+                            "Q" "Quit" \
+                            2>&1 1>&3)
 
-                    case "${menuConfigSelect}" in
-                        '1')
-                            tempDir=$(DIALOGRC=${mainRC} dialog \
-                                --backtitle "Setup" \
-                                --clear \
-                                --dselect \
-                                    "${HOME}/" \
-                                    ${mainHeight} \
-                                    ${mainWidth} \
-                                2>&1 1>&3)
-                            # && [ -d ${tempDir} ]
-                            if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
-                                msgBox "Scripts Destination Changed.\\n Was: ${scriptsDestDir}\\n Is Now: ${tempDir}"
-                                scriptsDestDir=${tempDir%/}
-                            fi
-                        ;;
-                        '2')
-                            tempDir=$(DIALOGRC=${mainRC} dialog \
-                                --backtitle "Setup" \
-                                --clear \
-                                --dselect \
-                                    "${HOME}/" \
-                                    ${mainHeight} \
-                                    ${mainWidth} \
-                                2>&1 1>&3)
-                            # && [ -d ${tempDir} ]
-                            if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
-                                msgBox "Dotfiles Destination Changed.\\n Was: ${dotfilesDestDir}\\n Is Now: ${tempDir}"
-                                dotfilesDestDir=${tempDir%/}
-                            fi
-                        ;;
-                        '?')
-                            msgBox "Current Config\\n----------\\n\\nDestination for scripts:\\n  ${scriptsDestDir}\\n\\nDestination for dotfiles:\\n  ${dotfilesDestDir}"
-                        ;;
-                        'C')
-                            if yesnoBox "Create The Following Directories?\\n(If They Don't Exist)\\n\\n${dotfilesDestDir}\\n${scriptsDestDir}"; then
-                                msgBox "Would Create Directories"
-                            fi 
-                        ;;
-                        'Q')
-                            printf '\033c'
-                            exit 0
-                        ;;
-                    esac
-                done
-            ;;
-            'Q')
-                printf '\033c'
-                exit 0
-            ;;
-        esac
-done
-case "${menuSelection}" in
-    '1')
-        infoMsg="${infoMsg}Copying included scripts to \"${scriptsDestDir}\""
-        
-        find "${scriptsDir}" -type f -exec cp {} "${scriptsDestDir}/" \;
-    ;;
-    '2')
-        infoMsg=''
-        generateSelect "${scriptsDir}" "${scriptsDestDir}"
-    ;;
-    '3')
-        infoMsg="${infoMsg}Copying dotfiles to: \"${dotfilesDestDir}\""
+                        case "${menuConfigSelect}" in
+                            '1')
+                                tempDir=$(DIALOGRC=${mainRC} dialog \
+                                    --backtitle "Setup" \
+                                    --clear \
+                                    --dselect \
+                                        "${HOME}/" \
+                                        ${mainHeight} \
+                                        ${mainWidth} \
+                                    2>&1 1>&3)
+                                # && [ -d ${tempDir} ]
+                                if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
+                                    msgBox "Scripts Destination Changed.\\n Was: ${scriptsDestDir}\\n Is Now: ${tempDir}"
+                                    scriptsDestDir=${tempDir%/}
+                                fi
+                            ;;
+                            '2')
+                                tempDir=$(DIALOGRC=${mainRC} dialog \
+                                    --backtitle "Setup" \
+                                    --clear \
+                                    --dselect \
+                                        "${HOME}/" \
+                                        ${mainHeight} \
+                                        ${mainWidth} \
+                                    2>&1 1>&3)
+                                # && [ -d ${tempDir} ]
+                                if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
+                                    msgBox "Dotfiles Destination Changed.\\n Was: ${dotfilesDestDir}\\n Is Now: ${tempDir}"
+                                    dotfilesDestDir=${tempDir%/}
+                                fi
+                            ;;
+                            '?')
+                                msgBox "Current Config\\n----------\\n\\nDestination for scripts:\\n  ${scriptsDestDir}\\n\\nDestination for dotfiles:\\n  ${dotfilesDestDir}"
+                            ;;
+                            'C')
+                                if yesnoBox "Create The Following Directories?\\n(If They Don't Exist)\\n\\n${dotfilesDestDir}\\n${scriptsDestDir}"; then
+                                    msgBox "Would Create Directories"
+                                fi 
+                            ;;
+                            'Q')
+                                printf '\033c'
+                                exit 0
+                            ;;
+                        esac
+                    done
+                ;;
+                'Q')
+                    printf '\033c'
+                    exit 0
+                ;;
+            esac
+    done
+    case "${menuSelection}" in
+        '1')
+            infoMsg="${infoMsg}Copying included scripts to \"${scriptsDestDir}\""
+            
+            find "${scriptsDir}" -type f -exec cp {} "${scriptsDestDir}/" \;
+        ;;
+        '2')
+            infoMsg=''
+            generateSelect "${scriptsDir}" "${scriptsDestDir}"
+        ;;
+        '3')
+            infoMsg="${infoMsg}Copying dotfiles to: \"${dotfilesDestDir}\""
 
-        find "${scriptsDir}" -type f -exec cp {} "${dotfilesDestDir}/" \;
-    ;; 
-    '4')
-        infoMsg="${infoMsg}Copying dotfiles (excuding .profile) to: \"${dotfilesDestDir}\""
-        
-        find "${dotfilesDir}" -type f ! -name ".profile" -exec cp {} "${dotfilesDestDir}/" \;
-    ;;
-    '5')
-        infoMsg=''
-        generateSelect "${dotfilesDir}" "${dotfilesDestDir}"
-    ;; 
-esac
-if [ -n "${infoMsg}" ]; then
-    DIALOGRC="${dialogRC}" dialog  --backtitle "Setup Results" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
+            find "${scriptsDir}" -type f -exec cp {} "${dotfilesDestDir}/" \;
+        ;; 
+        '4')
+            infoMsg="${infoMsg}Copying dotfiles (excuding .profile) to: \"${dotfilesDestDir}\""
+            
+            find "${dotfilesDir}" -type f ! -name ".profile" -exec cp {} "${dotfilesDestDir}/" \;
+        ;;
+        '5')
+            infoMsg=''
+            generateSelect "${dotfilesDir}" "${dotfilesDestDir}"
+        ;; 
+    esac
+    if [ -n "${infoMsg}" ]; then
+        DIALOGRC="${dialogRC}" dialog  --backtitle "Setup" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
+    fi
+    DIALOGRC="${dialogRC}" dialog --backtitle "Setup" --title "Continue" --yesno "Finished\\nRun More Tasks?" 7 ${mainWidth}
+    if [ "${?}" -eq 0 ]; then
+        main
+    fi
     printf '\033c'
-fi
+}
+main
 exec 3>&-
