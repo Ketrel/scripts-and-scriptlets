@@ -13,7 +13,7 @@ p_colorSetup(){
         p_mpx=$(tput bold;tput setaf 5)
         if p_checkRoot; then
             p_name=$(tput bold;tput setaf 1)
-            p_host=$(tput setaf 31)
+            p_host=$(tput setaf 1)
         else
             p_name=$(tput bold;tput setaf 2)
             p_host=$(tput setaf 2)
