@@ -1,0 +1,10 @@
+root=green,black
+border=green,black
+title=green,black
+roottext=white,black
+button=white,green
+window=green,black
+textbox=green,black
+
+helpline=red,blue
+label=red,blue
