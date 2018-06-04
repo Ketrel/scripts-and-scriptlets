@@ -8,6 +8,7 @@ scriptsDestDir="${HOME}/Scripts"
 dotfilesDestDir="${HOME}"
 mainRC="${supportdir}/mainRC"
 dialogRC="${supportdir}/dialogRC"
+infoMsg=''
 
 checkBinary()
 {
@@ -258,8 +259,10 @@ main()
     if [ -n "${infoMsg}" ]; then
         DIALOGRC="${dialogRC}" dialog  --backtitle "Setup" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
     fi
-    DIALOGRC="${dialogRC}" dialog --backtitle "Setup" --title "Continue" --yesno "Finished\\nRun More Tasks?" 7 ${mainWidth}
-    if [ "${?}" -eq 0 ]; then
+    #if [ "${?}" -eq 0 ]; then
+    if DIALOGRC="${dialogRC}" dialog --backtitle "Setup" --title "Continue" --yesno "Finished\\nRun More Tasks?" 7 ${mainWidth}
+    then
+        infoMsg=''
         main
     fi
     printf '\033c'
