@@ -3,7 +3,8 @@
 if [ -n "${1}" ]; then
     case "${TERM}" in
         'screen'*|'tmux'*)
-            printf '\033k%s\033\\' "${1}"
+            # printf '\033k%s\033\\' "${1}"
+            printf '\033k%s\033'\\ "${1}"
         ;;
         'linux'*|'xterm'*)
             printf '\033]2;%s\007' "${1}"
