@@ -1,0 +1,41 @@
+root=green,black
+border=green,black
+title=green,black
+roottext=white,black
+window=green,black
+
+textbox=green,black
+
+button=black,green
+compactbutton=white,black
+
+listbox=green,black
+actlistbox=black,white
+actsellistbox=black,green
+
+checkbox=green,black
+actcheckbox=black,green
+
+#r oot=yellow,black
+#b order=yellow,black
+#w indow=yellow,black
+#s hadow=yellow,black
+#t itle=yellow,black
+#b utton=yellow,black
+#a ctbutton=yellow,black
+#c heckbox=yellow,black
+#a ctcheckbox=yellow,black
+#e ntry=yellow,black
+#l abel=yellow,black
+#l istbox=yellow,black
+#a ctlistbox=yellow,black
+#t extbox=yellow,black
+#a cttextbox=yellow,black
+#h elpline=yellow,black
+#r oottext=yellow,black
+#e mptyscale=yellow,black
+#f ullscale=yellow,black
+#d isentry=yellow,black
+#c ompactbutton=yellow,black
+#a ctsellistbox=yellow,black
+#s ellistbox=yellow,black
