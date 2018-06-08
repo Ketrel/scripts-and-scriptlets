@@ -94,8 +94,13 @@ EOF
 ${fileList}
 EOFF
     else
-        printf "${cRed}%b${cReset}\\n" "Error: No Files Selected"
-        exit 40 
+        #printf "${cRed}%b${cReset}\\n" "Error: No Files Selected"
+        #exit 40 
+            if NEWT_COLORS_FILE="${newtColorsRC}" whiptail --backtitle "Setup" --title "Continue" --msgbox "Error: No Files Selected." ${mainHeight} ${mainWidth}
+            then
+                infoMsg=''
+                main
+            fi
     fi
 }
 
