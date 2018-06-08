@@ -94,13 +94,9 @@ EOF
 ${fileList}
 EOFF
     else
-        #printf "${cRed}%b${cReset}\\n" "Error: No Files Selected"
-        #exit 40 
-            if NEWT_COLORS_FILE="${newtColorsRC}" whiptail --backtitle "Setup" --title "Continue" --msgbox "Error: No Files Selected." ${mainHeight} ${mainWidth}
-            then
-                infoMsg=''
-                main
-            fi
+        #NEWT_COLORS_FILE="${newtColorsRC}" whiptail --backtitle "Setup" --title "Continue" --msgbox "Error: No Files Selected." ${mainHeight} ${mainWidth}
+        msgBox "Error: No Files Selected"
+        exit 70
     fi
 }
 
@@ -266,7 +262,6 @@ main()
     if [ -n "${infoMsg}" ]; then
         NEWT_COLORS_FILE="${newtColorsRC}" whiptail  --backtitle "Setup" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
     fi
-    #if [ "${?}" -eq 0 ]; then
     if NEWT_COLORS_FILE="${newtColorsRC}" whiptail --backtitle "Setup" --title "Continue" --yesno "Finished\\nRun More Tasks?" ${mainHeight} ${mainWidth}
     then
         infoMsg=''

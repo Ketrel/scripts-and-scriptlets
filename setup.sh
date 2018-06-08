@@ -7,7 +7,7 @@ dotfilesDir="${scriptdir}/dotfiles"
 scriptsDestDir="${HOME}/Scripts"
 dotfilesDestDir="${HOME}"
 mainRC="${supportdir}/mainRC"
-dialogRC="${supportdir}/dialogRC"
+dialogRC="${mainRC}"
 infoMsg=''
 
 checkBinary()
@@ -93,8 +93,8 @@ EOF
 ${fileList}
 EOFF
     else
-        printf "${cRed}%b${cReset}\\n" "Error: No Files Selected"
-        exit 40 
+        DIALOGRC="${mainRC}" dialog --msgbox "Error: No Files Selected" ${mainHeight} ${mainWidth}
+        exit 70
     fi
 }
 
