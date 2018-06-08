@@ -39,7 +39,7 @@
     $predir=preg_grep('/^\.+.?+/',scandir('.'),PREG_GREP_INVERT);
 
     // Remove this script (with any name) and any file named 'metadata.info' from the listing
-    $predir=array_diff($dir,[basename($_SERVER['PHP_SELF']),'metadata.info']);
+    $predir=array_diff($predir,[basename($_SERVER['PHP_SELF']),'metadata.info']);
    
 
     //Break apart into separate file and directory arrays 
@@ -65,10 +65,10 @@
     // Reindex the array. Not strictly needed, but meh.
     //$dir=array_values($dir);
 
-
+    $filelist=[];
     if (count($dir)>=1){
         foreach ($dir as $val){
-            $filelist[${val}] = isset($metadata['Files'][${val}]) ? $metadata['Files'][${val}] : ${val};
+            $filelist[$val] = isset($metadata['Files'][$val]) ? $metadata['Files'][$val] : $val;
         }
     }
 ?>
