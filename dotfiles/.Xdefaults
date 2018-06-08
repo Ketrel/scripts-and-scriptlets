@@ -1,0 +1,11 @@
+xterm*vt100*background: black
+xterm*vt100*foreground: white
+xterm*termName: xterm-256color
+xterm*font: -*-terminus-medium-*-*-*-12-*-*-*-*-*-*-*
+xterm*vt100*geometry: 165x55
+URxvt.font: -*-terminus-medium-*-*-*-12-*-*-*-*-*-*-*
+URxvt.background: 0
+URxvt.foreground: 15
+URxvt.geometry: 165x55
+URxvt.scrollBar_right: true
+URxvt.scrollBar_floating: true
