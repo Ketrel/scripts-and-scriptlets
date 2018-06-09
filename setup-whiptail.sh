@@ -181,33 +181,39 @@ main()
 
                         case "${menuConfigSelect}" in
                             '1')
-                                tempDir=$(NEWT_COLORS_FILE=${mainRC} whiptail \
-                                    --backtitle "Setup" \
-                                    --clear \
-                                    --dselect \
-                                        "${HOME}/" \
-                                        ${mainHeight} \
-                                        ${mainWidth} \
-                                    2>&1 1>&3)
-                                # && [ -d ${tempDir} ]
-                                if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
-                                    msgBox "Scripts Destination Changed.\\n Was: ${scriptsDestDir}\\n Is Now: ${tempDir}"
-                                    scriptsDestDir=${tempDir%/}
+                                msgBox "This function doesn't work in whiptail yet.\\nI'm looking into alternatives."
+                                if false; then
+                                    tempDir=$(NEWT_COLORS_FILE=${mainRC} whiptail \
+                                        --backtitle "Setup" \
+                                        --clear \
+                                        --dselect \
+                                            "${HOME}/" \
+                                            ${mainHeight} \
+                                            ${mainWidth} \
+                                        2>&1 1>&3)
+                                    # && [ -d ${tempDir} ]
+                                    if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
+                                        msgBox "Scripts Destination Changed.\\n Was: ${scriptsDestDir}\\n Is Now: ${tempDir}"
+                                        scriptsDestDir=${tempDir%/}
+                                    fi
                                 fi
                             ;;
                             '2')
-                                tempDir=$(NEWT_COLORS_FILE=${mainRC} whiptail \
-                                    --backtitle "Setup" \
-                                    --clear \
-                                    --dselect \
-                                        "${HOME}/" \
-                                        ${mainHeight} \
-                                        ${mainWidth} \
-                                    2>&1 1>&3)
-                                # && [ -d ${tempDir} ]
-                                if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
-                                    msgBox "Dotfiles Destination Changed.\\n Was: ${dotfilesDestDir}\\n Is Now: ${tempDir}"
-                                    dotfilesDestDir=${tempDir%/}
+                                msgBox "This function doesn't work in whiptail yet.\\nI'm looking into alternatives."
+                                if false; then
+                                    tempDir=$(NEWT_COLORS_FILE=${mainRC} whiptail \
+                                        --backtitle "Setup" \
+                                        --clear \
+                                        --dselect \
+                                            "${HOME}/" \
+                                            ${mainHeight} \
+                                            ${mainWidth} \
+                                        2>&1 1>&3)
+                                    # && [ -d ${tempDir} ]
+                                    if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
+                                        msgBox "Dotfiles Destination Changed.\\n Was: ${dotfilesDestDir}\\n Is Now: ${tempDir}"
+                                        dotfilesDestDir=${tempDir%/}
+                                    fi
                                 fi
                             ;;
                             '?')
