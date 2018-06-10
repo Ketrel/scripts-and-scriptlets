@@ -6,8 +6,9 @@ scriptsDir="${scriptdir}/shell"
 dotfilesDir="${scriptdir}/dotfiles"
 scriptsDestDir="${HOME}/Scripts"
 dotfilesDestDir="${HOME}"
-mainRC="${supportdir}/mainRC"
-dialogRC="${mainRC}"
+dialogRC="${supportdir}/mainRC-dialog"
+newtColorsRC="${supportdir}/mainRC-whiptail"
+mainRC="${dialogRC}"
 infoMsg=''
 
 checkBinary()
@@ -34,13 +35,13 @@ configDimensions()
 msgBox()
 {
     if [ -n "${1}" ]; then
-        DIALOGRC="${dialogRC}" dialog --msgbox "${1}" ${mainHeight} ${mainWidth}
+        DIALOGRC="${mainRC}" dialog --msgbox "${1}" ${mainHeight} ${mainWidth}
     fi
 }
 yesnoBox()
 {
     if [ -n "${1}" ]; then
-        DIALOGRC="${dialogRC}" dialog --yesno "${1}" ${mainHeight} ${mainWidth}
+        DIALOGRC="${mainRC}" dialog --yesno "${1}" ${mainHeight} ${mainWidth}
         result=$?
         return ${result}
     fi
@@ -257,10 +258,10 @@ main()
         ;; 
     esac
     if [ -n "${infoMsg}" ]; then
-        DIALOGRC="${dialogRC}" dialog  --backtitle "Setup" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
+        DIALOGRC="${mainRC}" dialog  --backtitle "Setup" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
     fi
     #if [ "${?}" -eq 0 ]; then
-    if DIALOGRC="${dialogRC}" dialog --backtitle "Setup" --title "Continue" --yesno "Finished\\nRun More Tasks?" 7 ${mainWidth}
+    if DIALOGRC="${mainRC}" dialog --backtitle "Setup" --title "Continue" --yesno "Finished\\nRun More Tasks?" 7 ${mainWidth}
     then
         infoMsg=''
         main

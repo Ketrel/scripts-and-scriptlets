@@ -6,9 +6,9 @@ scriptsDir="${scriptdir}/shell"
 dotfilesDir="${scriptdir}/dotfiles"
 scriptsDestDir="${HOME}/Scripts"
 dotfilesDestDir="${HOME}"
-mainRC="${supportdir}/newtColorsRC"
-dialogRC="${supportdir}/dialogRC"
-newtColorsRC="${mainRC}"
+dialogRC="${supportdir}/mainRC-dialog"
+newtColorsRC="${supportdir}/mainRC-whiptail"
+mainRC="${newtColorsRC}"
 infoMsg=''
 
 checkBinary()
@@ -35,13 +35,13 @@ configDimensions()
 msgBox()
 {
     if [ -n "${1}" ]; then
-        NEWT_COLORS_FILE="${newtColorsRC}" whiptail --msgbox "${1}" ${mainHeight} ${mainWidth}
+        NEWT_COLORS_FILE="${mainRC}" whiptail --msgbox "${1}" ${mainHeight} ${mainWidth}
     fi
 }
 yesnoBox()
 {
     if [ -n "${1}" ]; then
-        NEWT_COLORS_FILE="${newtColorsRC}" whiptail --yesno "${1}" ${mainHeight} ${mainWidth}
+        NEWT_COLORS_FILE="${mainRC}" whiptail --yesno "${1}" ${mainHeight} ${mainWidth}
         result=$?
         return ${result}
     fi
@@ -94,7 +94,7 @@ EOF
 ${fileList}
 EOFF
     else
-        #NEWT_COLORS_FILE="${newtColorsRC}" whiptail --backtitle "Setup" --title "Continue" --msgbox "Error: No Files Selected." ${mainHeight} ${mainWidth}
+        #NEWT_COLORS_FILE="${mainRC}" whiptail --backtitle "Setup" --title "Continue" --msgbox "Error: No Files Selected." ${mainHeight} ${mainWidth}
         msgBox "Error: No Files Selected"
         exit 70
     fi
@@ -266,9 +266,9 @@ main()
         ;; 
     esac
     if [ -n "${infoMsg}" ]; then
-        NEWT_COLORS_FILE="${newtColorsRC}" whiptail  --backtitle "Setup" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
+        NEWT_COLORS_FILE="${mainRC}" whiptail  --backtitle "Setup" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
     fi
-    if NEWT_COLORS_FILE="${newtColorsRC}" whiptail --backtitle "Setup" --title "Continue" --yesno "Finished\\nRun More Tasks?" ${mainHeight} ${mainWidth}
+    if NEWT_COLORS_FILE="${mainRC}" whiptail --backtitle "Setup" --title "Continue" --yesno "Finished\\nRun More Tasks?" ${mainHeight} ${mainWidth}
     then
         infoMsg=''
         main
