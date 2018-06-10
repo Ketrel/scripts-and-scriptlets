@@ -1,15 +1,5 @@
 #!/bin/sh
 
-scriptdir=$(dirname "${0}")
-supportdir="${scriptdir}/support_files"
-scriptsDir="${scriptdir}/shell"
-dotfilesDir="${scriptdir}/dotfiles"
-scriptsDestDir="${HOME}/Scripts"
-dotfilesDestDir="${HOME}"
-mainRC="${supportdir}/mainRC"
-dialogRC="${mainRC}"
-infoMsg=''
-
 checkBinary()
 {
     if [ "$(command -v "${1}")" ]; then
@@ -24,6 +14,7 @@ checkBinary()
         return 1
     fi
 }
+
 configDimensions()
 {
     # 80x25 is the safe assumption
@@ -31,29 +22,40 @@ configDimensions()
     mainHeight=$(( $(tput lines 2>/dev/null || printf '15' ) * 8 / 10 ))
     menuHeight=$(( mainHeight - 3 ))
 }
+
 msgBox()
 {
     if [ -n "${1}" ]; then
-        DIALOGRC="${dialogRC}" dialog --msgbox "${1}" ${mainHeight} ${mainWidth}
+        DIALOGRC="${mainRC}" dialog --msgbox "${1}" ${mainHeight} ${mainWidth}
     fi
 }
+
 yesnoBox()
 {
     if [ -n "${1}" ]; then
-        DIALOGRC="${dialogRC}" dialog --yesno "${1}" ${mainHeight} ${mainWidth}
+        DIALOGRC="${mainRC}" dialog --yesno "${1}" ${mainHeight} ${mainWidth}
         result=$?
         return ${result}
     fi
 }
+
 generateSelect()
 {
+    fileList=''
+    checkList=''
+    results=''    
+    chosen=''
+    # infoMsg=''
+
     if [ -z "${1}" ] || [ -z "${2}" ]; then
         printf "%b\\n" "Unrecoverable Script Failure\\nNeeds Debugging"
         exit 5
     fi
+
     cd "${1}" || exit 1
     fileList=$(find . -type f -exec sh -c 'printf "%s\n" "$(basename "${1}")"' sh {} \; | sort)
     cd - 1>/dev/null || exit 1
+
     i=0
     checkList=''
     while read -r line
@@ -85,7 +87,8 @@ ${chosen}
 EOF
             then
                 infoMsg="${infoMsg}Copied \"${line}\" to ${2}\\n"
-                cp "${1}/${line}" "${2}/${line}" || { printf "${cRed}%b${cReset}\\n" "Error Copying Files"; exit 41; }
+                infoMsg="${infoMsg}  DRY RUN: cp \"${1}/${line}\" \"${2}/${line}\"\\n"
+                # cp "${1}/${line}" "${2}/${line}" || { printf "${cRed}%b${cReset}\\n" "Error Copying Files"; exit 41; }
             fi
             i=$((i+1))
         done <<EOFF
@@ -93,37 +96,20 @@ ${fileList}
 EOFF
     else
         DIALOGRC="${mainRC}" dialog --msgbox "Error: No Files Selected" ${mainHeight} ${mainWidth}
-        exit 70
+        #exit 70
+        infoMsg=''
+        return 1
     fi
 }
-
-# Make sure 'which' exists before proceding
-# which which || exit 44
-# not needed if using command -v
-
-# Set up some colors
-cRed=$(tput setaf 1 2>/dev/null || printf '' )
-cReset=$(tput sgr0 2>/dev/null || printf '' )
-cBold=$(tput bold 2>/dev/null || printf '' )
-
-# Ensure dialog is present
-if ! checkBinary "dialog" ; then
-    echo "Major Failure"
-    exit 2
-fi 
-
-# Setup Dimensions
-configDimensions
-
-# Ensure infoMsg is empty at this point
-infoMsg=''
-
-# Create fd 3
-exec 3>&1
 
 # Generate Menu
 main()
 {
+    menuSelection=''
+    menuConfigSelect=''
+    tempDir=''
+    # infoMsg='' 
+
     menuSelection="0"
     while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuSelection}" = "?" ]; do
         menuSelection=$(DIALOGRC="${mainRC}" \
@@ -137,14 +123,14 @@ main()
                 ${menuHeight} \
                 "1" "Copy Scripts To Scripts Dir" \
                 "2" "Copy Specific Scripts To Scripts Dir" \
-                "-" "----------" \
+                "-" "" \
                 "3" "Copy Dotfiles To Dotfiles Dir" \
                 "4" "Copy Dotfiles (Except .profile) Dotfiles Dir" \
                 "5" "Copy Specific Dotfiles To Dotfiles Dir" \
-                "-" "----------" \
+                "-" "" \
                 "0" "Configuration Options" \
                 "?" "Show Current Config" \
-                "-" "----------" \
+                "-" "" \
                 "Q" "Quit" \
             2>&1 1>&3)
             #In the menu below\n  \$HOME refers to \"${HOME}\"" \
@@ -167,11 +153,11 @@ main()
                                 ${menuHeight} \
                             "1" "Set Scripts Destination Directory" \
                             "2" "Set Dotfiles Destination Directory" \
-                            "-" "----------" \
+                            "-" "" \
                             "0" "Return" \
                             "?" "Show Current Config" \
                             "C" "Create Missing Directories (Not Implimented)" \
-                            "-" "----------" \
+                            "-" "" \
                             "Q" "Quit" \
                             2>&1 1>&3)
 
@@ -200,7 +186,6 @@ main()
                                         ${mainHeight} \
                                         ${mainWidth} \
                                     2>&1 1>&3)
-                                # && [ -d ${tempDir} ]
                                 if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
                                     msgBox "Dotfiles Destination Changed.\\n Was: ${dotfilesDestDir}\\n Is Now: ${tempDir}"
                                     dotfilesDestDir=${tempDir%/}
@@ -230,38 +215,47 @@ main()
     case "${menuSelection}" in
         '1')
             infoMsg="${infoMsg}Copying included scripts to \"${scriptsDestDir}\""
+            infoMsg="${infoMsg}\\n    Dry Run: Not Doing Anything for Real"
             
-            find "${scriptsDir}" -type f -exec cp {} "${scriptsDestDir}/" \;
+            # find "${scriptsDir}" -type f -exec cp {} "${scriptsDestDir}/" \;
         ;;
         '2')
             infoMsg=''
             generateSelect "${scriptsDir}" "${scriptsDestDir}"
+            if [ ${?} -eq 1 ]; then
+                return 0
+            fi
         ;;
         '3')
             infoMsg="${infoMsg}Copying dotfiles to: \"${dotfilesDestDir}\""
+            infoMsg="${infoMsg}\\n    Dry Run: Not Doing Anything for Real"
 
-            find "${scriptsDir}" -type f -exec cp {} "${dotfilesDestDir}/" \;
+            # find "${scriptsDir}" -type f -exec cp {} "${dotfilesDestDir}/" \;
         ;; 
         '4')
             infoMsg="${infoMsg}Copying dotfiles (excuding .profile) to: \"${dotfilesDestDir}\""
+            infoMsg="${infoMsg}\\n    Dry Run: Not Doing Anything for Real"
             
-            find "${dotfilesDir}" -type f ! -name ".profile" -exec cp {} "${dotfilesDestDir}/" \;
+            # find "${dotfilesDir}" -type f ! -name ".profile" -exec cp {} "${dotfilesDestDir}/" \;
         ;;
         '5')
             infoMsg=''
             generateSelect "${dotfilesDir}" "${dotfilesDestDir}"
+            if [ ${?} -eq 1 ]; then
+                return 0
+            fi
         ;; 
     esac
     if [ -n "${infoMsg}" ]; then
-        DIALOGRC="${dialogRC}" dialog  --backtitle "Setup" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
+        DIALOGRC="${mainRC}" dialog  --backtitle "Setup" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
+        infoMsg=''
     fi
-    #if [ "${?}" -eq 0 ]; then
-    if DIALOGRC="${dialogRC}" dialog --backtitle "Setup" --title "Continue" --yesno "Finished\\nRun More Tasks?" 7 ${mainWidth}
+
+    if DIALOGRC="${mainRC}" dialog --backtitle "Setup" --title "Continue" --yesno "Finished\\nRun More Tasks?" 7 ${mainWidth}
     then
         infoMsg=''
-        main
+        return 0
+    else
+        return 1 
     fi
-    printf '\033c'
 }
-main
-exec 3>&-
