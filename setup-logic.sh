@@ -6,18 +6,21 @@ scriptsDir="${scriptdir}/shell"
 dotfilesDir="${scriptdir}/dotfiles"
 scriptsDestDir="${HOME}/Scripts"
 dotfilesDestDir="${HOME}"
-dialogRC="${supportdir}/mainRC-dialog"
-newtColorsRC="${supportdir}/mainRC-whiptail"
-mainRC="${dialogRC}"
+tuiBin='dialog'
+rcBase="${supportdir}/mainRC-"
+#dialogRC="${supportdir}/mainRC-dialog"
+#newtColorsRC="${supportdir}/mainRC-whiptail"
+mainRC="${rcBase}${tuiBin}"
 infoMsg=''
-
-# shellcheck source=support_files/functions.sh
-. "${supportdir}/functions.sh"
 
 # Set up some colors
 cRed=$(tput setaf 1 2>/dev/null || printf '')
 cReset=$(tput sgr0  2>/dev/null || printf '')
 cBold=$(tput bold   2>/dev/null || printf '')
+
+# shellcheck source=support_files/functions-dialog.sh
+# shellcheck source=support_files/functions-whiptail.sh
+. "${supportdir}/functions-${tuiBin}.sh"
 
 # Ensure dialog is present
 if (! checkBinary "dialog") ; then
@@ -34,11 +37,15 @@ infoMsg=''
 # Create fd 3
 exec 3>&1
 
-ml=0
-while [ ${ml} -eq 0 ]; do
-    main
-    ml=${?}
-done 
+#ml=0
+#while [ ${ml} -eq 0 ]; do
+#    main
+#    ml=${?}
+#done 
+while main ; do
+    # do nothing, I just want to loop on the return code of main
+    :
+done
 printf '\033c'
 
 # Get rid of fd 3
