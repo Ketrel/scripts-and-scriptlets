@@ -1,12 +1,19 @@
 #!/bin/sh
 
-scriptdir=$(dirname "${0}")
+scriptdir=$( (cd "${0}" 2>/dev/null || exit 2); pwd)
 supportdir="${scriptdir}/support_files"
 scriptsDir="${scriptdir}/shell"
 dotfilesDir="${scriptdir}/dotfiles"
 scriptsDestDir="${HOME}/Scripts"
 dotfilesDestDir="${HOME}"
-tuiBin='dialog'
+if $(command -v whiptail 1>/dev/null 2>&1); then
+    tuiBin='whiptail'
+elif $(command -v dialog 1>/dev/null 2>&1); then
+    tuiBin='dialog'
+else
+    printf 'Either Whiptail or Dialog is required\nBut neither was found.\n'
+    exit 3
+fi
 rcBase="${supportdir}/mainRC-"
 #dialogRC="${supportdir}/mainRC-dialog"
 #newtColorsRC="${supportdir}/mainRC-whiptail"
@@ -24,12 +31,6 @@ cBold=$(tput bold   2>/dev/null || printf '')
 
 # shellcheck source=support_files/functions-global.sh
 . "${supportdir}/functions-global.sh"
-
-# Ensure dialog is present
-if (! checkBinary "dialog") ; then
-    echo "Major Failure"
-    exit 2
-fi 
 
 # Setup Dimensions
 configDimensions
