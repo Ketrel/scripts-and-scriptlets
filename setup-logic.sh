@@ -6,7 +6,7 @@ scriptsDir="${scriptdir}/shell"
 dotfilesDir="${scriptdir}/dotfiles"
 scriptsDestDir="${HOME}/Scripts"
 dotfilesDestDir="${HOME}"
-if command -v awhiptail 1>/dev/null 2>&1; then
+if command -v whiptail 1>/dev/null 2>&1; then
     tuiBin='whiptail'
 elif command -v dialog 1>/dev/null 2>&1; then
     tuiBin='dialog'
