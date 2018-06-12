@@ -48,7 +48,6 @@ main(){
                 menuAgain='0'
                 menuReturn='0'
                 showConfig
-                #msgBox "Current Config\\n----------\\n\\nDestination for scripts:\\n  ${scriptsDestDir}\\n\\nDestination for dotfiles:\\n  ${dotfilesDestDir}"
                 ;;
             'Q')
                 printf '\033c'
@@ -227,10 +226,9 @@ EOF
             ${menuHeight} \
             ${checkList} \
             2>&1 1>&3")
-    printf '\033c'
     if [ -n "${results}" ]; then
         chosen=$(echo "${results}" | sed -e 's/ /\n/g')
-`
+
         i=1
         while read -r line
         do
@@ -238,7 +236,7 @@ EOF
 ${chosen}
 EOF
             then
-                infoMsg="Copied \"${line}\" to ${2}"
+                infoMsg="${infoMsg}\\nCopied \"${line}\" to ${2}"
                 infoMsg="${infoMsg}\\n  DRY RUN: cp \"${1}/${line}\" \"${2}/${line}\""
                 # cp "${1}/${line}" "${2}/${line}" || { printf "${cRed}%b${cReset}\\n" "Error Copying Files"; exit 41; }
             fi
