@@ -25,12 +25,11 @@ cRed=$(tput setaf 1 2>/dev/null || printf '')
 cReset=$(tput sgr0  2>/dev/null || printf '')
 cBold=$(tput bold   2>/dev/null || printf '')
 
-# shellcheck source=support_files/functions-dialog.sh
-# shellcheck source=support_files/functions-whiptail.sh
-. "${supportdir}/functions-${tuiBin}.sh"
-
 # shellcheck source=support_files/functions-global.sh
 . "${supportdir}/functions-global.sh"
+
+# shellcheck source=support_files/functions-setup.sh
+. "${supportdir}/functions-setup.sh"
 
 # Setup Dimensions
 configDimensions

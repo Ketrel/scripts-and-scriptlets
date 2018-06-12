@@ -97,3 +97,20 @@ dirPick(){
     fi
 }
 
+msgBox(){
+    if [ -n "${1}" ]; then
+        NEWT_COLORS_FILE="${mainRC}" DIALOGRC="${mainRC}" ${tuiBin} --msgbox "${1}" ${mainHeight} ${mainWidth}
+    fi
+}
+
+yesnoBox(){
+    if [ -n "${1}" ]; then
+        NEWT_COLORS_FILE="${mainRC}" DIALOGRC="${mainRC}" ${tuiBin} --yesno "${1}" ${mainHeight} ${mainWidth}
+        result=$?
+        return ${result}
+    fi
+}
+
+showConfig(){
+     msgBox "Current Config\\n----------\\n\\nDestination for scripts:\\n ${scriptsDestDir}\\n\\nDestination for dotfiles:\\n  ${dotfilesDestDir}"
+}
