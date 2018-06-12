@@ -18,6 +18,7 @@ checkBinary()
 configDimensions()
 {
     # 80x25 is the safe assumption
+    # I will use 70x15 as the default to be safe though
     mainWidth=$(( $(tput cols 2>/dev/null || printf '70' ) * 8 / 10 ))
     mainHeight=$(( $(tput lines 2>/dev/null || printf '15' ) * 8 / 10 ))
     menuHeight=$(( mainHeight - 8 ))
