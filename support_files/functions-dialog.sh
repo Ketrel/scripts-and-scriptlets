@@ -1,28 +1,5 @@
 #!/bin/sh
 
-checkBinary()
-{
-    if [ "$(command -v "${1}")" ]; then
-        return 0        
-    else
-        printf "${cRed}%b${cReset}\\n" "Error: Specifcied Binary '${1}' Not Found." 
-        if [ "${2}" = "optional" ]; then
-            printf "${cRed}%b${cReset}\\n\\n" "----\\nWhile the script will work without it, functionality may be limited." 
-        else
-            printf "${cRed}%b${cReset}\\n\\n" "----\\nThis binary is required for this script to function.\\n If the binary is present on our machine,\\n please ensure it's accessible via your PATH." 
-        fi
-        return 1
-    fi
-}
-
-configDimensions()
-{
-    # 80x25 is the safe assumption
-    mainWidth=$(( $(tput cols 2>/dev/null || printf '70' ) * 8 / 10 ))
-    mainHeight=$(( $(tput lines 2>/dev/null || printf '15' ) * 8 / 10 ))
-    menuHeight=$(( mainHeight - 3 ))
-}
-
 msgBox()
 {
     if [ -n "${1}" ]; then
@@ -77,10 +54,10 @@ EOF
     if [ -n "${results}" ]; then
         chosen=$(echo "${results}" | sed -e 's/ /\n/g')
         i=1
-            
+
         # Blank out infoMsg for fresh use
         infoMsg=''
-        while read -r line 
+        while read -r line
         do
             if grep -E "\\b${i}\\b" >/dev/null <<EOF
 ${chosen}
@@ -95,10 +72,8 @@ EOF
 ${fileList}
 EOFF
     else
-        DIALOGRC="${mainRC}" dialog --msgbox "Error: No Files Selected" ${mainHeight} ${mainWidth}
-        #exit 70
-        infoMsg=''
-        return 1
+        msgBox "Error: No Files Selected"
+        exit 70
     fi
 }
 
@@ -117,7 +92,7 @@ main()
             --backtitle "Setup" \
             --clear \
             --menu \
-                "Automated Setup Options\\n---\\n" \
+                "Automated Setup Options" \
                 ${mainHeight} \
                 ${mainWidth} \
                 ${menuHeight} \
@@ -163,33 +138,10 @@ main()
 
                         case "${menuConfigSelect}" in
                             '1')
-                                tempDir=$(DIALOGRC=${mainRC} dialog \
-                                    --backtitle "Setup" \
-                                    --clear \
-                                    --dselect \
-                                        "${HOME}/" \
-                                        ${mainHeight} \
-                                        ${mainWidth} \
-                                    2>&1 1>&3)
-                                # && [ -d ${tempDir} ]
-                                if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
-                                    msgBox "Scripts Destination Changed.\\n Was: ${scriptsDestDir}\\n Is Now: ${tempDir}"
-                                    scriptsDestDir=${tempDir%/}
-                                fi
+                                msgBox "This function is being reworked."
                             ;;
                             '2')
-                                tempDir=$(DIALOGRC=${mainRC} dialog \
-                                    --backtitle "Setup" \
-                                    --clear \
-                                    --dselect \
-                                        "${HOME}/" \
-                                        ${mainHeight} \
-                                        ${mainWidth} \
-                                    2>&1 1>&3)
-                                if [ -n "${tempDir}" ] && [ ! "${tempDir}" = "/" ]; then
-                                    msgBox "Dotfiles Destination Changed.\\n Was: ${dotfilesDestDir}\\n Is Now: ${tempDir}"
-                                    dotfilesDestDir=${tempDir%/}
-                                fi
+                                msgBox "This function is being reqorked."
                             ;;
                             '?')
                                 msgBox "Current Config\\n----------\\n\\nDestination for scripts:\\n  ${scriptsDestDir}\\n\\nDestination for dotfiles:\\n  ${dotfilesDestDir}"
@@ -197,7 +149,7 @@ main()
                             'C')
                                 if yesnoBox "Create The Following Directories?\\n(If They Don't Exist)\\n\\n${dotfilesDestDir}\\n${scriptsDestDir}"; then
                                     msgBox "Would Create Directories"
-                                fi 
+                                fi
                             ;;
                             'Q')
                                 printf '\033c'
@@ -216,7 +168,7 @@ main()
         '1')
             infoMsg="${infoMsg}Copying included scripts to \"${scriptsDestDir}\""
             infoMsg="${infoMsg}\\n    Dry Run: Not Doing Anything for Real"
-            
+
             # find "${scriptsDir}" -type f -exec cp {} "${scriptsDestDir}/" \;
         ;;
         '2')
@@ -231,11 +183,11 @@ main()
             infoMsg="${infoMsg}\\n    Dry Run: Not Doing Anything for Real"
 
             # find "${scriptsDir}" -type f -exec cp {} "${dotfilesDestDir}/" \;
-        ;; 
+        ;;
         '4')
             infoMsg="${infoMsg}Copying dotfiles (excuding .profile) to: \"${dotfilesDestDir}\""
             infoMsg="${infoMsg}\\n    Dry Run: Not Doing Anything for Real"
-            
+
             # find "${dotfilesDir}" -type f ! -name ".profile" -exec cp {} "${dotfilesDestDir}/" \;
         ;;
         '5')
@@ -244,7 +196,7 @@ main()
             if [ ${?} -eq 1 ]; then
                 return 0
             fi
-        ;; 
+        ;;
     esac
     if [ -n "${infoMsg}" ]; then
         DIALOGRC="${mainRC}" dialog  --backtitle "Setup" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
