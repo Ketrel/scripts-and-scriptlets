@@ -46,7 +46,9 @@ exec 3>&1
 #done
 #printf '\033c'
 
+chosenDir=''
 dirPick "${HOME}"
+printf 'Chose: %s\n' "${chosenDir}"
 
 # Get rid of fd 3
 exec 3>&-
