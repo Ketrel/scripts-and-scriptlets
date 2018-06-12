@@ -6,7 +6,7 @@ scriptsDir="${scriptdir}/shell"
 dotfilesDir="${scriptdir}/dotfiles"
 scriptsDestDir="${HOME}/Scripts"
 dotfilesDestDir="${HOME}"
-if $(command -v whiptail 1>/dev/null 2>&1); then
+if $(command -v awhiptail 1>/dev/null 2>&1); then
     tuiBin='whiptail'
 elif $(command -v dialog 1>/dev/null 2>&1); then
     tuiBin='dialog'
@@ -41,15 +41,15 @@ infoMsg=''
 # Create fd 3
 exec 3>&1
 
-#while main ; do
-#    # do nothing, I just want to loop on the return code of main
-#    :
-#done
-#printf '\033c'
+while main ; do
+    # do nothing, I just want to loop on the return code of main
+    :
+done
+printf '\033c'
 
-chosenDir=''
-dirPick "${HOME}"
-printf 'Chose: %s\n' "${chosenDir}"
+#chosenDir=''
+#dirPick "${HOME}"
+#printf 'Chose: %s\n' "${chosenDir}"
 
 # Get rid of fd 3
 exec 3>&-
