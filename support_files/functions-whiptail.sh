@@ -87,7 +87,7 @@ main()
 
     menuSelection="0"
     while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ] || [ "${menuSelection}" = "?" ]; do
-        menuSelection=$(NEWT_COLORS_FILE="${mainRC}" \
+        if ! menuSelection=$(NEWT_COLORS_FILE="${mainRC}" \
             whiptail \
             --backtitle "Setup" \
             --clear \
@@ -107,7 +107,7 @@ main()
                 "?" "Show Current Config" \
                 "-" "" \
                 "Q" "Quit" \
-            2>&1 1>&3)
+            2>&1 1>&3); then exit 0; fi
             #In the menu below\n  \$HOME refers to \"${HOME}\"" \
 
             case "$menuSelection" in
@@ -138,10 +138,44 @@ main()
 
                         case "${menuConfigSelect}" in
                             '1')
-                                msgBox "This function doesn't work in whiptail yet.\\nI'm looking into alternatives."
+                                chosenDir=''
+                                if [ -d "${scriptsDestDir}" ] && [ -r "${scriptsDestDir}" ]; then
+                                    dirPick "${scriptsDestDir}" 'Choose a scripts directory.\nCurrently Viewing: '
+                                    dirRet=${?}
+                                elif [ -d "${HOME}" ] && [ -r "${HOME}" ]; then
+                                    dirPick "${HOME}" 'Choose a scripts directory.\nCurrently Viewing: '
+                                    dirRet=${?}
+                                else 
+                                    dirPick "/" 'Choose a scripts directory.\nCurrently Viewing: '
+                                    dirRet=${?}
+                                fi
+                                if [ "${dirRet}" -eq 1 ]; then
+                                    msgBox "Canceled\\nScripts Directory Unchanged\\nCurrent Value: ${scriptsDestDir}"
+                                else
+                                    msgBox "Changing Scripts Destination Directory\\nFrom: ${scriptsDestDir}\\nTo: ${chosenDir}"
+                                    scriptsDestDir="${chosenDir}"
+                                    chosenDir=''
+                                fi
                             ;;
                             '2')
-                                msgBox "This function doesn't work in whiptail yet.\\nI'm looking into alternatives."
+                                chosenDir=''
+                                if [ -d "${dotfilesDestDir}" ] && [ -r "${dotfilesDestDir}" ]; then
+                                    dirPick "${dotfilesDestDir}" 'Choose a dotfiles directory.\nCurrently Viewing: '
+                                    dirRet=${?}
+                                elif [ -d "${HOME}" ] && [ -r "${HOME}" ]; then
+                                    dirPick "${HOME}" 'Choose a dotfiles directory.\nCurrently Viewing: '
+                                    dirRet=${?}
+                                else 
+                                    dirPick "/" 'Choose a dotfiles directory.\nCurrently Viewing: '
+                                    dirRet=${?}
+                                fi
+                                if [ "${dirRet}" -eq 1 ]; then
+                                    msgBox "Canceled\\ndotfiles Directory Unchanged\\nCurrent Value: ${dotfilesDestDir}"
+                                else
+                                    msgBox "Changing dotfiles Destination Directory\\nFrom: ${dotfilesDestDir}\\nTo: ${chosenDir}"
+                                    dotfilesDestDir="${chosenDir}"
+                                    chosenDir=''
+                                fi
                             ;;
                             '?')
                                 msgBox "Current Config\\n----------\\n\\nDestination for scripts:\\n  ${scriptsDestDir}\\n\\nDestination for dotfiles:\\n  ${dotfilesDestDir}"

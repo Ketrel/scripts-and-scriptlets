@@ -4,12 +4,13 @@ title=green,black
 roottext=white,black
 window=green,black
 
-textbox=green,black
+textbox=white,black
 
 button=black,green
 compactbutton=white,black
 
-listbox=green,black
+listbox=white,black
+
 actlistbox=black,white
 actsellistbox=black,green
 
