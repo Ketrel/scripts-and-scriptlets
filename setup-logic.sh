@@ -22,6 +22,9 @@ cBold=$(tput bold   2>/dev/null || printf '')
 # shellcheck source=support_files/functions-whiptail.sh
 . "${supportdir}/functions-${tuiBin}.sh"
 
+# shellcheck source=support_files/functions-global.sh
+. "${supportdir}/functions-global.sh"
+
 # Ensure dialog is present
 if (! checkBinary "dialog") ; then
     echo "Major Failure"
@@ -37,16 +40,13 @@ infoMsg=''
 # Create fd 3
 exec 3>&1
 
-#ml=0
-#while [ ${ml} -eq 0 ]; do
-#    main
-#    ml=${?}
-#done 
-while main ; do
-    # do nothing, I just want to loop on the return code of main
-    :
-done
-printf '\033c'
+#while main ; do
+#    # do nothing, I just want to loop on the return code of main
+#    :
+#done
+#printf '\033c'
+
+dirPick "${HOME}"
 
 # Get rid of fd 3
 exec 3>&-
