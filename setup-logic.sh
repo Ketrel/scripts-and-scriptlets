@@ -1,5 +1,5 @@
 #!/bin/sh
-
+    
 scriptdir=$( dirname "$(readlink -f "${0}")" )
 supportdir="${scriptdir}/support_files"
 scriptsDir="${scriptdir}/shell"
@@ -28,8 +28,14 @@ cReset=$(tput sgr0  2>/dev/null || printf '')
 # shellcheck source=support_files/functions-global.sh
 . "${supportdir}/functions-global.sh"
 
-# shellcheck source=support_files/functions-setup.sh
-. "${supportdir}/functions-setup.sh"
+# Check for live switch and if set, use live functions
+if [ "${1}" = "--live" ]; then
+    # shellcheck source=support_files/functions-setup-live.sh
+    . "${supportdir}/functions-setup-live.sh"
+else
+    # shellcheck source=support_files/functions-setup.sh
+    . "${supportdir}/functions-setup.sh"
+fi
 
 # Setup Dimensions
 configDimensions
