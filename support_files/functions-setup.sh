@@ -56,7 +56,7 @@ main(){
         esac
 
         if [ "${menuAgain}" -eq "1" ]; then
-            if NEWT_COLORS_FILE="${mainRC}" DIALOGRC="${mainRC}" ${tuiBin} --backtitle "Setup" --title "Continue" --yesno "Finished\\nRun More Tasks?\\n\\nActions Takeni This Round:\\n${infoMsg}" ${mainHeight} ${mainWidth}; then
+            if NEWT_COLORS_FILE="${mainRC}" DIALOGRC="${mainRC}" ${tuiBin} --backtitle "Setup" --title "Continue" --yesno "Finished\\nRun More Tasks?\\n\\nActions Taken This Round:\\n${infoMsg}" ${mainHeight} ${mainWidth}; then
                 infoMsg=''
                 menuReturn='0'
             fi
