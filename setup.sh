@@ -1,12 +1,18 @@
 #!/bin/sh
-    
+
+if [ "${1}" = "--live" ]; then
+    liveRun='LIVE'
+    shift
+else
+    liveRun=''
+fi
 scriptdir=$( dirname "$(readlink -f "${0}")" )
 supportdir="${scriptdir}/support_files"
 scriptsDir="${scriptdir}/shell"
 dotfilesDir="${scriptdir}/dotfiles"
 scriptsDestDir="${HOME}/Scripts"
 dotfilesDestDir="${HOME}"
-if command -v whiptail 1>/dev/null 2>&1; then
+if command -v whiptail 1>/dev/null 2>&1 && [ ! "${1}" = "--dialog" ] ; then
     tuiBin='whiptail'
 elif command -v dialog 1>/dev/null 2>&1; then
     tuiBin='dialog'
@@ -18,12 +24,9 @@ rcBase="${supportdir}/mainRC-"
 #dialogRC="${supportdir}/mainRC-dialog"
 #newtColorsRC="${supportdir}/mainRC-whiptail"
 mainRC="${rcBase}${tuiBin}"
-if [ "${1}" = "--live" ]; then
-    liveRun='LIVE'
-else
-    liveRun=''
-fi
 infoMsg=''
+export DIALOGRC="${mainRC}"
+export NEWT_COLORS_FILE="${mainRC}"
 
 # Set up some colors
 cRed=$(tput setaf 1 2>/dev/null || printf '')
@@ -33,6 +36,7 @@ cReset=$(tput sgr0  2>/dev/null || printf '')
 # shellcheck source=support_files/functions-global.sh
 . "${supportdir}/functions-global.sh"
 
+# Only the one, it checks the liveRun variable itself
 # shellcheck source=support_files/functions-setup.sh
 . "${supportdir}/functions-setup.sh"
 

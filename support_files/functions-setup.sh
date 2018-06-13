@@ -56,7 +56,10 @@ main(){
         esac
 
         if [ "${menuAgain}" -eq "1" ]; then
-            if NEWT_COLORS_FILE="${mainRC}" DIALOGRC="${mainRC}" ${tuiBin} --backtitle "Setup" --title "Continue" --yesno "Finished\\nRun More Tasks?\\n\\nActions Taken This Round:\\n${infoMsg}" ${mainHeight} ${mainWidth}; then
+            if [ -n "${infoMsg}" ]; then
+                ${tuiBin} --backtitle "Setup" --title "Results" --msgbox "${infoMsg}" ${mainHeight} ${mainWidth}
+            fi
+            if ${tuiBin} --backtitle "Setup" --title "Continue" --yesno "Finished\\nRun More Tasks?" ${mainHeight} ${mainWidth}; then
                 infoMsg=''
                 menuReturn='0'
             fi
@@ -65,7 +68,7 @@ main(){
 
     exit 8
     if [ -n "${infoMsg}" ]; then
-        NEWT_COLORS_FILE="${mainRC}" DIALOGRC="${mainRC}" ${tuiBin}  --backtitle "Setup" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
+        ${tuiBin}  --backtitle "Setup" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
         infoMsg=''
     fi
 }
@@ -73,8 +76,7 @@ main(){
 mainMenu(){
     menuSelection="0"
     while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ]; do
-        if ! menuSelection=$(NEWT_COLORS_FILE="${mainRC}" DIALOGRC="${mainRC}" \
-            ${tuiBin} \
+        if ! menuSelection=$(${tuiBin} \
             --backtitle "Setup" \
             --clear \
             --menu \
@@ -102,8 +104,7 @@ mainMenu(){
 optionsMenu(){
     menuConfigSelect="x"
     while [ -n "${menuConfigSelect}" ] && [ ! "${menuConfigSelect}" = "<" ]; do
-        menuConfigSelect=$(NEWT_COLORS_FILE="${mainRC}" DIALOGRC="${mainRC}" \
-            ${tuiBin} \
+        menuConfigSelect=$(${tuiBin} \
             --backtitle "Setup" \
             --clear \
             --menu \
@@ -230,7 +231,7 @@ copySelectedFiles(){
     done <<EOF
 ${fileList}
 EOF
-    results=$(eval "NEWT_COLORS_FILE=\"${mainRC}\" DIALOGRC=\"${mainRC}\" ${tuiBin} --backtitle 'Setup' \
+    results=$(eval "${tuiBin} --backtitle 'Setup' \
             --title 'File Select' \
             --checklist \"Select Files\" \
             ${mainHeight} \
