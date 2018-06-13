@@ -51,7 +51,7 @@ dirPick(){
 
     if [ -r "${_fstartDir}" ]; then
 
-        cd "${_fstartDir}"
+        cd "${_fstartDir}" || printf 'Fatal Error: cd to intiial directory failed\n'; exit 9
 
         # Hopefully resolving ..
         _fstartDir="$(pwd)"
@@ -72,10 +72,10 @@ dirPick(){
         elif [ "${_fret}" -ne 0 ] || [ -z "${_fpickDir}" ]; then
             printf 'Unhandled Case\n'
             printf 'Debug Stack\n fpick: %s\n fprev: %s\n forig: %s\n fret: %s\n chosen: %s\n\n' "${_fpickDir}" "${_fprevDir}" "${_forigDir}" "${_fret}" "${chosenDir}"
-            exit 17
+            exit 19
         fi
 
-        cd "${_forigDir}"
+        cd "${_forigDir}" || printf 'Fatal Error: cd back to orignial directory failed\n'; exit 9
 
         if [ "${_fpickDir}" = "<This Directory>" ]; then
             chosenDir="${_fstartDir%/}"
@@ -90,7 +90,7 @@ dirPick(){
         else
             printf 'Unhandled Case\n'
             printf 'Debug Stack\n fpick: %s\n fprev: %s\n forig: %s\n fret: %s\n chosen: %s\n\n' "${_fpickDir}" "${_fprevDir}" "${_forigDir}" "${_fret}" "${chosenDir}"
-            exit 27
+            exit 29
         fi
     else
         printf 'Unreadable Initial Dir: %s\n' "${_fstartDir}"
