@@ -8,8 +8,8 @@ main(){
         menuAgain='1'
 
         if ! mainMenu; then
-            printf -- '---You Broke It---\n'
-            exit 1
+            printf 'Exited Main Menu Via Cancel.\nExiting Script.\n'
+            exit 0
         fi
 
         case "${menuReturn}" in
