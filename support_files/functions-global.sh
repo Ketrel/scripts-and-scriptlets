@@ -51,7 +51,7 @@ dirPick(){
 
     if [ -r "${_fstartDir}" ]; then
 
-        cd "${_fstartDir}" || printf 'Fatal Error: cd to intiial directory failed\n'; exit 9
+        cd "${_fstartDir}" || ( printf 'Fatal Error: cd to intiial directory failed\n'; exit 9 )
 
         # Hopefully resolving ..
         _fstartDir="$(pwd)"
@@ -75,7 +75,7 @@ dirPick(){
             exit 19
         fi
 
-        cd "${_forigDir}" || printf 'Fatal Error: cd back to orignial directory failed\n'; exit 9
+        cd "${_forigDir}" || ( printf 'Fatal Error: cd back to orignial directory failed\n'; exit 9 )
 
         if [ "${_fpickDir}" = "<This Directory>" ]; then
             chosenDir="${_fstartDir%/}"

@@ -18,6 +18,11 @@ rcBase="${supportdir}/mainRC-"
 #dialogRC="${supportdir}/mainRC-dialog"
 #newtColorsRC="${supportdir}/mainRC-whiptail"
 mainRC="${rcBase}${tuiBin}"
+if [ "${1}" = "--live" ]; then
+    liveRun='LIVE'
+else
+    liveRun=''
+fi
 infoMsg=''
 
 # Set up some colors
@@ -28,14 +33,8 @@ cReset=$(tput sgr0  2>/dev/null || printf '')
 # shellcheck source=support_files/functions-global.sh
 . "${supportdir}/functions-global.sh"
 
-# Check for live switch and if set, use live functions
-if [ "${1}" = "--live" ]; then
-    # shellcheck source=support_files/functions-setup-live.sh
-    . "${supportdir}/functions-setup-live.sh"
-else
-    # shellcheck source=support_files/functions-setup.sh
-    . "${supportdir}/functions-setup.sh"
-fi
+# shellcheck source=support_files/functions-setup.sh
+. "${supportdir}/functions-setup.sh"
 
 # Setup Dimensions
 configDimensions
