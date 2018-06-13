@@ -98,6 +98,34 @@ dirPick(){
     fi
 }
 
+selectSingleFile(){
+    if [ -z "${1}" ]; then
+        printf '%b\n' "Pretty Bad Error\\nScript Needs Debugging"
+        exit 6
+    fi
+    cd "${1}" || exit 1
+    _ffileList=''
+    _ffileList=$(find . -type f ! -name '*"*' -exec sh -c 'printf "\"%s\" OFF\n" "${1}"' sh {} \; | sed -e 's/\.\///g' | LC_ALL=C sort -g | tr '\n' ' ')
+    if [ -n "${_ffileList}" ]; then
+        if _fselectedFile=$(eval "NEWT_COLORS_FILE=\"${mainRC}\" DIALOGRC=\"${mainRC}\" ${tuiBin} --backtitle 'Setup' \
+        --title 'File Select' \
+        --noitem \
+        --radiolist \"Select A File\" \
+        ${mainHeight} \
+        ${mainWidth} \
+        ${menuHeight} \
+        ${_ffileList} \
+        2>&1 1>&3"); then
+            printf '\033c'
+            if command -v highlight 1>/dev/null 2>&1 ; then
+                ( highlight -O ansi "${_fselectedFile}" 2>/dev/null || highlight -O ansi -S sh "${_fselectedFile}" ) | less -S -R -# 2
+            else
+                less -S -r -# 2 "${_fselectedFile}"
+            fi
+        fi
+    fi
+}
+
 msgBox(){
     if [ -n "${1}" ]; then
         NEWT_COLORS_FILE="${mainRC}" DIALOGRC="${mainRC}" ${tuiBin} --msgbox "${1}" ${mainHeight} ${mainWidth}
