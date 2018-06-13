@@ -1,6 +1,6 @@
 #!/bin/sh
 
-scriptdir=$( dirname $(readlink -f "${0}") )
+scriptdir=$( dirname "$(readlink -f "${0}")" )
 supportdir="${scriptdir}/support_files"
 scriptsDir="${scriptdir}/shell"
 dotfilesDir="${scriptdir}/dotfiles"
