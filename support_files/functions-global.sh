@@ -60,9 +60,9 @@ dirPick(){
         _flisting=$(find ./ -maxdepth 1 -type d ! -name "." ! -name '*"*' -exec sh -c 'printf "\"%s\" OFF\n" "${1}"' sh {} \; | sed -e 's/\.\///g' | LC_ALL=C sort -g | tr '\n' ' ' )
 
         if [ "${tuiBin}" = "dialog" ]; then
-            _fpickDir=$(eval "DIALOGRC=${mainRC} dialog --no-items --radiolist \"${_fprompt} ${_fstartDir}\" ${mainHeight} ${mainWidth} $(( menuHeight - 1 )) '<This Directory>' ON '..' OFF ${_flisting}  2>&1 1>&3")
+            _fpickDir=$(eval "dialog --no-items --radiolist \"${_fprompt} ${_fstartDir}\" ${mainHeight} ${mainWidth} $(( menuHeight - 1 )) '<This Directory>' ON '..' OFF ${_flisting}  2>&1 1>&3")
         else
-            _fpickDir=$(eval "NEWT_COLORS_FILE=\"${mainRC}\" whiptail --noitem --radiolist \"${_fprompt} ${_fstartDir}\" ${mainHeight} ${mainWidth} $(( menuHeight - 1 )) '<This Directory>' ON '..' OFF ${_flisting}  2>&1 1>&3")
+            _fpickDir=$(eval "whiptail --noitem --radiolist \"${_fprompt} ${_fstartDir}\" ${mainHeight} ${mainWidth} $(( menuHeight - 1 )) '<This Directory>' ON '..' OFF ${_flisting}  2>&1 1>&3")
         fi
         _fret="${?}"
 
@@ -107,7 +107,7 @@ selectSingleFile(){
     _ffileList=''
     _ffileList=$(find . -type f ! -name '*"*' -exec sh -c 'printf "\"%s\" OFF\n" "${1}"' sh {} \; | sed -e 's/\.\///g' | LC_ALL=C sort -g | tr '\n' ' ')
     if [ -n "${_ffileList}" ]; then
-        if _fselectedFile=$(eval "NEWT_COLORS_FILE=\"${mainRC}\" DIALOGRC=\"${mainRC}\" ${tuiBin} --backtitle 'Setup' \
+        if _fselectedFile=$(eval "${tuiBin} --backtitle 'Setup' \
         --title 'File Select' \
         --noitem \
         --radiolist \"Select A File\" \
@@ -128,13 +128,13 @@ selectSingleFile(){
 
 msgBox(){
     if [ -n "${1}" ]; then
-        NEWT_COLORS_FILE="${mainRC}" DIALOGRC="${mainRC}" ${tuiBin} --msgbox "${1}" ${mainHeight} ${mainWidth}
+        ${tuiBin} --msgbox "${1}" ${mainHeight} ${mainWidth}
     fi
 }
 
 yesnoBox(){
     if [ -n "${1}" ]; then
-        NEWT_COLORS_FILE="${mainRC}" DIALOGRC="${mainRC}" ${tuiBin} --yesno "${1}" ${mainHeight} ${mainWidth}
+        ${tuiBin} --yesno "${1}" ${mainHeight} ${mainWidth}
         result=$?
         return ${result}
     fi
