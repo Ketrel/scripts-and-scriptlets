@@ -281,7 +281,7 @@ selectSingleFile(){
         ${_ffileList} \
         2>&1 1>&3"); then
             if command -v highlight 1>/dev/null 2>&1 ; then
-                ( highlight -O ansi "${_fselectedFile}" 2>dev/null || highlight -O ansi -S sh "${_fselectedFile}" ) | less -S -R -# 2
+                ( highlight -O ansi "${_fselectedFile}" 2>/dev/null || highlight -O ansi -S sh "${_fselectedFile}" ) | less -S -R -# 2
             else
                 less -S -r -# 2 "${_fselectedFile}"
             fi
