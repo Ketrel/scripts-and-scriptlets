@@ -57,7 +57,7 @@ dirPick(){
         _fstartDir="$(pwd)"
 
         # echo "Delving into ${_fstartDir}" #Debug Option
-        _flisting=$(find ./ -maxdepth 1 -type d ! -name "." ! -name '*"*' -exec printf '"%s" OFF\n' '{}' \; | sed -e 's/\.\///g' | LC_ALL=C sort -g | tr '\n' ' ' )
+        _flisting=$(find ./ -maxdepth 1 -type d ! -name "." ! -name '*"*' -exec sh -c 'printf "\"%s\" OFF\n" "${1}"' sh {} \; | sed -e 's/\.\///g' | LC_ALL=C sort -g | tr '\n' ' ' )
 
         if [ "${tuiBin}" = "dialog" ]; then
             _fpickDir=$(eval "DIALOGRC=${mainRC} dialog --no-items --radiolist \"${_fprompt} ${_fstartDir}\" ${mainHeight} ${mainWidth} $(( menuHeight - 1 )) '<This Directory>' ON '..' OFF ${_flisting}  2>&1 1>&3")
