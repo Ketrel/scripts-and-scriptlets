@@ -194,13 +194,12 @@ copyFiles(){
         _ftype="${3}"
     fi
     infoMsg="Copying ${_ftype} to \"${2}\""
-    infoMsg="${infoMsg}\\n    Dry Run: Not Doing Anything for Real"
 
-    # if [ "${4}" = "noprofile" ]; then
-        # find "${1}" -type f ! -name ".profile" -exec cp {} "${2}/" \;
-    # else
-        # find "${1}" -type f -exec cp {} "${2}/" \;
-    # fi
+    if [ "${4}" = "noprofile" ]; then
+        find "${1}" -type f ! -name ".profile" -exec cp {} "${2}/" \;
+    else
+        find "${1}" -type f -exec cp {} "${2}/" \;
+    fi
 }
 
 copySelectedFiles(){
@@ -246,8 +245,7 @@ ${chosen}
 EOF
             then
                 infoMsg="${infoMsg}\\nCopied \"${line}\" to ${2}"
-                infoMsg="${infoMsg}\\n  DRY RUN: cp \"${1}/${line}\" \"${2}/${line}\""
-                # cp "${1}/${line}" "${2}/${line}" || { printf "${cRed}%b${cReset}\\n" "Error Copying Files"; exit 41; }
+                cp "${1}/${line}" "${2}/${line}" || { printf "${cRed}%b${cReset}\\n" "Error Copying Files"; exit 41; }
             fi
             i=$((i+1))
         done <<EOFF

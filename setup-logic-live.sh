@@ -1,6 +1,6 @@
 #!/bin/sh
 
-scriptdir=$( (cd "${0}" 2>/dev/null || exit 2); pwd)
+scriptdir=$( dirname $(readlink -f "${0}") )
 supportdir="${scriptdir}/support_files"
 scriptsDir="${scriptdir}/shell"
 dotfilesDir="${scriptdir}/dotfiles"
@@ -28,8 +28,8 @@ cBold=$(tput bold   2>/dev/null || printf '')
 # shellcheck source=support_files/functions-global.sh
 . "${supportdir}/functions-global.sh"
 
-# shellcheck source=support_files/functions-setup.sh
-. "${supportdir}/functions-setup.sh"
+# shellcheck source=support_files/functions-setup-live.sh
+. "${supportdir}/functions-setup-live.sh"
 
 # Setup Dimensions
 configDimensions
