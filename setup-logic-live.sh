@@ -23,7 +23,7 @@ infoMsg=''
 # Set up some colors
 cRed=$(tput setaf 1 2>/dev/null || printf '')
 cReset=$(tput sgr0  2>/dev/null || printf '')
-cBold=$(tput bold   2>/dev/null || printf '')
+#cBold=$(tput bold   2>/dev/null || printf '')
 
 # shellcheck source=support_files/functions-global.sh
 . "${supportdir}/functions-global.sh"
