@@ -2,9 +2,11 @@
 
 if [ "${1}" = "--live" ]; then
     liveRun='LIVE'
+    titleAdditions=' - Live Run'
     shift
 else
     liveRun=''
+    titleAdditions=' - Dry Run'
 fi
 scriptdir=$( dirname "$(readlink -f "${0}")" )
 supportdir="${scriptdir}/support_files"

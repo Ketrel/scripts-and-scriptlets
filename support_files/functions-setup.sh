@@ -57,9 +57,9 @@ main(){
 
         if [ "${menuAgain}" -eq "1" ]; then
             if [ -n "${infoMsg}" ]; then
-                ${tuiBin} --backtitle "Setup" --title "Results" --msgbox "${infoMsg}" ${mainHeight} ${mainWidth}
+                ${tuiBin} --backtitle "Setup${titleAdditions}" --title "Results" --msgbox "${infoMsg}" ${mainHeight} ${mainWidth}
             fi
-            if ${tuiBin} --backtitle "Setup" --title "Continue" --yesno "Finished\\nRun More Tasks?" ${mainHeight} ${mainWidth}; then
+            if ${tuiBin} --backtitle "Setup${titleAdditions}" --title "Continue" --yesno "Finished\\nRun More Tasks?" ${mainHeight} ${mainWidth}; then
                 infoMsg=''
                 menuReturn='0'
             fi
@@ -68,7 +68,7 @@ main(){
 
     exit 8
     if [ -n "${infoMsg}" ]; then
-        ${tuiBin}  --backtitle "Setup" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
+        ${tuiBin}  --backtitle "Setup${titleAdditions}" --title "Results" --msgbox "$infoMsg" ${mainHeight} ${mainWidth}
         infoMsg=''
     fi
 }
@@ -77,7 +77,7 @@ mainMenu(){
     menuSelection="0"
     while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ]; do
         if ! menuSelection=$(${tuiBin} \
-            --backtitle "Setup" \
+            --backtitle "Setup${titleAdditions}" \
             --clear \
             --menu \
                 "Automated Setup Options" \
@@ -105,7 +105,7 @@ optionsMenu(){
     menuConfigSelect="x"
     while [ -n "${menuConfigSelect}" ] && [ ! "${menuConfigSelect}" = "<" ]; do
         menuConfigSelect=$(${tuiBin} \
-            --backtitle "Setup" \
+            --backtitle "Setup${titleAdditions}" \
             --clear \
             --menu \
                 "Configuration Options" \
@@ -231,7 +231,7 @@ copySelectedFiles(){
     done <<EOF
 ${fileList}
 EOF
-    results=$(eval "${tuiBin} --backtitle 'Setup' \
+    results=$(eval "${tuiBin} --backtitle \"Setup${titleAdditions}\" \
             --title 'File Select' \
             --checklist \"Select Files\" \
             ${mainHeight} \
