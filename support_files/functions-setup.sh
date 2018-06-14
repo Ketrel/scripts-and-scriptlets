@@ -1,52 +1,52 @@
 #!/bin/sh
 
 main(){
-    menuReturn='0'
+    mainMenuReturn='0'
     infoMsg=''
 
-    while [ "${menuReturn}" = "0" ]; do
-        menuAgain='1'
+    while [ "${mainMenuReturn}" = "0" ]; do
+        mainMenuAgain='1'
 
         if ! mainMenu; then
             printf 'Exited Main Menu Via Cancel.\nExiting Script.\n'
             exit 0
         fi
 
-        case "${menuReturn}" in
+        case "${mainMenuReturn}" in
             '1')
-                menuAgain='1'
+                mainMenuAgain='1'
                 copyFiles "${scriptsDir}" "${scriptsDestDir}" "scripts"
                 ;;
             '2')
-                menuAgain='1'
+                mainMenuAgain='1'
                 copySelectedFiles "${scriptsDir}" "${scriptsDestDir}" "scripts"
                 if [ ${?} -eq 1 ]; then
                     return 0
                 fi
                 ;;
             '3')
-                menuAgain='1'
+                mainMenuAgain='1'
                 copyFiles "${dotfilesDir}" "${dotfilesDestDir}" "dot files"
                 ;;
             '4')
-                menuAgain='1'
+                mainMenuAgain='1'
                 copyFiles "${dotfilesDir}" "${dotfilesDestDir}" "dot files (excluding .profile)" "noprofile"
                 ;;
             '5')
-                menuAgain='1'
+                mainMenuAgain='1'
                 copySelectedFiles "${dotfilesDir}" "${dotfilesDestDir}"
                 if [ ${?} -eq 1 ]; then
                     return 0
                 fi
                 ;;
             'C')
-                menuAgain='0'
-                menuReturn='0'
-                optionsMenu
+                mainMenuAgain='0'
+                mainMenuReturn='0'
+                options
                 ;;
             '?')
-                menuAgain='0'
-                menuReturn='0'
+                mainMenuAgain='0'
+                mainMenuReturn='0'
                 showConfig
                 ;;
             'Q')
@@ -55,13 +55,13 @@ main(){
                 ;;
         esac
 
-        if [ "${menuAgain}" -eq "1" ]; then
+        if [ "${mainMenuAgain}" -eq "1" ]; then
             if [ -n "${infoMsg}" ]; then
                 ${tuiBin} --backtitle "Setup${titleAdditions}" --title "Results" --msgbox "${infoMsg}" ${mainHeight} ${mainWidth}
             fi
             if ${tuiBin} --backtitle "Setup${titleAdditions}" --title "Continue" --yesno "Finished\\nRun More Tasks?" ${mainHeight} ${mainWidth}; then
                 infoMsg=''
-                menuReturn='0'
+                mainMenuReturn='0'
             fi
         fi
     done
@@ -73,58 +73,11 @@ main(){
     fi
 }
 
-mainMenu(){
-    menuSelection="0"
-    while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ]; do
-        if ! menuSelection=$(${tuiBin} \
-            --backtitle "Setup${titleAdditions}" \
-            --clear \
-            --menu \
-                "Automated Setup Options" \
-                ${mainHeight} \
-                ${mainWidth} \
-                ${menuHeight} \
-                "1" "Copy Scripts To Scripts Dir" \
-                "2" "Copy Specific Scripts To Scripts Dir" \
-                "-" "" \
-                "3" "Copy Dotfiles To Dotfiles Dir" \
-                "4" "Copy Dotfiles (Except .profile) Dotfiles Dir" \
-                "5" "Copy Specific Dotfiles To Dotfiles Dir" \
-                "-" "" \
-                "C" "Configuration Options" \
-                "?" "Show Current Config" \
-                "-" "" \
-                "Q" "Quit" \
-            2>&1 1>&3); then return 1; fi
-    done
-    menuReturn="${menuSelection}"
-    return 0
-}
-
-optionsMenu(){
-    menuConfigSelect="x"
-    while [ -n "${menuConfigSelect}" ] && [ ! "${menuConfigSelect}" = "<" ]; do
-        menuConfigSelect=$(${tuiBin} \
-            --backtitle "Setup${titleAdditions}" \
-            --clear \
-            --menu \
-                "Configuration Options" \
-                ${mainHeight} \
-                ${mainWidth} \
-                ${menuHeight} \
-            "1" "Set Scripts Destination Directory" \
-            "2" "Set Dotfiles Destination Directory" \
-            "-" "" \
-            "?" "Show Current Config" \
-            "C" "Create Missing Directories (Not Implimented)" \
-            "-" "" \
-            "D" "Preview A Dotfile" \
-            "S" "Preview A Script" \
-            "-" "" \
-            "<" "Return" \
-            2>&1 1>&3)
-
-        case "${menuConfigSelect}" in
+options(){
+    optionsMenuReturn='0'
+    while [ "${optionsMenuReturn}" = "0" ]; do
+        optionsMenu
+        case "${optionsMenuReturn}" in
             '1')
                 chosenDir=''
                 if [ -d "${scriptsDestDir}" ] && [ -r "${scriptsDestDir}" ]; then
@@ -179,8 +132,66 @@ optionsMenu(){
                     msgBox "Would Create Directories\\nBut Not Yet Implimented"
                 fi
                 ;;
+            '<')
+                return 0
+                ;;
         esac
+        optionsMenuReturn='0'
     done
+}
+
+mainMenu(){
+    menuSelection="0"
+    while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ]; do
+        if ! menuSelection=$(${tuiBin} \
+            --backtitle "Setup${titleAdditions}" \
+            --clear \
+            --menu \
+                "Automated Setup Options" \
+                ${mainHeight} \
+                ${mainWidth} \
+                ${menuHeight} \
+                "1" "Copy Scripts To Scripts Dir" \
+                "2" "Copy Specific Scripts To Scripts Dir" \
+                "-" "" \
+                "3" "Copy Dotfiles To Dotfiles Dir" \
+                "4" "Copy Dotfiles (Except .profile) Dotfiles Dir" \
+                "5" "Copy Specific Dotfiles To Dotfiles Dir" \
+                "-" "" \
+                "C" "Configuration Options" \
+                "?" "Show Current Config" \
+                "-" "" \
+                "Q" "Quit" \
+            2>&1 1>&3); then return 1; fi
+    done
+    mainMenuReturn="${menuSelection}"
+    return 0
+}
+
+optionsMenu(){
+    menuSelection='0'
+    while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ]; do
+        menuSelection=$(${tuiBin} \
+            --backtitle "Setup${titleAdditions}" \
+            --clear \
+            --menu \
+                "Configuration Options" \
+                ${mainHeight} \
+                ${mainWidth} \
+                ${menuHeight} \
+            "1" "Set Scripts Destination Directory" \
+            "2" "Set Dotfiles Destination Directory" \
+            "-" "" \
+            "?" "Show Current Config" \
+            "C" "Create Missing Directories (Not Implimented)" \
+            "-" "" \
+            "D" "Preview A Dotfile" \
+            "S" "Preview A Script" \
+            "-" "" \
+            "<" "Return" \
+            2>&1 1>&3)
+    done
+    optionsMenuReturn="${menuSelection}"
     return 0
 }
 
