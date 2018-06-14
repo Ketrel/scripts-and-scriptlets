@@ -107,7 +107,7 @@ selectSingleFile(){
     _ffileList=''
     _ffileList=$(find . -type f ! -name '*"*' -exec sh -c 'printf "\"%s\" OFF\n" "${1}"' sh {} \; | sed -e 's/\.\///g' | LC_ALL=C sort -g | tr '\n' ' ')
     if [ -n "${_ffileList}" ]; then
-        if _fselectedFile=$(eval "${tuiBin} --backtitle 'Setup' \
+        if _fselectedFile=$(eval "${tuiBin} --backtitle "Setup${titleAdditions}" \
         --title 'File Select' \
         --noitem \
         --radiolist \"Select A File\" \
