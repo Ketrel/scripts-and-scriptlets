@@ -57,7 +57,7 @@ dirPick(){
         _fstartDir="$(pwd)"
 
         # echo "Delving into ${_fstartDir}" #Debug Option
-        _flisting=$(find ./ -maxdepth 1 -type d ! -name "." ! -name '*"*' -exec sh -c 'printf "\"%s\" OFF\n" "${1}"' sh {} \; | sed -e 's/\.\///g' | LC_ALL=C sort -g | tr '\n' ' ' )
+        _flisting=$(find ./ -maxdepth 1 -type d ! -name "." ! -name '*"*' -printf '"%f" OFF\n' | sed -e 's/\.\///g' | LC_ALL=C sort -g | tr '\n' ' ' )
 
         if [ "${tuiBin}" = "dialog" ]; then
             _fpickDir=$(eval "dialog --no-items --radiolist \"${_fprompt} ${_fstartDir}\" ${mainHeight} ${mainWidth} $(( menuHeight - 1 )) '<This Directory>' ON '..' OFF ${_flisting}  2>&1 1>&3")
@@ -105,9 +105,9 @@ selectSingleFile(){
     fi
     cd "${1}" || exit 1
     _ffileList=''
-    _ffileList=$(find . -type f ! -name '*"*' -exec sh -c 'printf "\"%s\" OFF\n" "${1}"' sh {} \; | sed -e 's/\.\///g' | LC_ALL=C sort -g | tr '\n' ' ')
+    _ffileList=$(find . -type f ! -name '*"*' -printf '"%f" OFF\n' | sed -e 's/\.\///g' | LC_ALL=C sort -g | tr '\n' ' ')
     if [ -n "${_ffileList}" ]; then
-        if _fselectedFile=$(eval "${tuiBin} --backtitle "Setup${titleAdditions}" \
+        if _fselectedFile=$(eval "${tuiBin} --backtitle \"Setup${titleAdditions}\" \
         --title 'File Select' \
         --noitem \
         --radiolist \"Select A File\" \
