@@ -73,7 +73,9 @@ main(){
 bulk(){
     bulkMenuReturn='0'
     while [ "${bulkMenuReturn}" = "0" ]; do
-        bulkMenu
+        if ! bulkMenu; then
+            return 0
+        fi
         case "${bulkMenuReturn}" in
             '1')
                 if ! copyFiles "${scriptsDir}" "${scriptsDestDir}" "scripts"; then
@@ -100,7 +102,9 @@ bulk(){
 options(){
     optionsMenuReturn='0'
     while [ "${optionsMenuReturn}" = "0" ]; do
-        optionsMenu
+        if ! optionsMenu; then
+            return 0
+        fi
         case "${optionsMenuReturn}" in
             '1')
                 chosenDir=''
