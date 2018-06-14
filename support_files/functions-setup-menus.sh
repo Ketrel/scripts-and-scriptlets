@@ -21,9 +21,6 @@ mainMenu(){
                 "-" "" \
                 "Q" "Quit" \
             2>&1 1>&3); then return 1; fi
-                #"1" "Copy Scripts To Scripts Dir" \
-                #"3" "Copy Dotfiles To Dotfiles Dir" \
-                #"4" "Copy Dotfiles (Except .profile) Dotfiles Dir" \
     done
     mainMenuReturn="${menuSelection}"
     return 0
@@ -32,7 +29,7 @@ mainMenu(){
 optionsMenu(){
     menuSelection='0'
     while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ]; do
-        menuSelection=$(${tuiBin} \
+        if ! menuSelection=$(${tuiBin} \
             --backtitle "Setup${titleAdditions}" \
             --menu \
                 "Configuration Options" \
@@ -49,7 +46,7 @@ optionsMenu(){
             "S" "Preview A Script" \
             "-" "" \
             "<" "Return to Main Menu" \
-            2>&1 1>&3)
+            2>&1 1>&3); then return 1; fi
     done
     optionsMenuReturn="${menuSelection}"
     return 0
@@ -58,7 +55,7 @@ optionsMenu(){
 bulkMenu(){
     menuSelection='0'
     while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ]; do
-        menuSelection=$(${tuiBin} \
+        if ! menuSelection=$(${tuiBin} \
             --backtitle "Setup${titleAdditions}" \
             --menu \
                 "Bulk Copy Options" \
@@ -70,7 +67,7 @@ bulkMenu(){
             "3" "Copy ALL dotfiles (sans .profile) to dotfiles dir" \
             "-" "" \
             "<" "Return to Main Menu" \
-            2>&1 1>&3)
+            2>&1 1>&3); then return 1; fi
         case "${menuSelection}" in
             '1')
                 if ! yesnoBox "Ready to copy ALL included scripts\\n  to the scripts dir?"; then
