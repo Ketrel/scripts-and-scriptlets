@@ -19,8 +19,15 @@ configDimensions()
 {
     # 80x25 is the safe assumption
     # I will use 70x15 as the default to be safe though
-    mainWidth=$(( $(tput cols 2>/dev/null || printf '70' ) * 8 / 10 ))
-    mainHeight=$(( $(tput lines 2>/dev/null || printf '15' ) * 8 / 10 ))
+
+    # For whatever reason $(tput cols 2>/dev/null) returns 80, while $(tput cols) returns the actual amount
+    if command -v tput; then
+        mainWidth=$(( $(tput cols) * 8 / 10 ))
+        mainHeight=$(( $(tput lines) * 8 / 10 ))
+    else
+        mainWidth=$(( 70 * 8 / 10 ))
+        mainHeight=$(( 15 * 8 / 10 ))
+    fi
     menuHeight=$(( mainHeight - 8 ))
 }
 
