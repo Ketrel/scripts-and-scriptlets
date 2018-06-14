@@ -38,9 +38,11 @@ cReset=$(tput sgr0  2>/dev/null || printf '')
 # shellcheck source=support_files/functions-global.sh
 . "${supportdir}/functions-global.sh"
 
-# Only the one, it checks the liveRun variable itself
-# shellcheck source=support_files/functions-setup.sh
-. "${supportdir}/functions-setup.sh"
+# shellcheck source=support_files/functions-setup-flow.sh
+. "${supportdir}/functions-setup-flow.sh"
+
+# shellcheck source=support_files/functions-setup-menus.sh
+. "${supportdir}/functions-setup-menus.sh"
 
 # Setup Dimensions
 configDimensions
