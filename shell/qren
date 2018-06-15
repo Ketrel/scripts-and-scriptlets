@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ -t 0 ] ; then
+    #data as an argument
+    qrencode -o - -t UTF8 -m 2 "${*}"
+else
+    #piped data
+    qrencode -o - -t UTF8 -m 2 "$(cat)"
+fi
