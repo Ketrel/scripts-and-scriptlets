@@ -47,16 +47,18 @@ cReset=$(tput sgr0  2>/dev/null || printf '')
 # Setup Dimensions
 configDimensions
 
-# Ensure infoMsg is empty at this point
-infoMsg=''
-
 # Create fd 3
 exec 3>&1
+
+# Ensure infoMsg is empty at this point
+infoMsg=''
 
 while main ; do
     # do nothing, I just want to loop on the return code of main
     :
 done
+
+# Clear the screen
 printf '\033c'
 
 # Get rid of fd 3
