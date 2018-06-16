@@ -3,13 +3,13 @@
 checkBinary()
 {
     if [ "$(command -v "${1}")" ]; then
-        return 0        
+        return 0
     else
-        printf "${cRed}%b${cReset}\\n" "Error: Specifcied Binary '${1}' Not Found." 
+        printf "${cRed}%b${cReset}\\n" "Error: Specifcied Binary '${1}' Not Found."
         if [ "${2}" = "optional" ]; then
-            printf "${cRed}%b${cReset}\\n\\n" "----\\nWhile the script will work without it, functionality may be limited." 
+            printf "${cRed}%b${cReset}\\n\\n" "----\\nWhile the script will work without it, functionality may be limited."
         else
-            printf "${cRed}%b${cReset}\\n\\n" "----\\nThis binary is required for this script to function.\\n If the binary is present on our machine,\\n please ensure it's accessible via your PATH." 
+            printf "${cRed}%b${cReset}\\n\\n" "----\\nThis binary is required for this script to function.\\n If the binary is present on our machine,\\n please ensure it's accessible via your PATH."
         fi
         return 1
     fi
