@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openbox_menu xmlns="http://openbox.org/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://openbox.org/                 file:///usr/share/openbox/menu.xsd">
+	<menu id="root-menu" label="Openbox 3">
+		<menu id="uapps" label="Apps">
+			<menu id="uapps-builtin" label="Default App Entries">
+				<item label="Terminal emulator">
+					<action name="Execute">
+						<execute>x-terminal-emulator</execute>
+					</action>
+				</item>
+				<item label="Web browser">
+					<action name="Execute">
+						<execute>x-www-browser</execute>
+					</action>
+				</item>
+			</menu>
+			<separator/>
+			<item label="Firefox">
+				<action name="Execute">
+					<execute>/usr/bin/firefox</execute>
+				</action>
+			</item>
+			<item label="Konsole">
+				<action name="Execute">
+					<execute>/usr/bin/konsole</execute>
+				</action>
+			</item>
+			<item label="Terminator">
+				<action name="Execute">
+					<execute>/usr/bin/terminator  --geometry=800x480+20+20</execute>
+				</action>
+			</item>
+			<item label="VLC">
+				<action name="Execute">
+					<execute>vlc</execute>
+				</action>
+			</item>
+			<item label="xterm">
+				<action name="Execute">
+					<execute>/usr/bin/xterm</execute>
+				</action>
+			</item>
+		</menu>
+		<menu id="usettings" label="Settings">
+			<item label="Edit Openbox Menu">
+				<action name="Execute">
+					<execute>/usr/bin/gvim /home/master/.config/openbox/menu.xml</execute>
+				</action>
+			</item>
+		</menu>
+		<!-- This requires the presence of the 'menu' package to work -->
+		<menu id="/Debian"/>
+		<separator/>
+		<menu id="client-list-menu"/>
+		<separator/>
+		<item label="OBMenu">
+			<action name="Execute">
+				<execute>/usr/bin/obmenu</execute>
+			</action>
+		</item>
+		<item label="ObConf">
+			<action name="Execute">
+				<execute>obconf</execute>
+			</action>
+		</item>
+		<item label="Reconfigure">
+			<action name="Reconfigure"/>
+		</item>
+		<item label="Restart">
+			<action name="Restart"/>
+		</item>
+		<separator/>
+		<item label="Exit">
+			<action name="Exit"/>
+		</item>
+	</menu>
+</openbox_menu>
