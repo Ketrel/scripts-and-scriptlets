@@ -5,7 +5,6 @@ mainMenu(){
     while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ]; do
         if ! menuSelection=$(${tuiBin} \
             --backtitle "Setup${titleAdditions}" \
-            --clear \
             --menu \
                 "Automated Setup Options" \
                 ${mainHeight} \
@@ -26,37 +25,12 @@ mainMenu(){
     return 0
 }
 
-optionsMenu(){
-    menuSelection='0'
-    while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ]; do
-        if ! menuSelection=$(${tuiBin} \
-            --backtitle "Setup${titleAdditions}" \
-            --menu \
-                "Configuration Options" \
-                ${mainHeight} \
-                ${mainWidth} \
-                ${menuHeight} \
-            "1" "Set Scripts Destination Directory" \
-            "2" "Set Dotfiles Destination Directory" \
-            "-" "" \
-            "?" "Show Current Config" \
-            "C" "Create Missing Directories (Not Implimented)" \
-            "-" "" \
-            "D" "Preview A Dotfile" \
-            "S" "Preview A Script" \
-            "-" "" \
-            "<" "Return to Main Menu" \
-            2>&1 1>&3); then return 1; fi
-    done
-    optionsMenuReturn="${menuSelection}"
-    return 0
-}
-
 bulkMenu(){
     menuSelection='0'
     while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ]; do
         if ! menuSelection=$(${tuiBin} \
             --backtitle "Setup${titleAdditions}" \
+            --cancel-button "Main Menu" \
             --menu \
                 "Bulk Copy Options" \
                 ${mainHeight} \
@@ -89,3 +63,31 @@ bulkMenu(){
     bulkMenuReturn="${menuSelection}"
     return 0
 }
+
+optionsMenu(){
+    menuSelection='0'
+    while [ "${menuSelection}" = "0" ] || [ "${menuSelection}" = "-" ]; do
+        if ! menuSelection=$(${tuiBin} \
+            --backtitle "Setup${titleAdditions}" \
+            --cancel-button "Main Menu" \
+            --menu \
+                "Configuration Options" \
+                ${mainHeight} \
+                ${mainWidth} \
+                ${menuHeight} \
+            "1" "Set Scripts Destination Directory" \
+            "2" "Set Dotfiles Destination Directory" \
+            "-" "" \
+            "?" "Show Current Config" \
+            "C" "Create Missing Directories (Not Implimented)" \
+            "-" "" \
+            "D" "Preview A Dotfile" \
+            "S" "Preview A Script" \
+            "-" "" \
+            "<" "Return to Main Menu" \
+            2>&1 1>&3); then return 1; fi
+    done
+    optionsMenuReturn="${menuSelection}"
+    return 0
+}
+

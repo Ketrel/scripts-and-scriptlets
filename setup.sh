@@ -53,10 +53,9 @@ exec 3>&1
 # Ensure infoMsg is empty at this point
 infoMsg=''
 
-while main ; do
-    # do nothing, I just want to loop on the return code of main
-    :
-done
+# Used to loop on this, but it's now handled in main itself
+# Loop here is therefore redundant
+main
 
 # Clear the screen
 printf '\033c'
