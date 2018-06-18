@@ -31,32 +31,6 @@ main(){
             '?')
                 showConfig
                 ;;
-            # '1')
-                # mainMenuAgain='1'
-                # copyFiles "${scriptsDir}" "${scriptsDestDir}" "scripts"
-                # ;;
-            # '2')
-                # mainMenuAgain='1'
-                # copySelectedFiles "${scriptsDir}" "${scriptsDestDir}" "scripts"
-                # if [ ${?} -eq 1 ]; then
-                    # return 0
-                # fi
-                # ;;
-            # '3')
-                # mainMenuAgain='1'
-                # copyFiles "${dotfilesDir}" "${dotfilesDestDir}" "dot files"
-                # ;;
-            # '4')
-                # mainMenuAgain='1'
-                # copyFiles "${dotfilesDir}" "${dotfilesDestDir}" "dot files (excluding .profile)" "noprofile"
-                # ;;
-            # '5')
-                # mainMenuAgain='1'
-                # copySelectedFiles "${dotfilesDir}" "${dotfilesDestDir}"
-                # if [ ${?} -eq 1 ]; then
-                    # return 0
-                # fi
-                # ;;
             'Q')
                 printf '\033c'
                 exit 0
@@ -72,7 +46,7 @@ main(){
 
 bulk(){
     bulkMenuReturn='0'
-    while [ "${bulkMenuReturn}" = "0" ]; do
+    while true; do
         if ! bulkMenu; then
             return 0
         fi
