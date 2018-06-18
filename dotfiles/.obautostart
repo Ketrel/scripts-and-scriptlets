@@ -1,0 +1,4 @@
+#!/bin/sh
+
+#Manual AutoStart for Openbox
+xsetroot -solid "#001020"
