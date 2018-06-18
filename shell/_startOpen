@@ -1,0 +1,3 @@
+#!/bin/sh
+xinit /bin/sh -c 'if [ -f "${HOME}/.obautostart" ]; then . "${HOME}/.obautostart" & fi;  /usr/bin/openbox' -- :0 vt$XDG_VTNR 
+#$(if [ -f "${HOME}/.obautostart" ]; then printf '. ${HOME}/.obautostart & '; fi; printf '/usr/bin/openbox') -- :0 vt$XDG_VTNR && reset
