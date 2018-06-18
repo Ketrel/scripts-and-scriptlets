@@ -75,7 +75,7 @@ bulk(){
 
 options(){
     optionsMenuReturn='0'
-    while [ "${optionsMenuReturn}" = "0" ]; do
+    while true; do
         if ! optionsMenu; then
             return 0
         fi
