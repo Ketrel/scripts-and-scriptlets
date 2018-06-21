@@ -35,7 +35,7 @@ while [ -n "${1}" ]; do
 
  Usage: $( basename "$(readlink -f "${0}")" ) <options>
 
- Arguments (Order Matters [Currently])
+ Arguments
    --help, ,-h
      print this help message and exit
 
