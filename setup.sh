@@ -66,7 +66,7 @@ while [ -n "${1}" ]; do
 done
 
 rcBase="${supportdir}/mainRC-"
-mainRC="${rcBase}${tuiBin}"
+mainRC="$(readlink -f "${rcBase}${tuiBin}")"
 export DIALOGRC="${mainRC}"
 export NEWT_COLORS_FILE="${mainRC}"
 
