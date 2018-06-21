@@ -31,7 +31,8 @@ while [ -n "${1}" ]; do
 
  Depends On
    tput (Optional)
-   dialog or whiptail (Either)
+   highlight (Optional for some functionality)
+   dialog or whiptail (At least one is required)
 
  Usage: $( basename "$(readlink -f "${0}")" ) <options>
 
