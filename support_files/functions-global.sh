@@ -105,7 +105,7 @@ dirPick(){
     fi
 }
 
-selectSingleFile(){
+viewSingleFile(){
     if [ -z "${1}" ]; then
         printf '%b\n' "Pretty Bad Error\\nScript Needs Debugging"
         exit 6

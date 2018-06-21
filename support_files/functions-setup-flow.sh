@@ -121,10 +121,10 @@ options(){
                 fi
                 ;;
             'D')
-                selectSingleFile "${dotfilesDir}"
+                viewSingleFile "${dotfilesDir}"
                 ;;
             'S')
-                selectSingleFile "${scriptsDir}"
+                viewSingleFile "${scriptsDir}"
                 ;;
             '?')
                 showConfig
