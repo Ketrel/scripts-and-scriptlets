@@ -6,17 +6,13 @@ supportdir="${scriptdir}/support_files"
 scriptsDir="${scriptdir}/shell"
 dotfilesDir="${scriptdir}/dotfiles"
 
-if [ "${1}" = "--live" ]; then
-    liveRun='LIVE'
-    titleAdditions=' - Live Run'
-    shift
-else
-    liveRun=''
-    titleAdditions=' - Dry Run'
-fi
+# Setup variables and defaults
+liveRun=''
+titleAdditions=' - Dry Run'
 scriptsDestDir="${HOME}/Scripts"
 dotfilesDestDir="${HOME}"
-if command -v whiptail 1>/dev/null 2>&1 && [ ! "${1}" = "--dialog" ] ; then
+
+if command -v whiptail 1>/dev/null 2>&1 ; then
     tuiBin='whiptail'
 elif command -v dialog 1>/dev/null 2>&1; then
     tuiBin='dialog'
@@ -24,6 +20,50 @@ else
     printf 'Either Whiptail or Dialog is required\nBut neither was found.\n'
     exit 3
 fi
+
+# Loop through args
+while [ -n "${1}" ]; do
+    case "${1}" in
+        '--help'|'-h')
+            # If first arg is --help or -h, print help and exit
+            printf '%b\n\n' "\
+ Setup Script
+
+ Depends On
+   tput (Optional)
+   dialog or whiptail (Either)
+
+ Usage: $( basename "$(readlink -f "${0}")" ) <options>
+
+ Arguments (Order Matters [Currently])
+   --help, ,-h
+     print this help message and exit
+
+   --live
+     Actually make changes, defaults to dry run otherwise
+
+   --dialog
+     Forces use of dialog
+     (script will fail if dialog is not present)"
+            exit 0
+            ;;
+        '--live')
+            liveRun='LIVE'
+            titleAdditions=' - Live Run'
+            shift
+            ;;
+        '--dialog')
+            if command -v dialog 1>/dev/null 2>&1; then
+                tuiBin='dialog'
+            else
+                printf 'Dialog switch used, but dialog not present in path.'
+                exit 3
+            fi
+            shift
+            ;;
+    esac
+done
+
 rcBase="${supportdir}/mainRC-"
 mainRC="${rcBase}${tuiBin}"
 export DIALOGRC="${mainRC}"
