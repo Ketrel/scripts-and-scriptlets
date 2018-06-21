@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# Path Config Options
+scriptdir=$( dirname "$(readlink -f "${0}")" )
+supportdir="${scriptdir}/support_files"
+scriptsDir="${scriptdir}/shell"
+dotfilesDir="${scriptdir}/dotfiles"
+
 if [ "${1}" = "--live" ]; then
     liveRun='LIVE'
     titleAdditions=' - Live Run'
@@ -8,10 +14,6 @@ else
     liveRun=''
     titleAdditions=' - Dry Run'
 fi
-scriptdir=$( dirname "$(readlink -f "${0}")" )
-supportdir="${scriptdir}/support_files"
-scriptsDir="${scriptdir}/shell"
-dotfilesDir="${scriptdir}/dotfiles"
 scriptsDestDir="${HOME}/Scripts"
 dotfilesDestDir="${HOME}"
 if command -v whiptail 1>/dev/null 2>&1 && [ ! "${1}" = "--dialog" ] ; then
@@ -23,12 +25,12 @@ else
     exit 3
 fi
 rcBase="${supportdir}/mainRC-"
-#dialogRC="${supportdir}/mainRC-dialog"
-#newtColorsRC="${supportdir}/mainRC-whiptail"
 mainRC="${rcBase}${tuiBin}"
-infoMsg=''
 export DIALOGRC="${mainRC}"
 export NEWT_COLORS_FILE="${mainRC}"
+
+# Ensure infoMsg is empty at this point
+infoMsg=''
 
 # Set up some colors
 cRed=$(tput setaf 1 2>/dev/null || printf '')
@@ -49,9 +51,6 @@ configDimensions
 
 # Create fd 3
 exec 3>&1
-
-# Ensure infoMsg is empty at this point
-infoMsg=''
 
 # Used to loop on this, but it's now handled in main itself
 # Loop here is therefore redundant
