@@ -46,6 +46,7 @@ case "${1}" in
             -i "${1}" \
             -i "${2}" \
             -c:a libmp3lame \
+            -ar 44100 \
             -id3v2_version 3 \
             -map 0 \
             -map 1 \
@@ -60,6 +61,7 @@ case "${1}" in
             ffmpeg \
             -i "${1}" \
             -c:a libmp3lame \
+            -ar 44100 \
             -id3v2_version 3 \
             -metadata artist="${2}" \
             -metadata title="${3}" \
@@ -73,6 +75,7 @@ case "${1}" in
             -i "${1}" \
             -i "${2}" \
             -c:a libmp3lame \
+            -ar 44100 \
             -id3v2_version 3 \
             -map 0 \
             -map 1 \
@@ -87,6 +90,7 @@ case "${1}" in
             ffmpeg \
             -i "${1}" \
             -c:a libmp3lame \
+            -ar 44100 \
             -id3v2_version 3 \
             -metadata artist="${2}" \
             -metadata title="${3}" \
