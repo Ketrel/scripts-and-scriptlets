@@ -1,0 +1,99 @@
+#!/bin/sh
+
+pathPrefix=''
+if [ -d "${PREFIX}" ]; then
+    pathPrefix="${PREFIX%/}/"
+fi
+
+if [ "${1}" = "-h" ] || [ "${1}" = "--help" ]; then
+    msg="
+Usage:
+    $(basename "${0}") <type a|b|c|d> <params>
+
+Params Type A:
+  1: Input Audio File
+  2: Input Album Art
+  3: Song Artist
+  4: Song Title
+  5: Output Filename.mp3
+
+Params Type B:
+  1: Input Audio File
+  2: Song Artist
+  3: Song Title
+  4: Output Filename.mp3
+
+Params Type C:
+  1: Input Audio File
+  2: Input Album Art
+  3: Song Artist
+  4: Song Title
+
+Params Type D:
+  1: Input Audio File
+  2: Song Artist
+  3: Song Title"
+
+    printf '%s\n\n' "${msg}"
+    exit 0
+fi
+
+case "${1}" in
+    "a")
+        shift
+        if [ $# -eq 5 ]; then
+            ffmpeg \
+            -i "${1}" \
+            -i "${2}" \
+            -c:a libmp3lame \
+            -id3v2_version 3 \
+            -map 0 \
+            -map 1 \
+            -metadata artist="${3}" \
+            -metadata title="${4}" \
+            "${pathPrefix}${5}"
+        fi
+        ;;
+    "b")
+        shift
+        if [ $# -eq 4 ]; then
+            ffmpeg \
+            -i "${1}" \
+            -c:a libmp3lame \
+            -id3v2_version 3 \
+            -metadata artist="${2}" \
+            -metadata title="${3}" \
+            "${pathPrefix}${4}"
+        fi    
+        ;;
+    "c")
+        shift
+        if [ $# -eq 4 ]; then
+            ffmpeg \
+            -i "${1}" \
+            -i "${2}" \
+            -c:a libmp3lame \
+            -id3v2_version 3 \
+            -map 0 \
+            -map 1 \
+            -metadata artist="${3}" \
+            -metadata title="${4}" \
+            "${pathPrefix}${3} - ${4}.mp3"
+        fi
+        ;;
+    "d")
+        shift
+        if [ $# -eq 3 ]; then
+            ffmpeg \
+            -i "${1}" \
+            -c:a libmp3lame \
+            -id3v2_version 3 \
+            -metadata artist="${2}" \
+            -metadata title="${3}" \
+            "${pathPrefix}${2} - ${3}.mp3"
+        fi
+        ;;
+    *)
+        printf '\n%s\n\n' 'Invalid Use: Try -h or --help for usage info'
+        ;;
+esac
