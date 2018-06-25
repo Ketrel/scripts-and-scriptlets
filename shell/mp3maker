@@ -1,7 +1,7 @@
 #!/bin/sh
 
 self="$(basename "${0}")"
-outDir="${OUTDIR:-$(pwd)}"; outDir="${outDir%/}"
+outDir="${OUTDIR:-$PWD}"; outDir="${outDir%/}"
 checkSane=0
 optImage=0
 inArtist=''
