@@ -57,11 +57,14 @@ while [ -n "${1}" ]; do
             if command -v dialog 1>/dev/null 2>&1; then
                 tuiBin='dialog'
             else
-                printf 'Dialog switch used, but dialog not present in path.'
+                printf 'Dialog switch used, but dialog not present in path.\n'
                 exit 3
             fi
             shift
             ;;
+        *)
+            printf 'Bad/Unsupported Switches Provided.  Please double check usage.\n'
+            exit 3
     esac
 done
 
