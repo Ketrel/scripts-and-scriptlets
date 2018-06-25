@@ -80,7 +80,7 @@ elif [ ${optImage} -eq 1 ]; then
     inImageFile="${4}"
 elif [ ${optImage} -eq 2 ]; then
     case $# in
-        3)
+        2)
             inOriginalFile="${1}"
             inSongFile="${1}" 
             inImageFile="${2}"
