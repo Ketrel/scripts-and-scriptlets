@@ -16,11 +16,11 @@ ${self}
 
 Usage:
     ${self} <artist> <title> <song file> [output filename]
-    ${self} +i <artist> <title> <song file> <image file> [output filename]
+    ${self} -i <artist> <title> <song file> <image file> [output filename]
     ${self} -h | --help
     
 Options:
-    +i           Embed Album Art
+    -i           Embed Album Art
     -h --help    Show This Screen"
 }
 
