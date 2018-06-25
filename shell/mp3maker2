@@ -58,11 +58,10 @@ if [ -n "${1}" ]; then
             inArtist="${1}"
             inTitle="${2}"
             inSongFile="${3}"
-            inImageFile="${4}"
-            if [ -z "${5}" ]; then
+            if [ -z "${4}" ]; then
                 inOutputFile="${outDir}/${1} - ${2}.mp3"
             else
-                inOutputFile="${outDir}/${5}"
+                inOutputFile="${outDir}/${4}"
             fi
             ;;
     esac
