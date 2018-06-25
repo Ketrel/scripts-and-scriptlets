@@ -22,13 +22,19 @@ Usage:
 Options:
     -i           Embed Album Art
     -h --help    Show This Screen"
+
 }
 
-
-if [ "${1}" = "-h" ] || [ "${1}" = "--help" ]; then
-    printHelp
-    exit 0 # Asked for help, so no error
-fi
+while [ -n "${1}" ]; do
+    case "${1}" in
+        "-h"|"--help")
+            printHelp
+            exit 0 # Asked for help, so no error
+            ;;
+        *)
+            break
+    esac
+done
 
 if [ "${1}" = "-i" ]; then
     optImage=1
@@ -45,7 +51,7 @@ if [ ${optImage} -eq 0 ]; then
             ;;
         *)
             printHelp
-            exit 2
+            exit 3
             ;;
     esac
 else
@@ -58,7 +64,7 @@ else
             ;;
         *)
             printHelp
-            exit 2
+            exit 4
             ;;
     esac
     inImageFile="${4}"
@@ -99,5 +105,5 @@ if [ ${checkSane} -eq 1 ]; then
     fi
 else
     printHelp
-    exit 2
+    exit 5
 fi
