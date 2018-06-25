@@ -50,8 +50,8 @@ if [ -n "${1}" ]; then
         "-a")
             shift
             optMode=2
-            inSongFile="${2}"
-            inImageFile="${3}"
+            inSongFile="${1}"
+            inImageFile="${2}"
             ;;
         *)
             optMode=0
@@ -90,11 +90,8 @@ case ${optMode} in
         ;;
     2)
         if \
-            [   -z "${inArtist}"      ] || \
-            [   -z "${inTitle}"       ] || \
             [ ! -f "${inSongFile}"    ] || \
-            [ ! -f "${inImageFile}"   ] || \
-            [   -f "${inOutputFile}"  ]; then
+            [ ! -f "${inImageFile}"   ]; then
             errorState=1
         fi
         ;;
