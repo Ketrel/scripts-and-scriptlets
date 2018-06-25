@@ -17,10 +17,14 @@ ${self}
 Usage:
     ${self} <artist> <title> <song file> [output filename]
     ${self} -i <artist> <title> <song file> <image file> [output filename]
+    ${self} -a <song file> <image file>
     ${self} -h | --help
     
 Options:
-    -i           Embed Album Art
+    -i           Include Album Art
+    -a           Add Album Art To Existing File
+                 (Replaces the input file)
+
     -h --help    Show This Screen"
 
 }
@@ -31,16 +35,22 @@ while [ -n "${1}" ]; do
             printHelp
             exit 0 # Asked for help, so no error
             ;;
+        "-i")
+            optImage=1
+            shift
+            ;;
+        "-a")
+            optImage=2
+            shift
+            ;;
         *)
             break
     esac
 done
 
-if [ "${1}" = "-i" ]; then
-    optImage=1
-    shift
-fi
-
+inArtist="${1}"
+inTitle="${2}"
+inSongFile="${3}"
 if [ ${optImage} -eq 0 ]; then
     case $# in
         3)
@@ -54,7 +64,7 @@ if [ ${optImage} -eq 0 ]; then
             exit 3
             ;;
     esac
-else
+elif [ ${optImage} -eq 1 ]; then
     case $# in
         4)
             inOutputFile="${outDir}/${1} - ${2}.mp3"
@@ -68,20 +78,42 @@ else
             ;;
     esac
     inImageFile="${4}"
+elif [ ${optImage} -eq 2 ]; then
+    case $# in
+        3)
+            inOriginalFile="${1}"
+            inSongFile="${1}" 
+            inImageFile="${2}"
+            ;;
+        *)
+            printHelp
+            exit 5
+            ;;
+    esac
+else
+    exit 1 # Something is wrong
 fi
-inArtist="${1}"
-inTitle="${2}"
-inSongFile="${3}"
 
 if \
    [ -f "${inSongFile}" ]     && \
    [ ! -f "${inOutputFile}" ] && \
-   ( ( [ ${optImage} -eq 1 ] && [ -f "${inImageFile}" ] ) || [ ${optImage} -eq 0 ] ); then
+   ( [ ${optImage} -eq 0 ] || \
+        ( ( [ ${optImage} -ge 1 ] && [ ${optImage} -le 2 ]) && \
+            [ -f "${inImageFile}" ] ) ); then      
     checkSane=1
 fi
 
 if [ ${checkSane} -eq 1 ]; then
-    if [ ${optImage} -eq 1 ]; then
+    if [ ${optImage} -eq 0 ]; then
+        ffmpeg \
+        -i "${inSongFile}" \
+        -c:a libmp3lame \
+        -ar 44100 \
+        -id3v2_version 3 \
+        -metadata artist="${inArtist}" \
+        -metadata title="${inTitle}" \
+        "${inOutputFile}"
+    elif [ ${optImage} -eq 1 ]; then
         ffmpeg \
         -i "${inSongFile}" \
         -i "${inImageFile}" \
@@ -93,17 +125,21 @@ if [ ${checkSane} -eq 1 ]; then
         -metadata artist="${inArtist}" \
         -metadata title="${inTitle}" \
         "${inOutputFile}"
-    else
-        ffmpeg \
+    elif [ ${optImage} -eq 2 ]; then
+        if ffmpeg \
         -i "${inSongFile}" \
-        -c:a libmp3lame \
-        -ar 44100 \
+        -i "${inImageFile}" \
+        -c:a copy \
         -id3v2_version 3 \
-        -metadata artist="${inArtist}" \
-        -metadata title="${inTitle}" \
-        "${inOutputFile}"
+        -map_metadata 0 \
+        -map 0 \
+        -map 1 \
+        "${inOutputFile}_tmp.mp3"; then
+            rm "${inOriginalFile}"
+            mv "${inOutputFile}_tmp.mp3" "${inOriginalFile}"
+        fi
     fi
 else
     printHelp
-    exit 5
+    exit 6
 fi
