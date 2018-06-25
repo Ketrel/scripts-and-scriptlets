@@ -1,0 +1,160 @@
+#!/bin/sh
+
+self="$(basename "${0}")"
+outDir="${OUTDIR:-$PWD}"; outDir="${outDir%/}"
+optMode=0
+inArtist=''
+inTitle=''
+inSongFile=''
+inImageFile=''
+inOutputFile=''
+
+printHelp(){
+    printf '%s\n\n' "
+${self}
+
+Usage:
+    ${self} <artist> <title> <song file> [output filename]
+    ${self} -i <artist> <title> <song file> <image file> [output filename]
+    ${self} -a <song file> <image file>
+    ${self} -h | --help
+
+Options:
+    -i           Include Album Art
+    -a           Add Album Art To Existing File
+                 (Replaces the input file)
+
+    -h --help    Show This Screen"
+
+}
+
+if [ -n "${1}" ]; then
+    case "${1}" in
+        "-h"|"--help")
+            printHelp
+            exit 0 # Asked for help, so no error
+            ;;
+        "-i")
+            shift
+            optMode=1
+            inArtist="${1}"
+            inTitle="${2}"
+            inSongFile="${3}"
+            inImageFile="${4}"
+            if [ -z "${5}" ]; then
+                inOutputFile="${outDir}/${1} - ${2}.mp3"
+            else
+                inOutputFile="${outDir}/${5}"
+            fi
+            ;;
+        "-a")
+            shift
+            optMode=2
+            inSongFile="${2}"
+            inImageFile="${3}"
+            ;;
+        *)
+            optMode=0
+            inArtist="${1}"
+            inTitle="${2}"
+            inSongFile="${3}"
+            inImageFile="${4}"
+            if [ -z "${5}" ]; then
+                inOutputFile="${outDir}/${1} - ${2}.mp3"
+            else
+                inOutputFile="${outDir}/${5}"
+            fi
+            ;;
+    esac
+fi
+
+errorState=0
+case ${optMode} in
+    0)
+        if \
+            [   -z "${inArtist}"     ] || \
+            [   -z "${inTitle}"      ] || \
+            [ ! -f "${inSongFile}"   ] || \
+            [   -f "${inOutputFile}" ]; then
+            errorState=1
+        fi
+    ;;
+    1)
+        if \
+            [   -z "${inArtist}"      ] || \
+            [   -z "${inTitle}"       ] || \
+            [ ! -f "${inSongFile}"    ] || \
+            [ ! -f "${inImageFile}"   ] || \
+            [   -f "${inOutputFile}"  ]; then
+            errorState=1
+        fi
+        ;;
+    2)
+        if \
+            [   -z "${inArtist}"      ] || \
+            [   -z "${inTitle}"       ] || \
+            [ ! -f "${inSongFile}"    ] || \
+            [ ! -f "${inImageFile}"   ] || \
+            [   -f "${inOutputFile}"  ]; then
+            errorState=1
+        fi
+        ;;
+    *)
+        printf 'Fatal Error: Unhandled Mode\n\n'
+        exit 1
+        ;;
+esac
+
+if [ ${errorState} -eq 1 ]; then
+    printf 'Sanity Check Failure\n\n'
+    exit 1
+fi
+
+case ${optMode} in
+    0)
+        ffmpeg \
+        -i "${inSongFile}" \
+        -c:a libmp3lame \
+        -ar 44100 \
+        -id3v2_version 3 \
+        -metadata artist="${inArtist}" \
+        -metadata title="${inTitle}" \
+        "${inOutputFile}"
+        exit 0
+        ;;
+    1)
+        ffmpeg \
+        -i "${inSongFile}" \
+        -i "${inImageFile}" \
+        -c:a libmp3lame \
+        -ar 44100 \
+        -id3v2_version 3 \
+        -map 0 \
+        -map 1 \
+        -metadata artist="${inArtist}" \
+        -metadata title="${inTitle}" \
+        "${inOutputFile}"
+        exit 0
+        ;;
+    2)
+        if ffmpeg \
+        -i "${inSongFile}" \
+        -i "${inImageFile}" \
+        -c:a copy \
+        -id3v2_version 3 \
+        -map_metadata 0 \
+        -map 0 \
+        -map 1 \
+        "${inOutputFile}_tmp.mp3"; then
+            inOriginalFile="${inSongFile}"
+            rm "${inOriginalFile}" || \
+                ( printf 'Unable to remove original to replace'; exit 1 )
+            mv "${inOutputFile}_tmp.mp3" "${inOriginalFile}" || \
+                ( printf 'Unable to rename temp file'; exit 1 )
+        fi
+        exit 0
+        ;;
+esac
+
+printHelp
+exit 1
