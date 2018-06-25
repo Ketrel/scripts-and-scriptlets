@@ -1,103 +1,103 @@
 #!/bin/sh
 
-pathPrefix=''
-if [ -d "${PREFIX}" ]; then
-    pathPrefix="${PREFIX%/}/"
-fi
+self="$(basename "${0}")"
+outDir="${OUTDIR:-$(pwd)}"; outDir="${outDir%/}"
+checkSane=0
+optImage=0
+inArtist=''
+inTitle=''
+inSongFile=''
+inImageFile=''
+inOutputFile=''
+
+printHelp(){
+    printf '%s\n\n' "
+${self}
+
+Usage:
+    ${self} <artist> <title> <song file> [output filename]
+    ${self} +i <artist> <title> <song file> <image file> [output filename]
+    ${self} -h | --help
+    
+Options:
+    +i           Embed Album Art
+    -h --help    Show This Screen"
+}
+
 
 if [ "${1}" = "-h" ] || [ "${1}" = "--help" ]; then
-    msg="
-Usage:
-    $(basename "${0}") <type a|b|c|d> <params>
-
-Params Type A:
-  1: Input Audio File
-  2: Input Album Art
-  3: Song Artist
-  4: Song Title
-  5: Output Filename.mp3
-
-Params Type B:
-  1: Input Audio File
-  2: Song Artist
-  3: Song Title
-  4: Output Filename.mp3
-
-Params Type C:
-  1: Input Audio File
-  2: Input Album Art
-  3: Song Artist
-  4: Song Title
-
-Params Type D:
-  1: Input Audio File
-  2: Song Artist
-  3: Song Title"
-
-    printf '%s\n\n' "${msg}"
-    exit 0
+    printHelp
+    exit 0 # Asked for help, so no error
 fi
 
-case "${1}" in
-    "a")
-        shift
-        if [ $# -eq 5 ]; then
-            ffmpeg \
-            -i "${1}" \
-            -i "${2}" \
-            -c:a libmp3lame \
-            -ar 44100 \
-            -id3v2_version 3 \
-            -map 0 \
-            -map 1 \
-            -metadata artist="${3}" \
-            -metadata title="${4}" \
-            "${pathPrefix}${5}"
-        fi
-        ;;
-    "b")
-        shift
-        if [ $# -eq 4 ]; then
-            ffmpeg \
-            -i "${1}" \
-            -c:a libmp3lame \
-            -ar 44100 \
-            -id3v2_version 3 \
-            -metadata artist="${2}" \
-            -metadata title="${3}" \
-            "${pathPrefix}${4}"
-        fi    
-        ;;
-    "c")
-        shift
-        if [ $# -eq 4 ]; then
-            ffmpeg \
-            -i "${1}" \
-            -i "${2}" \
-            -c:a libmp3lame \
-            -ar 44100 \
-            -id3v2_version 3 \
-            -map 0 \
-            -map 1 \
-            -metadata artist="${3}" \
-            -metadata title="${4}" \
-            "${pathPrefix}${3} - ${4}.mp3"
-        fi
-        ;;
-    "d")
-        shift
-        if [ $# -eq 3 ]; then
-            ffmpeg \
-            -i "${1}" \
-            -c:a libmp3lame \
-            -ar 44100 \
-            -id3v2_version 3 \
-            -metadata artist="${2}" \
-            -metadata title="${3}" \
-            "${pathPrefix}${2} - ${3}.mp3"
-        fi
-        ;;
-    *)
-        printf '\n%s\n\n' 'Invalid Use: Try -h or --help for usage info'
-        ;;
-esac
+if [ "${1}" = "-i" ]; then
+    optImage=1
+    shift
+fi
+
+if [ ${optImage} -eq 0 ]; then
+    case $# in
+        3)
+            inOutputFile="${outDir}/${1} - ${2}.mp3"
+            ;;
+        4)
+            inOutputFile="${outDir}/${4}.mp3"
+            ;;
+        *)
+            printHelp
+            exit 2
+            ;;
+    esac
+else
+    case $# in
+        4)
+            inOutputFile="${outDir}/${1} - ${2}.mp3"
+            ;;
+        5)
+            inOutputFile="${outDir}/${5}.mp3"
+            ;;
+        *)
+            printHelp
+            exit 2
+            ;;
+    esac
+    inImageFile="${4}"
+fi
+inArtist="${1}"
+inTitle="${2}"
+inSongFile="${3}"
+
+if \
+   [ -f "${inSongFile}" ]     && \
+   [ ! -f "${inOutputFile}" ] && \
+   ( ( [ ${optImage} -eq 1 ] && [ -f "${inImageFile}" ] ) || [ ${optImage} -eq 0 ] ); then
+    checkSane=1
+fi
+
+if [ ${checkSane} -eq 1 ]; then
+    if [ ${optImage} -eq 1 ]; then
+        ffmpeg \
+        -i "${inSongFile}" \
+        -i "${inImageFile}" \
+        -c:a libmp3lame \
+        -ar 44100 \
+        -id3v2_version 3 \
+        -map 0 \
+        -map 1 \
+        -metadata artist="${inArtist}" \
+        -metadata title="${inTitle}" \
+        "${inOutputFile}"
+    else
+        ffmpeg \
+        -i "${inSongFile}" \
+        -c:a libmp3lame \
+        -ar 44100 \
+        -id3v2_version 3 \
+        -metadata artist="${inArtist}" \
+        -metadata title="${inTitle}" \
+        "${inOutputFile}"
+    fi
+else
+    printHelp
+    exit 2
+fi
