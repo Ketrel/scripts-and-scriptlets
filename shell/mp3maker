@@ -135,8 +135,8 @@ if [ ${checkSane} -eq 1 ]; then
         -map 0 \
         -map 1 \
         "${inOutputFile}_tmp.mp3"; then
-            rm "${inOriginalFile}"
-            mv "${inOutputFile}_tmp.mp3" "${inOriginalFile}"
+            rm "${inOriginalFile}" || ( printf 'Unable to remove original to replace'; exit 1 )
+            mv "${inOutputFile}_tmp.mp3" "${inOriginalFile}" || ( printf 'Unable to rename temp file'; exit 1 )
         fi
     fi
 else
