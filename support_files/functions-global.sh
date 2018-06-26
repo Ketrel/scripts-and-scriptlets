@@ -210,8 +210,9 @@ EOF
 ${fileList}
 EOFF
     else
-        msgBox "Error: No Files Selected"
-        exit 70
+        # msgBox "Error: No Files Selected"
+        # exit 70
+        msgBox "No Files Selected\\nDoing Nothing"
     fi
     return 0
 }
