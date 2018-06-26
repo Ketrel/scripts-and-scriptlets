@@ -83,7 +83,7 @@ if [ -n "${1}" ]; then
 fi
 
 if [ ${optCygmode} -eq 1 ]; then
-    inOutputFile=$(printf "${inOutputFile}" | sed -e 's#/cygdrive/\([a-zA-Z]\)/#\1:/#')
+    inOutputFile=$(printf '%s' "${inOutputFile}" | sed -e 's#/cygdrive/\([a-zA-Z]\)/#\1:/#')
 fi
 
 errorState=0
