@@ -2,8 +2,8 @@
 
 self="$(basename "${0}")"
 outDir="${OUTDIR:-$PWD}"; outDir="${outDir%/}"
-checkSane=0
-optImage=0
+optMode=0
+optCygmode=0
 inArtist=''
 inTitle=''
 inSongFile=''
@@ -15,96 +15,118 @@ printHelp(){
 ${self}
 
 Usage:
-    ${self} <artist> <title> <song file> [output filename]
-    ${self} -i <artist> <title> <song file> <image file> [output filename]
-    ${self} -a <song file> <image file>
+    ${self} [options] <artist> <title> <song file> [output filename]
+    ${self} [options] i <artist> <title> <song file> <image file> [output filename]
+    ${self} [options] a <song file> <image file>
     ${self} -h | --help
-    
-Options:
-    -i           Include Album Art
-    -a           Add Album Art To Existing File
-                 (Replaces the input file)
 
+Modes:
+    i            Include Album Art
+    a            Add Album Art To Existing File
+                  (Replaces the input file)
+
+Options:
+    --cygmode    Cygwin + Non-Cygwin ffmpeg Compatibility
     -h --help    Show This Screen"
 
 }
 
 while [ -n "${1}" ]; do
     case "${1}" in
+        "--cygmode")
+            shift
+            optCygmode=1
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+if [ -n "${1}" ]; then
+    case "${1}" in
         "-h"|"--help")
             printHelp
             exit 0 # Asked for help, so no error
             ;;
-        "-i")
-            optImage=1
+        "i")
             shift
+            optMode=1
+            inArtist="${1}"
+            inTitle="${2}"
+            inSongFile="${3}"
+            inImageFile="${4}"
+            if [ -z "${5}" ]; then
+                inOutputFile="${outDir}/${1} - ${2}.mp3"
+            else
+                inOutputFile="${outDir}/${5}"
+            fi
             ;;
-        "-a")
-            optImage=2
+        "a")
             shift
-            ;;
-        *)
-            break
-    esac
-done
-
-inArtist="${1}"
-inTitle="${2}"
-inSongFile="${3}"
-if [ ${optImage} -eq 0 ]; then
-    case $# in
-        3)
-            inOutputFile="${outDir}/${1} - ${2}.mp3"
-            ;;
-        4)
-            inOutputFile="${outDir}/${4}.mp3"
-            ;;
-        *)
-            printHelp
-            exit 3
-            ;;
-    esac
-elif [ ${optImage} -eq 1 ]; then
-    case $# in
-        4)
-            inOutputFile="${outDir}/${1} - ${2}.mp3"
-            ;;
-        5)
-            inOutputFile="${outDir}/${5}.mp3"
-            ;;
-        *)
-            printHelp
-            exit 4
-            ;;
-    esac
-    inImageFile="${4}"
-elif [ ${optImage} -eq 2 ]; then
-    case $# in
-        2)
-            inOriginalFile="${1}"
-            inSongFile="${1}" 
+            optMode=2
+            inSongFile="${1}"
             inImageFile="${2}"
             ;;
         *)
-            printHelp
-            exit 5
+            optMode=0
+            inArtist="${1}"
+            inTitle="${2}"
+            inSongFile="${3}"
+            if [ -z "${4}" ]; then
+                inOutputFile="${outDir}/${1} - ${2}.mp3"
+            else
+                inOutputFile="${outDir}/${4}"
+            fi
             ;;
     esac
-else
-    exit 1 # Something is wrong
 fi
 
-if \
-   [ -f "${inSongFile}" ]     && \
-   [ ! -f "${inOutputFile}" ] && \
-   ( [ ${optImage} -eq 0 ] || \
-        ( ( [ ${optImage} -ge 1 ] && [ ${optImage} -le 2 ]) && \
-            [ -f "${inImageFile}" ] ) ); then      
-    checkSane=1
+if [ ${optCygmode} -eq 1 ]; then
+    inOutputFile=$(printf "${inOutputFile}" | sed -e 's#/cygdrive/\([a-zA-Z]\)/#\1:/#')
 fi
 
-if [ ${checkSane} -eq 1 ]; then
-    if [ ${optImage} -eq 0 ]; then
+errorState=0
+case ${optMode} in
+    0)
+        if \
+            [   -z "${inArtist}"     ] || \
+            [   -z "${inTitle}"      ] || \
+            [ ! -f "${inSongFile}"   ] || \
+            [   -f "${inOutputFile}" ]; then
+            errorState=1
+        fi
+    ;;
+    1)
+        if \
+            [   -z "${inArtist}"      ] || \
+            [   -z "${inTitle}"       ] || \
+            [ ! -f "${inSongFile}"    ] || \
+            [ ! -f "${inImageFile}"   ] || \
+            [   -f "${inOutputFile}"  ]; then
+            errorState=1
+        fi
+        ;;
+    2)
+        if \
+            [ ! -f "${inSongFile}"    ] || \
+            [ ! -f "${inImageFile}"   ]; then
+            errorState=1
+        fi
+        ;;
+    *)
+        printf 'Fatal Error: Unhandled Mode\n\n'
+        exit 1
+        ;;
+esac
+
+if [ ${errorState} -eq 1 ]; then
+    printf 'Sanity Check Failure\n\n'
+    exit 1
+fi
+
+case ${optMode} in
+    0)
         ffmpeg \
         -i "${inSongFile}" \
         -c:a libmp3lame \
@@ -113,7 +135,9 @@ if [ ${checkSane} -eq 1 ]; then
         -metadata artist="${inArtist}" \
         -metadata title="${inTitle}" \
         "${inOutputFile}"
-    elif [ ${optImage} -eq 1 ]; then
+        exit 0
+        ;;
+    1)
         ffmpeg \
         -i "${inSongFile}" \
         -i "${inImageFile}" \
@@ -125,7 +149,9 @@ if [ ${checkSane} -eq 1 ]; then
         -metadata artist="${inArtist}" \
         -metadata title="${inTitle}" \
         "${inOutputFile}"
-    elif [ ${optImage} -eq 2 ]; then
+        exit 0
+        ;;
+    2)
         if ffmpeg \
         -i "${inSongFile}" \
         -i "${inImageFile}" \
@@ -135,11 +161,15 @@ if [ ${checkSane} -eq 1 ]; then
         -map 0 \
         -map 1 \
         "${inOutputFile}_tmp.mp3"; then
-            rm "${inOriginalFile}" || ( printf 'Unable to remove original to replace'; exit 1 )
-            mv "${inOutputFile}_tmp.mp3" "${inOriginalFile}" || ( printf 'Unable to rename temp file'; exit 1 )
+            inOriginalFile="${inSongFile}"
+            rm "${inOriginalFile}" || \
+                ( printf 'Unable to remove original to replace'; exit 1 )
+            mv "${inOutputFile}_tmp.mp3" "${inOriginalFile}" || \
+                ( printf 'Unable to rename temp file'; exit 1 )
         fi
-    fi
-else
-    printHelp
-    exit 6
-fi
+        exit 0
+        ;;
+esac
+
+printHelp
+exit 1
