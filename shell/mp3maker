@@ -31,8 +31,17 @@ Options:
 
 }
 
+# Switches that need to happen first to affect how the script behaves
+#  in subsequent sections.  These either cause the script to exit or
+#  change how it functions such that it would be a pain to do within
+#  the same loop as the main checks. 
+
 while [ -n "${1}" ]; do
     case "${1}" in
+        "-h"|"--help")
+            printHelp
+            exit 0 # Asked for help, so no error
+            ;;
         "--cygmode")
             shift
             optCygmode=1
@@ -43,12 +52,31 @@ while [ -n "${1}" ]; do
     esac
 done
 
+# Options that can be combined
+
+# while [ -n "${1}" ]; do
+#     case "${1}" in
+#         "--")
+#             shift
+#             break
+#             ;;
+#         "-"*)
+#             while IFS= read -r line
+#             do
+#                 # Case statement for handling options would go here
+#             done <<EOF
+# $(printf '%s' "${1#-}" | sed -e 's/\(.\)/\1\n/g')
+# EOF
+#             shift
+#             ;;
+#         *)
+#             break
+#             ;;
+#     esac
+# done
+
 if [ -n "${1}" ]; then
     case "${1}" in
-        "-h"|"--help")
-            printHelp
-            exit 0 # Asked for help, so no error
-            ;;
         "i")
             shift
             optMode=1
