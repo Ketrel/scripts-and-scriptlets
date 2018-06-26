@@ -86,9 +86,6 @@ if [ ${optCygmode} -eq 1 ]; then
     inOutputFile=$(printf "${inOutputFile}" | sed -e 's#/cygdrive/\([a-zA-Z]\)/#\1:/#')
 fi
 
-set
-exit 7
-
 errorState=0
 case ${optMode} in
     0)
