@@ -3,6 +3,7 @@
 self="$(basename "${0}")"
 outDir="${OUTDIR:-$PWD}"; outDir="${outDir%/}"
 optMode=0
+optCygmode=0
 inArtist=''
 inTitle=''
 inSongFile=''
@@ -14,19 +15,33 @@ printHelp(){
 ${self}
 
 Usage:
-    ${self} <artist> <title> <song file> [output filename]
-    ${self} -i <artist> <title> <song file> <image file> [output filename]
-    ${self} -a <song file> <image file>
+    ${self} [options] <artist> <title> <song file> [output filename]
+    ${self} [options] i <artist> <title> <song file> <image file> [output filename]
+    ${self} [options] a <song file> <image file>
     ${self} -h | --help
 
-Options:
-    -i           Include Album Art
-    -a           Add Album Art To Existing File
-                 (Replaces the input file)
+Modes:
+    i            Include Album Art
+    a            Add Album Art To Existing File
+                  (Replaces the input file)
 
+Options:
+    --cygmode    Cygwin + Non-Cygwin ffmpeg Compatibility
     -h --help    Show This Screen"
 
 }
+
+while [ -n "${1}" ]; do
+    case "${1}" in
+        "--cygmode")
+            shift
+            optCygmode=1
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
 
 if [ -n "${1}" ]; then
     case "${1}" in
@@ -34,7 +49,7 @@ if [ -n "${1}" ]; then
             printHelp
             exit 0 # Asked for help, so no error
             ;;
-        "-i")
+        "i")
             shift
             optMode=1
             inArtist="${1}"
@@ -47,7 +62,7 @@ if [ -n "${1}" ]; then
                 inOutputFile="${outDir}/${5}"
             fi
             ;;
-        "-a")
+        "a")
             shift
             optMode=2
             inSongFile="${1}"
@@ -66,6 +81,13 @@ if [ -n "${1}" ]; then
             ;;
     esac
 fi
+
+if [ ${optCygmode} -eq 1 ]; then
+    inOutputFile=$(printf "${inOutputFile}" | sed -e 's#/cygdrive/\([a-zA-Z]\)/#\1:/#')
+fi
+
+set
+exit 7
 
 errorState=0
 case ${optMode} in
