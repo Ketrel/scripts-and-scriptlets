@@ -4,6 +4,7 @@ self="$(basename "${0}")"
 outDir="${OUTDIR:-$PWD}"; outDir="${outDir%/}"
 optMode=0
 optCygmode=0
+optWebImg=0
 inArtist=''
 inTitle=''
 inSongFile=''
@@ -110,6 +111,17 @@ if [ -n "${1}" ]; then
     esac
 fi
 
+case "${inImageFile}" in
+    "http://"*)
+        optWebImg=1
+        ;;
+    "https://"*)
+        optWebImg=1
+        ;;
+    *)
+        ;;
+esac
+
 if [ ${optCygmode} -eq 1 ]; then
     inOutputFile=$(printf '%s' "${inOutputFile}" | sed -e 's#/cygdrive/\([a-zA-Z]\)/#\1:/#')
 fi
@@ -138,7 +150,7 @@ case ${optMode} in
     2)
         if \
             [ ! -f "${inSongFile}"    ] || \
-            [ ! -f "${inImageFile}"   ]; then
+            ( [ ! -f "${inImageFile}"   ] && [ ! ${optWebImg} -eq 1 ] ); then
             errorState=1
         fi
         ;;
@@ -166,34 +178,66 @@ case ${optMode} in
         exit 0
         ;;
     1)
-        ffmpeg \
-        -i "${inSongFile}" \
-        -i "${inImageFile}" \
-        -c:a libmp3lame \
-        -ar 44100 \
-        -id3v2_version 3 \
-        -map 0 \
-        -map 1 \
-        -metadata artist="${inArtist}" \
-        -metadata title="${inTitle}" \
-        "${inOutputFile}"
+        if [ ${optWebImg} -eq 1 ]; then
+            wget -q -O - "${inImageFile}" | ffmpeg \
+            -i "${inSongFile}" \
+            -i pipe:0 \
+            -c:a libmp3lame \
+            -ar 44100 \
+            -id3v2_version 3 \
+            -map 0 \
+            -map 1 \
+            -metadata artist="${inArtist}" \
+            -metadata title="${inTitle}" \
+            "${inOutputFile}"
+        else
+            ffmpeg \
+            -i "${inSongFile}" \
+            -i "${inImageFile}" \
+            -c:a libmp3lame \
+            -ar 44100 \
+            -id3v2_version 3 \
+            -map 0 \
+            -map 1 \
+            -metadata artist="${inArtist}" \
+            -metadata title="${inTitle}" \
+            "${inOutputFile}"
+        fi
         exit 0
         ;;
     2)
-        if ffmpeg \
-        -i "${inSongFile}" \
-        -i "${inImageFile}" \
-        -c:a copy \
-        -id3v2_version 3 \
-        -map_metadata 0 \
-        -map 0 \
-        -map 1 \
-        "${inOutputFile}_tmp.mp3"; then
-            inOriginalFile="${inSongFile}"
-            rm "${inOriginalFile}" || \
-                ( printf 'Unable to remove original to replace'; exit 1 )
-            mv "${inOutputFile}_tmp.mp3" "${inOriginalFile}" || \
-                ( printf 'Unable to rename temp file'; exit 1 )
+        if [ ${optWebImg} -eq 1 ]; then
+            if wget -q -O - "${inImageFile}" | ffmpeg \
+            -i "${inSongFile}" \
+            -i pipe:0 \
+            -c:a copy \
+            -id3v2_version 3 \
+            -map_metadata 0 \
+            -map 0 \
+            -map 1 \
+            "${inOutputFile}_tmp.mp3"; then
+                inOriginalFile="${inSongFile}"
+                rm "${inOriginalFile}" || \
+                    ( printf 'Unable to remove original to replace'; exit 1 )
+                mv "${inOutputFile}_tmp.mp3" "${inOriginalFile}" || \
+                    ( printf 'Unable to rename temp file'; exit 1 )
+            fi
+        else
+            if ffmpeg \
+            -i "${inSongFile}" \
+            -i "${inImageFile}" \
+            -c:a copy \
+            -id3v2_version 3 \
+            -map_metadata 0 \
+            -map 0 \
+            -map 1 \
+            "${inOutputFile}_tmp.mp3"; then
+                inOriginalFile="${inSongFile}"
+                rm "${inOriginalFile}" || \
+                    ( printf 'Unable to remove original to replace'; exit 1 )
+                mv "${inOutputFile}_tmp.mp3" "${inOriginalFile}" || \
+                    ( printf 'Unable to rename temp file'; exit 1 )
+            fi
         fi
         exit 0
         ;;
