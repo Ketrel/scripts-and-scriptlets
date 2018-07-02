@@ -1,4 +1,7 @@
-"filetype plugin on
+" filetype plugin on
+"
+" runtime colors/default.vim
+"
 syntax on
 set backspace=eol,indent,start
 set expandtab
@@ -8,3 +11,5 @@ set fo-=t
 set fo-=c
 set number
 set nowrap
+
+" colorscheme synthwave
