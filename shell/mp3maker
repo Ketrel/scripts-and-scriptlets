@@ -21,6 +21,10 @@ Usage:
     ${self} [options] a <song file> <image file>
     ${self} -h | --help
 
+Notes:
+    <image file> can be a local path, or a URL.
+    (If using a URL, wget must be present)
+
 Modes:
     i            Include Album Art
     a            Add Album Art To Existing File
@@ -161,7 +165,8 @@ case ${optMode} in
 esac
 
 if [ ${errorState} -eq 1 ]; then
-    printf 'Sanity Check Failure\n\n'
+    printf '\nSanity Check Failure\n\n'
+    printHelp
     exit 1
 fi
 
