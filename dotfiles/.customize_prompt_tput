@@ -56,8 +56,6 @@ p_multiplex(){
 p_buildPrompt(){
     #Set Up Environment
     ret=$?
-    p_colorSetup
-    p_multiplex
     p_returnColor ${ret}
 
     #Build PS1
@@ -84,5 +82,11 @@ p_buildPrompt(){
     PS1+=" \\$ "
 }
 
+p_promptSetup(){
+    p_colorSetup
+    p_multiplex
+}
+
+p_promptSetup
 PROMPT_COMMAND=p_buildPrompt
 
