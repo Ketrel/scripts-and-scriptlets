@@ -1,4 +1,4 @@
-" filetype plugin on
+"filetype plugin on
 "
 " runtime colors/default.vim
 "
@@ -13,3 +13,4 @@ set number
 set nowrap
 
 " colorscheme synthwave
+" nmap <silent> <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
