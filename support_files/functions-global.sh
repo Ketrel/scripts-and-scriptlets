@@ -6,10 +6,18 @@ checkCrippledUtils()
         *'busybox'*|*'toybox'*)
             return 1
             ;;
-        *)
-            return 0
+    esac
+    case "$(readlink -f "$(command -v sed)")" in 
+        *'busybox'*|*'toybox'*)
+            return 1
             ;;
     esac
+    case "$(readlink -f "$(command -v grep)")" in 
+        *'busybox'*|*'toybox'*)
+            return 1
+            ;;
+    esac
+    return 0
 }
 
 checkBinary()
