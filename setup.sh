@@ -84,6 +84,12 @@ cReset=$(tput sgr0  2>/dev/null || printf '')
 # shellcheck source=support_files/functions-global.sh
 . "${supportdir}/functions-global.sh"
 
+if ! checkCrippledUtils; then
+    printf 'Busybox or Toybox is providing one or more utilities on which this script depends.\n'
+    printf ' To ensure there is no unintended behavior, this script will now exit.\n'
+    exit 127
+fi
+
 # shellcheck source=support_files/functions-setup-flow.sh
 . "${supportdir}/functions-setup-flow.sh"
 

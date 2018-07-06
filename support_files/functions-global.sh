@@ -1,5 +1,17 @@
 #!/bin/sh
 
+checkCrippledUtils()
+{
+    case "$(readlink -f "$(command -v find)")" in 
+        *'busybox'*|*'toybox'*)
+            return 1
+            ;;
+        *)
+            return 0
+            ;;
+    esac
+}
+
 checkBinary()
 {
     if [ "$(command -v "${1}")" ]; then
