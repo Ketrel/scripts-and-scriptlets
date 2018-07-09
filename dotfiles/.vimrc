@@ -1,11 +1,12 @@
 "
 " runtime colors/default.vim
 "
+
 set nocompatible
-imap <ESC>oA <ESC>ki
-imap <ESC>oB <ESC>ji
-imap <ESC>oC <ESC>li
-imap <ESC>oD <ESC>hi
+" imap <ESC>oA <ESC>ki
+" imap <ESC>OB <ESC>ji
+" imap <ESC>OC <ESC>li
+" imap <ESC>OD <ESC>hi
 
 filetype indent off
 filetype plugin off
