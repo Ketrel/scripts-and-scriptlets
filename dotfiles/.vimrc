@@ -12,11 +12,17 @@ filetype plugin off
 syntax on
 
 set backspace=eol,indent,start
+
 set expandtab
 set tabstop=4
 set shiftwidth=4
 set softtabstop=0
 set nosmarttab
+
+set noautoindent
+set nocindent
+set indentexpr=''
+
 set fo-=t
 set fo-=c
 set numberwidth=4
