@@ -22,7 +22,7 @@ set nosmarttab
 
 set noautoindent
 set nocindent
-set indentexpr=''
+let indentexpr=''
 
 set fo-=t
 set fo-=c
