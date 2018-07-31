@@ -14,18 +14,18 @@ fi
 
 whoisRes="$(whois "${1}")"
 
-#diffCount="$(printf '%s\n' "${whoisRes}" | diff -U -0 "${2}" - | grep -v ^@ | tail -n +3 | wc -l)"
+# diffCount="$(printf '%s\n' "${whoisRes}" | diff -U -0 "${2}" - | grep -v ^@ | tail -n +3 | wc -l)"
 diffCount="$(printf '%s\n' "${whoisRes}" | diff -y --suppress-common-lines "${2}" - | wc -l)"
 if [ "${diffCount}" -eq 0 ]; then
     printf '\nSame as reference.\n\n'
-elif [ "${diffCount}" -eq 4 ]; then
+elif [ "${diffCount}" -eq 2 ]; then
     printf '\nMinor Difference To Reference: Likely Only Date Changed\n\n';
 else
     printf '\nDifferent: More than date changed.\n  There were %d differences.\n\n' "${diffCount}"
 fi
 
-if [ ! "${2}" = "${PWD}/lastrun.res" ]; then
+# if [ ! "${2}" = "${PWD}/lastrun.res" ]; then
     echo "${whoisRes}" > "${PWD}/lastrun.res"
-else
-    echo "${whoisRes}" > "${PWD}/lastrun-failsafe.res"
-fi
+# else
+#     echo "${whoisRes}" > "${PWD}/lastrun-failsafe.res"
+# fi
