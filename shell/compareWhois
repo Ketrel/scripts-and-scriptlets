@@ -5,10 +5,12 @@ if [ ! "$(command -v whois)" ]; then
     exit 1
 fi
 
-if [ -z "${1}" ] || [ -z "${2}" ] || [ ! -f "${2}" ]; then
-    printf '\n%s\n %s\n %s\n\n' "Script expects 2 arguments" \
+if [ "${1}" = "-h" ] || ([ -z "${1}" ] || [ -z "${2}" ] || [ ! -f "${2}" ]); then
+    printf '\n%s\n %s\n %s\n' "Script expects 2 arguments" \
         " 1: Domain" \
         " 2: Reference Whois File"
+    printf '\n%s\n %s\n\n' "Vars (Behavior based on set or unset):" \
+        " NOLASTRUN - Do not output lastrun.res if set"
     exit 1
 fi
 
