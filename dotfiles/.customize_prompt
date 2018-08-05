@@ -1,55 +1,52 @@
 #!/bin/bash
 p_checkRoot(){
-    if [ $(id -u) -eq 0 ]; then
+    if [ "$(id -u)" -eq 0 ]; then
         return 0
     fi
     return 1
 }
 p_colorSetup(){
-    case "$TERM" in
-        *color*)
-            p_res=$(printf "%b" "\e[00m")
-            p_bold=$(printf "%b" "\e[01m")
-            p_time=$(printf "%b" "\e[01;90m")
-            p_mpx=$(printf "%b" "\e[01;35m")
-            if p_checkRoot; then
-                p_name=$(printf "%b" "\e[01;91m")
-                p_host=$(printf "%b" "\e[00;31m")
-            else
-                p_name=$(printf "%b" "\e[01;92m")
-                p_host=$(printf "%b" "\e[00;32m")
-            fi
-            p_dir=$(printf "%b" "\e[00;96m")
-            p_red=$(printf "%b" "\e[31m")
-            p_green=$(printf "%b" "\e[32m")
-            p_blue=$(printf "%b" "\e[34m")
-        ;;
-        *)
-            p_res=$(printf "%b" "\e[00m")
-            p_bold=$(printf "%b" "\e[01m")
-            p_time=$(printf "%b" "")
-            p_mpx=$(printf "%b" "\e[01m")
-            p_name=$(printf "%b" "\e[01m")
-            p_host=$(printf "%b" "\e[00m")
-            p_dir=$(printf "%b" "\e[00m")
-            p_red=$(printf "%b" "\e[01m")
-            p_green=$(printf "%b" "\e[00m")
-            p_blue=$(printf "%b" "\e[00m")
-        ;;
-    esac
+    if [ "$(tput colors)" -ge 8 ]; then
+        p_res=$(tput sgr0)
+        p_bold=$(tput bold)
+        p_time=$(tput bold;tput setaf 8)
+        p_mpx=$(tput bold;tput setaf 5)
+        if p_checkRoot; then
+            p_name=$(tput bold;tput setaf 1)
+            p_host=$(tput setaf 1)
+        else
+            p_name=$(tput bold;tput setaf 2)
+            p_host=$(tput setaf 2)
+        fi
+        p_dir=$(tput setaf 6)
+        p_red=$(tput setaf 1)
+        p_green=$(tput setaf 2)
+        #p_blue=$(tput setaf 4)
+    else
+        p_res=$(tput sgr0)
+        p_bold=$(tput bold)
+        p_time=''
+        p_mpx=$(tput bold)
+        p_name=$(tput bold)
+        p_host=''
+        p_dir=''
+        p_red=$(tput bold)
+        p_green=''
+        #p_blue=''
+    fi
 }
 p_returnColor(){
-    if [ $1 -eq 0 ]; then
+    if [ "${1}" -eq 0 ]; then
         local color="${p_green}"
     else
         local color="${p_red}"
     fi
-    p_return="[R:\001${color}\002${1}\001${p_res}\002]"
+    p_return="[R:\\001${color}\\002${1}\\001${p_res}\\002]"
 }
 p_multiplex(){
     case "$TERM" in
         *screen*|*tmux*)
-            p_multiplex="[\001${p_mpx}\002M\001${p_res}\002]"
+            p_multiplex="[\\001${p_mpx}\\002M\\001${p_res}\\002]"
         ;;
         *)
             p_multiplex=''
@@ -59,33 +56,37 @@ p_multiplex(){
 p_buildPrompt(){
     #Set Up Environment
     ret=$?
-    p_colorSetup
-    p_multiplex
     p_returnColor ${ret}
 
     #Build PS1
     #[00:00]
-    PS1="[\[${p_time}\]\A\[${p_res}\]]"
+    PS1="[\\[${p_time}\\]\\A\\[${p_res}\\]]"
 
     #[M]
     PS1+="${p_multiplex}"
 
     #[user@hostname]:
-    PS1+="[\[${p_name}\]\u\[${p_res}\]@\[${p_host}\]\h\[${p_res}\]]: "
+    PS1+="[\\[${p_name}\\]\\u\\[${p_res}\\]@\\[${p_host}\\]\\h\\[${p_res}\\]]: "
 
     #~/working/path
-    PS1+="\[${p_dir}\]\w\[${p_res}\]"
-    PS1+="\n"
+    PS1+="\\[${p_dir}\\]\\w\\[${p_res}\\]"
+    PS1+="\\n"
 
     #[R:0] $
     PS1+="${p_return}"
 
     #Level
-    PS1+="[LV:\001${p_bold}${p_dir}\002${SHLVL}\001${p_res}\002]"
+    PS1+="[LV:\\001${p_bold}${p_dir}\\002${SHLVL}\\001${p_res}\\002]"
 
     #Prompt Character
     PS1+=" \\$ "
 }
 
+p_promptSetup(){
+    p_colorSetup
+    p_multiplex
+}
+
+p_promptSetup
 PROMPT_COMMAND=p_buildPrompt
 
