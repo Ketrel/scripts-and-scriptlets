@@ -27,6 +27,6 @@ else
 fi
 
 # if [ -z ${NOLASTRUN+x} ]; then #Should be "x" IF NOLASTRUN is set, null if unset
-if [ "${NOLASTRUN}" = "1" ]; then
+if [ ! "${NOLASTRUN}" = "1" ]; then
     echo "${whoisRes}" > "${PWD}/lastrun.res"
 fi
