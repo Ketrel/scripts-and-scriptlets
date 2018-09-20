@@ -1,15 +1,24 @@
 #!/bin/sh
-echo
-echo "Machine Stats"
-echo "----"
-echo
-echo "IP Info"
-echo "----"
-_showIP
-echo "----"
-echo
-echo "Battery Info"
-echo "----"
-_showBattery
-#echo "----"
-echo
+ss_header="\\n----\\n"
+
+
+output=$(\
+printf "%b" "Machine Stats${ss_header}" ;\
+printf "\\n%b" "IP Info${ss_header}" ;\
+_showIP ;\
+printf "\\n%b" "Battery Info${ss_header}" ;\
+_showBattery)
+
+
+case "${@}" in
+    *--cow*)
+        if [ "$(command -v cowsay)" ]; then 
+            printf '%b\n\n' "${output}" | cowsay -n
+            exit 0
+        fi
+    ;;
+esac
+
+
+printf '%b\n\n' "${output}" 
+
