@@ -80,6 +80,8 @@ optionsMenu(){
             "-" "" \
             "?" "Show Current Config" \
             "C" "Create Missing Directories (Not Implimented)" \
+            "B" "Add lines to read '.customize_prompt' to .bashrc" \
+            "P" "Add lines to include scripts dir in path to .profile" \
             "-" "" \
             "D" "Preview A Dotfile" \
             "S" "Preview A Script" \

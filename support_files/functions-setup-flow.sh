@@ -129,6 +129,12 @@ options(){
             '?')
                 showConfig
                 ;;
+            'B')
+                msgBox "---In Progress---"
+                ;;
+            'P')
+                msgBox "---In Progress---"
+                ;;
             'C')
                 if yesnoBox "Create The Following Directories?\\n(If They Don't Exist)\\n\\n${dotfilesDestDir}\\n${scriptsDestDir}"; then
                     msgBox "Would Create Directories\\nBut Not Yet Implimented"

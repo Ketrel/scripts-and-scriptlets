@@ -1,0 +1,3 @@
+if [ -f "${HOME}/.customize_prompt" ]; then
+    . "${HOME}/.customize_prompt"
+fi
