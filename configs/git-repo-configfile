@@ -1,0 +1,24 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "github"]
+	url = <repo>
+	pushurl = <repo>
+	fetch = +refs/heads/*:refs/remotes/github/*
+[remote "gitlab"]
+	url = <repo>
+	pushurl = <repo>
+	fetch = +refs/heads/*:refs/remotes/gitlab/*
+[remote "all"]
+	url = <primary repo>
+	fetch = +refs/heads/*:refs/remotes/all/*
+	pushurl = <primary repo>
+	pushurl = <additional repo>
+	pushurl = <additional repo>
+[push]
+	default = current
+[remote "local"]
+	url = <repo>
+	fetch = +refs/heads/*:refs/remotes/local/*
