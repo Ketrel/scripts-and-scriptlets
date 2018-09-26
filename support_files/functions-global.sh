@@ -239,13 +239,13 @@ EOFF
 
 msgBox(){
     if [ -n "${1}" ]; then
-        ${tuiBin} --msgbox "${1}" ${mainHeight} ${mainWidth}
+        ${tuiBin} --msgbox -- "${1}" ${mainHeight} ${mainWidth}
     fi
 }
 
 yesnoBox(){
     if [ -n "${1}" ]; then
-        ${tuiBin} --yesno "${1}" ${mainHeight} ${mainWidth}
+        ${tuiBin} --yesno -- "${1}" ${mainHeight} ${mainWidth}
         return $?
     fi
 }
