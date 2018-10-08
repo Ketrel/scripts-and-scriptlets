@@ -18,7 +18,7 @@ if [ -z "${1}" ]; then
     echo "Must Specify A File"
     exit 1
 fi
-if [ ! -f "${1}"]; then
+if [ ! -f "${1}" ]; then
     echo "Specified File Does Not Exist"
     exit 1
 fi
