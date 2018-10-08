@@ -1,0 +1,28 @@
+#!/bin/sh
+DUMMY=$(command -v pandoc)
+if [ ! $? -eq 0 ]; then
+    echo "This script requires 'pandoc' and 'w3m' to function."
+    echo "  pandoc is missing or is not present in PATH"
+    exit 1
+fi
+DUMMY=$(command -v w3m)
+if [ ! $? -eq 0 ]; then
+    echo "This script requires 'pandoc' and 'w3m' to function."
+    echo "  w3m is missing or is not present in PATH"
+    exit 1
+fi
+
+# -------- SEPARATOR --------
+
+if [ -z "${1}" ]; then
+    echo "Must Specify A File"
+    exit 1
+fi
+if [ ! -f "${1}"]; then
+    echo "Specified File Does Not Exist"
+    exit 1
+fi
+
+# -------- SEPARATOR --------
+
+pandoc "${1}" | w3m -T "text/html"
