@@ -1,12 +1,11 @@
 "
 " runtime colors/default.vim
 "
-
 set nocompatible
-" imap <ESC>oA <ESC>ki
-" imap <ESC>OB <ESC>ji
-" imap <ESC>OC <ESC>li
-" imap <ESC>OD <ESC>hi
+imap <ESC>oA <ESC>ki
+imap <ESC>oB <ESC>ji
+imap <ESC>oC <ESC>li
+imap <ESC>oD <ESC>hi
 
 filetype indent off
 filetype plugin off
@@ -30,5 +29,28 @@ set numberwidth=4
 set number
 set nowrap
 
-" colorscheme synthwave-mod
-" nmap <silent> <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+nmap <silent> <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<' . synIDattr(synID(line("."),col("."),0),"name") . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
+" Dev Options
+set autoindent
+set softtabstop=4
+
+" Color Schemes
+function ReadOnlyColor()
+    " Default Color Scheme        
+    let color_Default = 'tokyo-metro'
+    let color_Readonly = 'nighted'
+
+    if &readonly
+        execute 'colorscheme '.color_Readonly
+    else
+        execute 'colorscheme '.color_Default
+    endif
+endfunction
+
+" call ReadOnlyColor()
+" augroup readonly
+"     autocmd!
+"     " autocmd BufReadPost * call ReadOnlyColor()
+"     autocmd BufReadPost,BufEnter,BufLeave * call ReadOnlyColor()
+" augroup END
