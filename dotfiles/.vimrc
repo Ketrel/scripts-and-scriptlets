@@ -1,6 +1,11 @@
 "
 " runtime colors/default.vim
 "
+
+" Default Color Scheme        
+let g:color_Default = 'tokyo-metro'
+let g:color_Readonly = 'nighted'
+
 set nocompatible
 imap <ESC>oA <ESC>ki
 imap <ESC>oB <ESC>ji
@@ -36,15 +41,12 @@ set autoindent
 set softtabstop=4
 
 " Color Schemes
-function ReadOnlyColor()
-    " Default Color Scheme        
-    let color_Default = 'tokyo-metro'
-    let color_Readonly = 'nighted'
 
+function ReadOnlyColor()
     if &readonly
-        execute 'colorscheme '.color_Readonly
+        execute 'colorscheme '.g:color_Readonly
     else
-        execute 'colorscheme '.color_Default
+        execute 'colorscheme '.g:color_Default
     endif
 endfunction
 
