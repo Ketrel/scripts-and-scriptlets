@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Aliases for navigation sharing
+alias cdw='cd $(cat "${HOME}/pwd-working")'
+alias cds='cd $(cat "${HOME}/pwd-share")'
+
+# Aliases for apt
+alias sau='sudo apt update'
+alias saug='sudo apt upgrade'
+alias sai='sudo apt install'
+alias ali='apt list --installed'
+alias alu='apt list --upgradable'
+
+# Alias for options
+alias diff='colordiff'
+
+# Git shorthands
+alias gitpa='git remote | xargs -L1 -i{} git push {}'
