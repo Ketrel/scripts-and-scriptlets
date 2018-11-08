@@ -65,8 +65,8 @@ p_leftLines(){
 p_checkGit(){
     p_gitinfo=
     if p_gitbranch=$(git symbolic-ref --short HEAD 2>/dev/null); then
-        p_gitinfo="\\n[\\001${p_time}\\002Git\\001${p_res}\\002]"
-        p_gitinfo+="[Branch:\\001${p_bold}${p_green}\\002${p_gitbranch}\\001${p_res}\\002]"
+        p_gitinfo="[\\001${p_time}\\002Git\\001${p_res}\\002]"
+        p_gitinfo+="[Branch:\\001${p_bold}${p_green}\\002${p_gitbranch}\\001${p_res}\\002]\\n"
     fi
 }
 p_buildPrompt(){
@@ -80,6 +80,9 @@ p_buildPrompt(){
     #Line at the top if enabled
     PS1="\\[${p_lineTop}\\]"
 
+    #Git Info When Applicable
+    PS1+="${p_gitinfo}"
+
     #[00:00]
     PS1+="[\\[${p_time}\\]\\A\\[${p_res}\\]]"
 
@@ -91,9 +94,6 @@ p_buildPrompt(){
 
     #~/working/path
     PS1+="\\[${p_dir}\\]\\w\\[${p_res}\\]"
-
-    #Git Branch When Applicable
-    PS1+="${p_gitinfo}"
 
     #Line Break
     PS1+="\\n"
