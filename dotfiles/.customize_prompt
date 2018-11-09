@@ -74,10 +74,13 @@ p_checkGit(){
             p_gitstatus="[Working Clean]"
         else
             if git status --short | grep -q '^ M'; then
-                p_gitstatus+="[\\001${p_green}\\002Uncommited Changes\\001${p_res}\\002]"
+                p_gitstatus+="[\\001${p_red}\\002Uncommited Changes\\001${p_res}\\002]"
             fi
             if git status --short | grep -q '^??'; then
                 p_gitstatus+="[\\001${p_red}\\002Untracked Files\\001${p_res}\\002]"
+            fi
+            if git status --short | grep -q '^A'; then
+                p_gitstatus+="[\\001${p_green}\\002Newly Added Files\\001${p_res}\\002]"
             fi
         fi
 
