@@ -63,31 +63,33 @@ p_leftLines(){
     fi
 }
 p_checkGit(){
-    p_gitinfo=
-    if git branch 1>/dev/null 2>&1; then
-        if p_gitbranch=$(git symbolic-ref --short HEAD 2>/dev/null); then
-            p_gitbranch="\\001${p_bold}${p_green}\\002${p_gitbranch}\\001${p_res}\\002"
-        else
-            p_gitbranch="\\001${p_bold}${p_red}\\002Detached-Head\\001${p_res}\\002"
-        fi
-        p_gitstatus=
-        if [ "$(git status --short)" = "" ]; then
-            p_gitstatus="[Working Clean]"
-        else
-            if git status --short | grep -q '^ M'; then
-                p_gitstatus+="[\\001${p_red}\\002Uncommited Changes\\001${p_res}\\002]"
+    if [ ! "${NOGITPROMPT}" = "1"]; then
+        p_gitinfo=
+        if git branch 1>/dev/null 2>&1; then
+            if p_gitbranch=$(git symbolic-ref --short HEAD 2>/dev/null); then
+                p_gitbranch="\\001${p_bold}${p_green}\\002${p_gitbranch}\\001${p_res}\\002"
+            else
+                p_gitbranch="\\001${p_bold}${p_red}\\002Detached-Head\\001${p_res}\\002"
             fi
-            if git status --short | grep -q '^??'; then
-                p_gitstatus+="[\\001${p_red}\\002Untracked Files\\001${p_res}\\002]"
+            p_gitstatus=
+            if [ "$(git status --short)" = "" ]; then
+                p_gitstatus="[Working Clean]"
+            else
+                if git status --short | grep -q '^ M'; then
+                    p_gitstatus+="[\\001${p_red}\\002Uncommited Changes\\001${p_res}\\002]"
+                fi
+                if git status --short | grep -q '^??'; then
+                    p_gitstatus+="[\\001${p_red}\\002Untracked Files\\001${p_res}\\002]"
+                fi
+                if git status --short | grep -q '^A'; then
+                    p_gitstatus+="[\\001${p_green}\\002Newly Added Files\\001${p_res}\\002]"
+                fi
             fi
-            if git status --short | grep -q '^A'; then
-                p_gitstatus+="[\\001${p_green}\\002Newly Added Files\\001${p_res}\\002]"
-            fi
-        fi
 
 
-        p_gitinfo="[\\001${p_time}\\002Git\\001${p_res}\\002]"
-        p_gitinfo+="[Branch:${p_gitbranch}]${p_gitstatus}\\n"
+            p_gitinfo="[\\001${p_time}\\002Git\\001${p_res}\\002]"
+            p_gitinfo+="[Branch:${p_gitbranch}]${p_gitstatus}\\n"
+        fi
     fi
 }
 p_buildPrompt(){
