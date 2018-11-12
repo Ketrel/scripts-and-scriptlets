@@ -63,8 +63,8 @@ p_leftLines(){
     fi
 }
 p_checkGit(){
+    p_gitinfo=
     if [ ! "${NOGITPROMPT}" = "1" ]; then
-        p_gitinfo=
         if git branch 1>/dev/null 2>&1; then
             if p_gitbranch=$(git symbolic-ref --short HEAD 2>/dev/null); then
                 p_gitbranch="\\001${p_bold}${p_green}\\002${p_gitbranch}\\001${p_res}\\002"
