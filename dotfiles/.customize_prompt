@@ -44,14 +44,16 @@ p_returnColor(){
     p_return="[R:\\001${color}\\002${1}\\001${p_res}\\002]"
 }
 p_multiplex(){
-    case "$TERM" in
-        *screen*|*tmux*)
-            p_multiplex="[\\001${p_mpx}\\002M\\001${p_res}\\002]"
-        ;;
-        *)
-            p_multiplex=''
-        ;;
-    esac
+    if [ ${SHLVL} -gt 1 ]; then
+        case "$TERM" in
+            *screen*|*tmux*)
+                p_multiplex="[\\001${p_mpx}\\002M\\001${p_res}\\002]"
+            ;;
+            *)
+                p_multiplex=''
+            ;;
+        esac
+    fi
 }
 p_leftLines(){
     if [ "${P_LL}" = "1" ]; then
