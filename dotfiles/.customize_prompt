@@ -75,7 +75,13 @@ p_checkGit(){
             fi
             p_gitstatus=
             if [ "$(git status --short)" = "" ]; then
-                p_gitstatus="[Working Clean]"
+                if git status | grep -q 'is ahead of'; then
+                    p_gitstatus="[\\001${p_red}\\002Ahead of Upstream\\001${p_res}\\002]"
+                elif git status | grep -q 'is behing'; then
+                    p_gitstatus="[\\001${p_red}\\002Behind Upstream\\001${p_res}\\002]"
+                else
+                    p_gitstatus="[Working Clean]"
+                fi
             else
                 if git status --short | grep -q '^ M'; then
                     p_gitstatus+="[\\001${p_red}\\002Uncommited Changes\\001${p_res}\\002]"
