@@ -1,10 +1,18 @@
 #!/bin/sh
-case "${*}" in
-    *"--help"*|*"-h"*)
-        printf 'Help Text Here\n'
+
+showHelp() {
+    printf '==== Weechat Log Filter ====\n\n'
+    printf 'Usage: %s <log file> [start date] [end date]\n\n' "$(basename "${0}")"
+    printf 'Start and end dates should be in dashed ISO 8601 Format\n    Example: 2018-01-01\n\n'
+}
+
+case "${1}" in
+    "-h"|"--help")
+        showHelp
         exit 0
         ;;
 esac
+
 if [ -n "${1}" ] && [ -f "${1}" ]; then
     if [ -n "${2}" ]; then
         if [ -n "${3}" ]; then
