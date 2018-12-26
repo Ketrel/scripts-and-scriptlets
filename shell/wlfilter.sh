@@ -1,5 +1,12 @@
 #!/bin/sh
 
+#==========================
+#
+# TODO: 
+#  1. Add checks for correct date format, trigger showHelp if bad
+#
+#==========================
+
 showHelp() {
     printf '==== Weechat Log Filter ====\n\n'
     printf 'Usage: %s <log file> [start date] [end date]\n\n' "$(basename "${0}")"
