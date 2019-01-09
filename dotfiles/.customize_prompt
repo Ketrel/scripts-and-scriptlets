@@ -83,7 +83,7 @@ p_checkGit(){
                     p_gitstatus="[Working Clean]"
                 fi
             else
-                if git status --porcelain | grep -q '^\(M|.M\)'; then
+                if git status --porcelain | grep -q '^\(M\|.M\)'; then
                     p_gitstatus+="[\\001${p_red}\\002Uncommited Changes\\001${p_res}\\002]"
                 fi
                 if git status --porcelain | grep -q '^??'; then
