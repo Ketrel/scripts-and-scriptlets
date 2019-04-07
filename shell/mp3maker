@@ -3,7 +3,7 @@
 self="$(basename "${0}")"
 outDir="${OUTDIR:-$PWD}"; outDir="${outDir%/}"
 optMode=0
-optCygmode=0
+optCygmode=${CYGMODE:-0}
 optWebImg=0
 inArtist=''
 inTitle=''
