@@ -1,0 +1,13 @@
+#!/bin/sh
+
+free \
+    | grep 'Mem' \
+    | awk '{printf("Memory Stats\n----------\nUsed: %.1f%% (%.0f)\nFree: %.1f%% (%.0f)\nTotal: ---%% (%.0f)\n\n",($3 / $2 * 100),$3,($4 / $2 * 100),$4,$2)}'
+    if top -abn 1 2>/dev/null 1>&2; then
+        top -abn 1
+    else
+        top -bn 1 -o '%MEM'
+    fi \
+        | tail -n +7 \
+        | head -n 11 \
+        | awk '{printf("%-7s %-9s %-9s %-6s %-5s %-5s %-9s\n", $1, $2, $5, $6, $9, $10, $12)}'
