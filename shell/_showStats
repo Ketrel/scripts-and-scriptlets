@@ -1,4 +1,14 @@
 #!/bin/sh
+useColor=1
+if ! command -v tput 1>/dev/null 2>&1 || [ "${NC}" = "1" ] || [ "$(tput colors)" -lt 8 ]; then
+    useColor=0
+fi
+
+ssc_green=$(tput setaf 2)
+ssc_blue=$(tput setaf 4)
+ssc_red=$(tput setaf 1)
+ssc_reset=$(tput sgr0)
+ssc_bold=$(tput bold)
 ss_header="\\n----\\n"
 
 
@@ -11,16 +21,31 @@ _showIP ;\
 printf '\n%b' "Battery Info${ss_header}" ;\
 _showBattery)
 
-
 case "${@}" in
     *--cow*)
-        if [ "$(command -v cowsay)" ]; then 
+        if [ "${useColor}" -eq 1 ]; then
+            if [ "$(command -v cowsay)" ]; then 
+                printf '%b\n\n' "${output}" | cowsay -n | \
+                    sed -re 's/^\|  ([[:digit:].]+)\/([[:digit:]]+)/|  '"${ssc_green}${ssc_bold}\\1${ssc_reset}\\/${ssc_blue}${ssc_bold}\\2${ssc_reset}/" \
+                        -e  's/(Connected To: )([[:alnum:] [:punct:]]+)\|/\1'"${ssc_green}${ssc_bold}\\2${ssc_reset}"'|/' \
+                        -e '/^\| [[:space:]](state|time to empty|percentage|capacity|time to full):/{s/:([[:space:]]+[[:alnum:]][[:alnum:][:punct:][:space:]]+[^|])/:'"${ssc_green}${ssc_bold}\\1${ssc_reset}"'/}' \
+                        -e 's/Is: Disabled/Is: '"${ssc_red}${ssc_bold}"'Disabled'"${ssc_reset}"'/' -e 's/Is: Enabled/Is: '"${ssc_green}${ssc_bold}"'Enabled'"${ssc_reset}"'/'
+                exit 0
+            fi
+        else
             printf '%b\n\n' "${output}" | cowsay -n
             exit 0
         fi
     ;;
 esac
 
+if [ "${useColor}" -eq 1 ]; then
+    printf '%b\n\n' "${output}" | sed -re 's/^ ([[:digit:].]+)\/([[:digit:]]+)/ '"${ssc_green}${ssc_bold}\\1${ssc_reset}\\/${ssc_blue}${ssc_bold}\\2${ssc_reset}/" \
+                                       -e 's/(Connected To: )([[:alnum:] [:punct:]]+)/\1'"${ssc_green}${ssc_bold}\\2${ssc_reset}"'/' \
+                                       -e '/^[[:space:]](state|time to empty|percentage|capacity|time to full):/{s/:([[:space:]]+[[:alnum:]][[:alnum:][:punct:][:space:]]+)/:'"${ssc_green}${ssc_bold}\\1${ssc_reset}"'/}' \
+                                       -e 's/Is: Disabled/Is: '"${ssc_red}${ssc_bold}"'Disabled'"${ssc_reset}"'/' -e 's/Is: Enabled/Is: '"${ssc_green}${ssc_bold}"'Enabled'"${ssc_reset}"'/'
+else
+    printf '%b\n\n' "${output}"
+fi
 
-printf '%b\n\n' "${output}" 
-
+#_showIP | sed -re 's/^ ([[:digit:].]+)\/([[:digit:]]+)/ '"${ssc_green}${ssc_bold}\\1${ssc_reset}\\/${ssc_blue}${ssc_bold}\\2${ssc_reset}/" ;\
