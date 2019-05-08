@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ "$(tput colors)" -ge 8 ] && [ ! "${NC}" = "1" ]; then
+    _showStats --cow
+else
+    NC=1 _showStats --cow
+fi
