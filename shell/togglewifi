@@ -1,0 +1,24 @@
+#!/bin/sh
+
+if ! command -v nmcli 1>/dev/null 2>&1; then
+    printf '%s\n' 'Requirement: "nmcli" not found in path.'
+fi
+
+case "${1}" in
+    '--help'|'-h')
+        printf '%s\n%s\n' 'Toggles the state of the wifi radio.' ' --status    will show the current status and exit'
+        exit 0
+    ;;
+    '--status')
+        nmcli radio wifi | awk '{printf("%s: %s%s\n","Wifi Radio Is",toupper(substr($1,1,1)),substr($1,2))}'
+        exit 0
+    ;;
+esac
+
+if [ "$(nmcli radio wifi)" = "enabled" ]; then
+    printf 'Was: Enabled\nTurning Off\n'
+    nmcli radio wifi off
+elif [ "$(nmcli radio wifi)" = "disabled" ]; then
+    printf 'Was: Disabled\nTurning On\n'
+    nmcli radio wifi on
+fi
