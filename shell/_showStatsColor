@@ -1,6 +1,7 @@
 #!/bin/sh
 ssc_green=$(tput setaf 2)
 ssc_blue=$(tput setaf 4)
+ssc_red=$(tput setaf 1)
 ssc_reset=$(tput sgr0)
 ssc_bold=$(tput bold)
 ss_header="\\n----\\n"
