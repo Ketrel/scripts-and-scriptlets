@@ -37,7 +37,7 @@ case "${1}" in
         exit 0
     ;;
     '--cycle')
-        if [ "${radioState}" = "enabled"]; then
+        if [ "${radioState}" = "enabled" ]; then
             twexec
             sleep 2
             twexec
