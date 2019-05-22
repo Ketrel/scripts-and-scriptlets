@@ -1,0 +1,28 @@
+#!/bin/sh
+
+tpBold="$(tput bold)"
+tpRed="$(tput setaf 1)"
+tpGreen="$(tput setaf 2)"
+tpReset="$(tput sgr0)"
+
+# sigStrength="$(nmcli device wifi | grep '^*' | tail -n +2 | awk '{print $(NF-2)}')"
+sigStrength="$(nmcli device wifi | grep '^\*' |  awk '{print $(NF-2)}')"
+if [ -z "${sigStrength}" ]; then
+    printf '%s\n' "${tpRed}Error: No Connection Found${tpReset}"
+    exit 1
+fi
+sigStrength=$(( sigStrength / 4 ))
+i=25
+printf '%s' "${tpBold}${tpGreen}"
+while [ $i -ge 1 ] && [ $sigStrength -ge 1 ]; do
+    printf '|'
+    i=$(( i - 1 ))
+    sigStrength=$(( sigStrength - 1 ))
+done
+printf '%s' "${tpRed}"
+while [ $i -ge 1 ]; do
+    printf '|'
+    i=$(( i - 1 ))
+done
+printf '%s\n' "${tpReset}"
+    
