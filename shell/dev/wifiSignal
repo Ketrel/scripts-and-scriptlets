@@ -1,0 +1,41 @@
+#!/bin/sh
+
+tpBold="$(tput bold)"
+tpRed="$(tput setaf 1)"
+tpGreen="$(tput setaf 2)"
+tpReset="$(tput sgr0)"
+
+wfsigGraph() {
+    wfSS="${1}"
+    if [ -n "${2}" ]; then
+        shift
+        tmp="${@}"
+        printf '%s\n  ' "${tmp}"
+    fi
+    wfSS=$(( ${wfSS} / 4 ))
+    i=25
+    printf '%s' "${tpBold}${tpGreen}"
+    while [ $i -ge 1 ] && [ $wfSS -ge 1 ]; do
+        printf '|'
+        i=$(( i - 1 ))
+        wfSS=$(( wfSS - 1 ))
+    done
+    printf '%s' "${tpRed}"
+    while [ $i -ge 1 ]; do
+        printf '|'
+        i=$(( i - 1 ))
+    done
+    printf '%s\n\n' "${tpReset}"
+}
+printf 'Scanning Wifi\n'
+nmcli device wifi rescan 2>/dev/null
+sleep 3
+sigStrength="$(nmcli --fields ssid,signal device wifi list | tail -n +2 | grep -v '^--' | awk '{si=$NF;$NF="";if(a[$0]++ == 0){print si" "$0}}')"
+if [ -z "${sigStrength}" ]; then
+    printf '%s\n' "${tpRed}Error: No Connection Found${tpReset}"
+    exit 1
+fi
+echo "$sigStrength" | while IFS= read -r line; do
+    wfsigGraph $line
+done
+    
