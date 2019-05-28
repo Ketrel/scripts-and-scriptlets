@@ -15,7 +15,7 @@ ss_header="\\n----\\n"
 output=$(\
 printf '%b' "Machine Stats${ss_header}" ;\
 printf '\n%b' "Radio Info${ss_header}" ;\
-togglewifi --status
+wifiControl --status
 printf '\n%b' "IP Info${ss_header}" ;\
 _showIP ;\
 printf '\n%b' "Battery Info${ss_header}" ;\
