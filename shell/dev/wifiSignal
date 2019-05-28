@@ -9,10 +9,10 @@ wfsigGraph() {
     wfSS="${1}"
     if [ -n "${2}" ]; then
         shift
-        tmp="${@}"
+        tmp="${*}"
         printf '%s\n  ' "${tmp}"
     fi
-    wfSS=$(( ${wfSS} / 4 ))
+    wfSS=$(( wfSS / 4 ))
     i=25
     printf '%s' "${tpBold}${tpGreen}"
     while [ $i -ge 1 ] && [ $wfSS -ge 1 ]; do
@@ -36,6 +36,7 @@ if [ -z "${sigStrength}" ]; then
     exit 1
 fi
 echo "$sigStrength" | while IFS= read -r line; do
-    wfsigGraph $line
+    #shellcheck disable=2086
+    wfsigGraph ${line}
 done
-    
+
