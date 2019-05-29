@@ -36,7 +36,7 @@ case "${1}" in
     ;;
     '--on')
         printf 'Setting Wifi State Unconditionally To: On\n'
-        ncmli radio wifi on
+        nmcli radio wifi on
     ;;
     '--off')
         printf 'Setting Wifi State Unconditionally To: Off\n'
