@@ -12,22 +12,23 @@ wfsigGraph() {
         tmp="${*}"
         printf '%s\n  ' "${tmp}"
     fi
-    wfSS=$(( wfSS / 4 ))
+    wfSSC=$(( wfSS / 4 ))
     i=25
     printf '%s' "${tpBold}${tpGreen}"
-    while [ $i -ge 1 ] && [ $wfSS -ge 1 ]; do
+    while [ $i -ge 1 ] && [ $wfSSC -ge 1 ]; do
         printf '|'
         i=$(( i - 1 ))
-        wfSS=$(( wfSS - 1 ))
+        wfSSC=$(( wfSSC - 1 ))
     done
     printf '%s' "${tpRed}"
     while [ $i -ge 1 ]; do
         printf '|'
         i=$(( i - 1 ))
     done
-    printf '%s\n\n' "${tpReset}"
+    printf '%s (%d/100)\n\n' "${tpReset}" "${wfSS}"
 }
-printf 'Scanning Wifi\n'
+printf 'Scanning Wifi\n(This will take a few seconds)\n'
+sleep 2
 nmcli device wifi rescan 2>/dev/null
 sleep 3
 sigStrength="$(nmcli --fields ssid,signal device wifi list | tail -n +2 | grep -v '^--' | awk '{si=$NF;$NF="";if(a[$0]++ == 0){print si" "$0}}')"
