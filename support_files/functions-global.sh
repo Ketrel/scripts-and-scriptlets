@@ -188,7 +188,7 @@ copySelectedFiles(){
     fi
 
     cd "${1}" || exit 1
-    fileList=$(find . -type f ! -name '*"*' -printf '%f\n' | LC_ALL=C sort -g )
+    fileList=$(find . -maxdepth 1 -type f ! -name '*"*' -printf '%f\n' | LC_ALL=C sort -g )
     cd - 1>/dev/null || exit 1
 
     i=0
