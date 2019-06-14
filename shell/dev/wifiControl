@@ -2,11 +2,11 @@
 twshowhelp() {
     printf '%s\n%s\n%s\n%s\n%s\n%s\n' \
         'Toggles the state of the wifi radio.' \
-        ' --on         will turn wifi state to on' \
-        ' --off        will turn wifi state to off' \
-        ' --toggle     will perform the toggle' \
-        ' --cycle      will turn wifi OFF, wait 2 sec, then back on' \
-        ' --status     will show the current status and exit'
+        ' --on,  --enable         turn wifi state to on' \
+        ' --off, --disable        turn wifi state to off' \
+        ' --toggle                toggle current state' \
+        ' --cycle                 turn wifi OFF, wait 2 sec, then back on' \
+        ' --status                show the current status and exit'
 }
 
 twexec() {
@@ -34,11 +34,11 @@ case "${1}" in
         twshowhelp
         exit 0
     ;;
-    '--on')
+    '--on'|'--enable')
         printf 'Setting Wifi State Unconditionally To: On\n'
         nmcli radio wifi on
     ;;
-    '--off')
+    '--off'|'--disable')
         printf 'Setting Wifi State Unconditionally To: Off\n'
         nmcli radio wifi off
     ;;
