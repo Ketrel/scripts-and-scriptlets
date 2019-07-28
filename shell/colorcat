@@ -1,0 +1,14 @@
+#!/bin/sh
+if [ ! "${#}" -ge 1 ]; then
+    exit 1
+fi
+if ! command -v highlight 1>/dev/null 2>&1; then
+    printf 'highlight command not present, script will not function.\n'
+    exit 1
+fi
+
+if [ "$(tput colors)" -ge 256 ]; then
+    cat $@ | highlight -O xterm256
+else
+    cat $@ | highlight -O ansi
+fi
