@@ -1,0 +1,12 @@
+#!/bin/sh
+
+for archi in ./*.7z; do
+    mkdir "${archi%%\.7z}"
+    7z e "${archi}" -o"${archi%%\.7z}"
+    cd "${archi%%\.7z}"
+    7z a "${archi%%\.7z}.cbz" -tzip
+    rm *.png
+    mv "${archi%%\.7z}.cbz" ..
+    cd ..
+    rmdir "${archi%%\.7z}"
+done
