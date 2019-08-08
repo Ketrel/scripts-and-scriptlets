@@ -23,3 +23,4 @@ ffmpeg -i "${1}" -vf fps=1/60 "./thumb_test/img%03d.jpg"
             
 #printf -- "---%d---\n" ${frameCount}
 
+ffprobe -i 'Hustle S01E01.avi' -v error -show_format | grep duration | cut -d '=' -f 2
