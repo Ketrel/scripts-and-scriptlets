@@ -1,5 +1,5 @@
 #!/bin/sh
-twshowhelp() {
+wfcshowhelp() {
     printf '%s\n%s\n%s\n%s\n%s\n%s\n' \
         'Toggles the state of the wifi radio.' \
         ' --on,  --enable         turn wifi state to on' \
@@ -9,7 +9,31 @@ twshowhelp() {
         ' --status                show the current status and exit'
 }
 
-twexec() {
+wfcascii=$(cat << 'EOF'
+
+        oooooo   oooooo     oooo o8o  oooooooooooo o8o  
+         `888.    `888.     .8'  `"'  `888'     `8 `"'  
+          `888.   .8888.   .8'   ooo   888         ooo  
+           `888  .8'`888. .8'    888   888oooo8    888  
+            `888.8'  `888.8'     888   888    "    888  
+             `888'    `888'      888   888         888  
+              `8'      `8'      o888o o888o       o888o 
+                                                  
+  .oooooo.                             .                      oooo  
+ d8P'  `Y8b                          .o8                      `888  
+888           .ooooo.  ooo. .oo.   .o888oo oooo d8b  .ooooo.   888  
+888          d88' `88b `888P"Y88b    888   `888""8P d88' `88b  888  
+888          888   888  888   888    888    888     888   888  888  
+`88b    ooo  888   888  888   888    888 .  888     888   888  888  
+ `Y8bood8P'  `Y8bod8P' o888o o888o   "888" d888b    `Y8bod8P' o888o 
+EOF
+)
+
+wfcascii() {
+    printf '%s' "${wfcascii}"
+}
+
+wfcexec() {
     if [ "${radioState}" = "enabled" ]; then
         if [ ! "${1}" = "silent" ]; then
             printf 'Was: Enabled\nTurning Off\n'
@@ -29,9 +53,15 @@ else
     radioState="$(nmcli radio wifi)"
 fi
 
+if [ -z "${1}" ]; then
+    wfcascii
+    printf '\n\nPlease Run with the --help switch for usage information\n\n'
+    exit 0
+fi
+
 case "${1}" in
     '--help'|'-h')
-        twshowhelp
+        wfcshowhelp
         exit 0
     ;;
     '--on'|'--enable')
@@ -47,16 +77,16 @@ case "${1}" in
         exit 0
     ;;
     '--toggle')
-        twexec
+        wfcexec
         exit 0
     ;;
     '--cycle')
         if [ "${radioState}" = "enabled" ]; then
             printf 'Setting Wifi State To Off\n'
-            twexec silent
+            wfcexec silent
             sleep 2
             printf 'Setting Wifi State To On\n'
-            twexec silent
+            wfcexec silent
             sleep 2
             printf 'Wifi Cycling Complete\n'
         else
@@ -66,8 +96,8 @@ case "${1}" in
         exit 0  
     ;;
     *)
-        printf '%s\n\n' 'No Action Specified.  Please refer to help below'
-        twshowhelp
+        printf '%s\n\n' 'Invalid Action Specified.  Please refer to help below'
+        wfcshowhelp
     ;;
 esac
 
