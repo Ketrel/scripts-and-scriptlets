@@ -32,7 +32,7 @@ xsc_ascii_art() {
     printf '%s' "${xsc_ascii}"
 }
 
-xscexec() {
+xsc_exec() {
     if [ "${xsc_state}" = "Running" ]; then
         printf 'xscreensaver was detected to be running; stopping\n'
         ${xsc_command} &
@@ -89,13 +89,13 @@ case "${1}" in
         exit 0
     ;;
     '--toggle')
-        #xscexec
+        #xsc_exec
         printf '%s\n' 'Not Yet Implemented'
         exit 0
     ;;
     *)
         printf '%s\n\n' 'Invalid Action Specified.  Please refer to help below'
-        xscshowhelp
+        xsc_showhelp
     ;;
 esac
 
