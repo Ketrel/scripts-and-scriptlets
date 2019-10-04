@@ -69,7 +69,7 @@ case "${1}" in
     '--start'|'--enable')
         if [ "${xsc_state}" = "Running" ]; then
             printf 'xscreensaver is already running.\n'
-            exit 1
+            exit
         else
             printf 'Starting xscreensaver.\n'
             ${xsc_command} &
@@ -81,7 +81,7 @@ case "${1}" in
             pkill -U "${xsc_user}" xscreensaver
         else
             printf 'xscreensaver was not detected to be running.\n'
-            exit 1
+            exit
         fi
     ;;
     '--status')
