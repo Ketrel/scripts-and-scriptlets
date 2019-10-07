@@ -88,12 +88,20 @@ case "${1}" in
     ;;
     '--cenable')
         if [ -w "${HOME}/.xscreensaver" ]; then
-           sed -i -e '/^mode/ s/\b[A-Za-z0-9_]\+$/one/' "${HOME}/.xscreensaver"
+            sed -i -e '/^mode/ s/\b[A-Za-z0-9_]\+$/one/' "${HOME}/.xscreensaver"
+            printf 'xscreensaver enabled by changing mode to: one\n'
+        else
+            printf '.xscreensaver file in "%s" not found or not writable.\nNothing was done.\n\n' "${HOME}"
+            exit 1
         fi
     ;;
     '--cdisable')
         if [ -w "${HOME}/.xscreensaver" ]; then
-           sed -i -e '/^mode/ s/\b[A-Za-z0-9_]\+$/off/' "${HOME}/.xscreensaver" 
+            sed -i -e '/^mode/ s/\b[A-Za-z0-9_]\+$/off/' "${HOME}/.xscreensaver" 
+            printf 'xscreensaver disabled by changing mode to: off\n'
+        else
+            printf '.xscreensaver file in "%s" not found or not writable.\nNothing was done.\n\n' "${HOME}"
+            exit 1
         fi
     ;;
     '--status')
