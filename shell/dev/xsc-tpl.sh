@@ -5,10 +5,12 @@
 xsc_command="xscreensaver -no-splash"
 
 xsc_showhelp() {
-    printf '%s\n%s\n%s\n%s\n%s\n' \
+    printf '%s\n%s\n%s\n%s\n%s\n%s\n%s\n' \
         'Starts or stops xscreensaver.' \
         ' --start, --enable       start xscreensaver' \
         ' --stop,  --disable      kill xscreensaver' \
+        ' --cenable               enable xscreensaver in user'"'"'s .xscreensaver file' \
+        ' --cdisable              disable xscreensaver in user'"'"'s .xscreensaver file' \
         ' --toggle                not implemented' \
         ' --status                show the current status and exit'
 }
@@ -82,6 +84,16 @@ case "${1}" in
         else
             printf 'xscreensaver was not detected to be running.\n'
             exit
+        fi
+    ;;
+    '--cenable')
+        if [ -w "${HOME}/.xscreensaver" ]; then
+           sed -i -e '/^mode/ s/\b[A-Za-z0-9_]\+$/one/' "${HOME}/.xscreensaver"
+        fi
+    ;;
+    '--cdisable')
+        if [ -w "${HOME}/.xscreensaver" ]; then
+           sed -i -e '/^mode/ s/\b[A-Za-z0-9_]\+$/off/' "${HOME}/.xscreensaver" 
         fi
     ;;
     '--status')
