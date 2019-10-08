@@ -111,7 +111,7 @@ case "${1}" in
         #    xsc_hour=0"${xsc_hour}"
         #fi
         if [ -w "${HOME}/.xscreensaver" ]; then
-            sed -i -e '/^timeout:/ s/\b[0-9:]\+$/'"${xsc_hour}"':'"${xsc_minute}"':00/'
+            sed -i -e '/^timeout:/ s/\b[0-9:]\+$/'"${xsc_hour}"':'"${xsc_minute}"':00/' "${HOME}/.xscreensaver"
         else
             printf '.xscreensaver file in "%s" not found or not writable.\nNothing was done.\n\n' "${HOME}"
         fi
