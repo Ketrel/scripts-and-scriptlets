@@ -5,13 +5,12 @@
 xsc_command="xscreensaver -no-splash"
 
 xsc_showhelp() {
-    printf '%s\n%s\n%s\n%s\n%s\n%s\n%s\n' \
+    printf '%s\n%s\n%s\n%s\n%s\n%s\n' \
         'Starts or stops xscreensaver.' \
-        ' --start, --enable       start xscreensaver' \
-        ' --stop,  --disable      kill xscreensaver' \
-        ' --cenable               enable xscreensaver in user'"'"'s .xscreensaver file' \
-        ' --cdisable              disable xscreensaver in user'"'"'s .xscreensaver file' \
-        ' --toggle                not implemented' \
+        ' --enable                enable xscreensaver in user'"'"'s .xscreensaver file' \
+        ' --disable               disable xscreensaver in user'"'"'s .xscreensaver file' \
+        ' --set-timeout <m> [h]   set the idle time before xscreensaver activates.' \
+        '                         (takes a mandatory minute and optional hour argument)' \
         ' --status                show the current status and exit'
 }
 
@@ -68,25 +67,7 @@ case "${1}" in
         xsc_showhelp
         exit 0
     ;;
-    '--start'|'--enable')
-        if [ "${xsc_state}" = "Running" ]; then
-            printf 'xscreensaver is already running.\n'
-            exit
-        else
-            printf 'Starting xscreensaver.\n'
-            ${xsc_command} &
-        fi
-    ;;
-    '--stop'|'--disable')
-        if [ "${xsc_state}" = "Running" ]; then
-            printf 'Stopping xscreensaver.\n';
-            pkill -U "${xsc_user}" xscreensaver
-        else
-            printf 'xscreensaver was not detected to be running.\n'
-            exit
-        fi
-    ;;
-    '--cenable')
+    '--enable')
         if [ -w "${HOME}/.xscreensaver" ]; then
             sed -i -e '/^mode/ s/\b[A-Za-z0-9_]\+$/one/' "${HOME}/.xscreensaver"
             printf 'xscreensaver enabled by changing mode to: one\n'
@@ -95,7 +76,7 @@ case "${1}" in
             exit 1
         fi
     ;;
-    '--cdisable')
+    '--disable')
         if [ -w "${HOME}/.xscreensaver" ]; then
             sed -i -e '/^mode/ s/\b[A-Za-z0-9_]\+$/off/' "${HOME}/.xscreensaver" 
             printf 'xscreensaver disabled by changing mode to: off\n'
@@ -104,13 +85,39 @@ case "${1}" in
             exit 1
         fi
     ;;
+    '--set-timeout')
+        shift
+        xsc_minute=0
+        xsc_hour=0
+        if [ -n "${1}" ] && [ "${1}" -eq "${1}" ] 2>/dev/null; then
+            xsc_minute="${1}"
+        else
+            printf 'ERROR: No minute value, or non-numeric integer value provided.\n'
+            exit 1
+        fi
+
+        if [ -n "${2}" ]; then
+            if [ "${2}" -eq "${2}" ] 2>/dev/null; then
+                xsc_hour="${2}"
+            else
+                printf 'ERROR: Non-numeric integer value provided for hour.\n'
+                exit 1
+            fi
+        fi
+        if [ "${xsc_minute}" -le 9 ]; then
+            xsc_minute=0"${xsc_minute}"
+        fi
+        #if [ "${xsc_hour}" -le 9 ]; then
+        #    xsc_hour=0"${xsc_hour}"
+        #fi
+        if [ -w "${HOME}/.xscreensaver" ]; then
+            sed -i -e '/^timeout:/ s/\b[0-9:]\+$/'"${xsc_hour}"':'"${xsc_minute}"':00/'
+        else
+            printf '.xscreensaver file in "%s" not found or not writable.\nNothing was done.\n\n' "${HOME}"
+        fi
+    ;;
     '--status')
         printf 'xscreensaver is currently: %s\n' "${xsc_state}"
-        exit 0
-    ;;
-    '--toggle')
-        #xsc_exec
-        printf '%s\n' 'Not Yet Implemented'
         exit 0
     ;;
     *)
