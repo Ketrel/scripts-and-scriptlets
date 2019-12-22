@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# unset any prompt command
+unset PROMPT_COMMAND
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
+
+# reset the prompt to the default grabbed from the skeleton bashrc
+# (with an extra space added before the $ symbol for readability)
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] \$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w \$ '
+fi
