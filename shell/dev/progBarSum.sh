@@ -54,8 +54,8 @@ progBar() {
     printf '%s (%d/100)\n' "${tpReset}" "${wfSS}"
 }
 progBarSum () {
-    progBar "${1}" "${2}" "${4}" "${5}"
+    progBar "${1}" "${2}" "${3}" "${4}"
     printf '%s/%s\n' "${1}" "${2}"        
 }
 
-progBar "${1}" "${2}" "${3}" "${4}"
+progBarSum "${1}" "${2}" "${3}" "${4}"
