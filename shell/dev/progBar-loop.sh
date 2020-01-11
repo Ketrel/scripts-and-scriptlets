@@ -64,6 +64,7 @@ j=4
 k=2
 c=0
 
+printf '%s' "$(tput civis)"
 while [ $j -lt $it ]; do
     if [ $c -ne 0 ]; then
         sleep 1
@@ -76,5 +77,6 @@ done
 sleep 1
 progBar "${it}" "${it}"
 printf '\n'
+printf '%s' "$(tput cnorm)"
 exit 7
 progBar "${1}" "${2}" "${3}" "${4}"
