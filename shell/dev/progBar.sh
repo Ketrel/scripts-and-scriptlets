@@ -28,36 +28,17 @@ progBar() {
         printf '|'
         i=$(( i - 1 ))
     done
-    printf '%s\n' "${pBreset}"
+    printf '%s' "${pBreset}"
 
-    return
-
-    if [ -n "${2}" ]; then
-        shift
-        tmp="${*}"
-        printf '%s\n  ' "${tmp}"
-    fi
-    wfSSC=$(( wfSS / 4 ))
-    printf '%s' "${tpBold}${tpGreen}"
-
-    while [ $i -ge 1 ] && [ $wfSSC -ge 1 ]; do
-        printf '|'
-        i=$(( i - 1 ))
-        wfSSC=$(( wfSSC - 1 ))
-
-    done
-    printf '%s' "${tpRed}"
-    while [ $i -ge 1 ]; do
-        printf '|'
-        i=$(( i - 1 ))
-    done
-    printf '%s (%d/100)\n' "${tpReset}" "${wfSS}"
+    #printf '%s (%d/100)\n' "${tpReset}" "${pbLV}"
 }
 progBarSum () {
     progBar "${1}" "${2}" "${4}" "${5}"
     printf '%s/%s\n' "${1}" "${2}"        
 }
 
-if [ -t 0 ]; then
-    progBar "${1}" "${2}" "${3}" "${4}"
-fi
+# if [ -t 0 ]; then
+#     progBar "${1}" "${2}" "${3}" "${4}"
+# else
+#     echo "debug msg"
+# fi
