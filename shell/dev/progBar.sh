@@ -58,4 +58,6 @@ progBarSum () {
     printf '%s/%s\n' "${1}" "${2}"        
 }
 
-progBar "${1}" "${2}" "${3}" "${4}"
+if [ -t 0 ]; then
+    progBar "${1}" "${2}" "${3}" "${4}"
+fi
