@@ -1,0 +1,36 @@
+#!/bin/sh
+
+self="$(basename "${0}")"
+outDir="${OUTDIR:-$PWD}"; outDir="${outDir%/}"
+optMode=0
+optCygmode=${CYGMODE:-0}
+optWebImg=0
+inArtist=''
+inTitle=''
+inSongFile=''
+inImageFile=''
+inOutputFile=''
+
+printHelp(){
+    printf '%s\n\n' "
+${self}
+==========
+
+Usage:
+    ${self} [mode] [options] <input file> [output file]
+
+Modes:
+    ***In Progress, not yet implemented***
+
+Options:
+    -h | --help             Print this help message and exit
+    --title <title>         Set the title metadata
+    --artist <artist>       Set the artist metadata
+    --album <album>         Set the album metadata
+    --image <filepath>      Specify the image the use for album art
+
+Notes:
+    ***No notes while in progress***"
+}
+
+printHelp
