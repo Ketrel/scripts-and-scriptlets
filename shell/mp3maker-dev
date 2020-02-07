@@ -33,4 +33,18 @@ Notes:
     ***No notes while in progress***"
 }
 
+if [ -z "${1}" ]; then
+    printf '\nThis script requires parameters to run, please refer to the help below\n'
+    printHelp
+    exit
+fi
+
+case "${1}" in
+    "-h|--help")
+        printHelp
+        exit
+        ;;
+esac
+
 printHelp
+exit 9
