@@ -5,7 +5,7 @@ set -g set-titles-string '#{?#{==:#{host},#{pane_title}},#{window_name},#{pane_t
 set -g allow-rename on
 
 # Setup Status
-#set -g status-position top
+#set status-position top
 #set -g status-bg colour31
 #set -g status-fg colour16
 set -g status-style fg=colour16,bg=colour31
@@ -46,9 +46,6 @@ bind-key s choose-tree -GNZsw
 # Modify the default display-panes command to last until press
 # The -d 0 option does not work in 2.1, it will also need commenting
 bind-key q display-panes -d 0
-
-# Bind Prefix + Ctrl+t to toggle status bar
-bind-key C-t set status
 
 # Other settings
 set -g default-terminal screen-256color
