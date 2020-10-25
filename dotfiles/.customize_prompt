@@ -68,35 +68,40 @@ p_checkGit(){
     p_gitinfo=
     if [ ! "${NOGITPROMPT}" = "1" ]; then
         if git branch 1>/dev/null 2>&1; then
-            if p_gitbranch=$(git symbolic-ref --short HEAD 2>/dev/null); then
-                p_gitbranch="\\001${p_bold}${p_green}\\002${p_gitbranch}\\001${p_res}\\002"
-            else
-                p_gitbranch="\\001${p_bold}${p_red}\\002Detached-Head\\001${p_res}\\002"
-            fi
-            p_gitstatus=
-            if [ "$(git status --porcelain)" = "" ]; then
-                if git status | grep -q 'is ahead of'; then
-                    p_gitstatus="[\\001${p_red}\\002Ahead of Upstream\\001${p_res}\\002]"
-                elif git status | grep -q 'is behind'; then
-                    p_gitstatus="[\\001${p_red}\\002Behind Upstream\\001${p_res}\\002]"
-                else
-                    p_gitstatus="[Working Clean]"
-                fi
-            else
-                if git status --porcelain | grep -q '^\(M\|.M\)'; then
-                    p_gitstatus+="[\\001${p_red}\\002Uncommited Changes\\001${p_res}\\002]"
-                fi
-                if git status --porcelain | grep -q '^??'; then
-                    p_gitstatus+="[\\001${p_red}\\002Untracked Files\\001${p_res}\\002]"
-                fi
-                if git status --porcelain | grep -q '^A'; then
-                    p_gitstatus+="[\\001${p_green}\\002Newly Added Files\\001${p_res}\\002]"
-                fi
-            fi
-
-
-            p_gitinfo="[\\001${p_time}\\002Git\\001${p_res}\\002]"
-            p_gitinfo+="[Branch:${p_gitbranch}]${p_gitstatus}\\n"
+            case "${PWD}" in
+                */.git/*|*/.git)
+                    p_gitinfo="[\\001${p_time}\\002Other\\001${p_res}\\002][\\001${p_red}\\002In Git Dir\\001${p_res}\\002]\\n"
+                ;;
+                *)
+                    if p_gitbranch=$(git symbolic-ref --short HEAD 2>/dev/null); then
+                        p_gitbranch="\\001${p_bold}${p_green}\\002${p_gitbranch}\\001${p_res}\\002"
+                    else
+                        p_gitbranch="\\001${p_bold}${p_red}\\002Detached-Head\\001${p_res}\\002"
+                    fi
+                    p_gitstatus=
+                    if [ "$(git status --porcelain)" = "" ]; then
+                        if git status | grep -q 'is ahead of'; then
+                            p_gitstatus="[\\001${p_red}\\002Ahead of Upstream\\001${p_res}\\002]"
+                        elif git status | grep -q 'is behind'; then
+                            p_gitstatus="[\\001${p_red}\\002Behind Upstream\\001${p_res}\\002]"
+                        else
+                            p_gitstatus="[Working Clean]"
+                        fi
+                    else
+                        if git status --porcelain | grep -q '^\(M\|.M\)'; then
+                            p_gitstatus+="[\\001${p_red}\\002Uncommited Changes\\001${p_res}\\002]"
+                        fi
+                        if git status --porcelain | grep -q '^??'; then
+                            p_gitstatus+="[\\001${p_red}\\002Untracked Files\\001${p_res}\\002]"
+                        fi
+                        if git status --porcelain | grep -q '^A'; then
+                            p_gitstatus+="[\\001${p_green}\\002Newly Added Files\\001${p_res}\\002]"
+                        fi
+                    fi
+                    p_gitinfo="[\\001${p_time}\\002Git\\001${p_res}\\002]"
+                    p_gitinfo+="[Branch:${p_gitbranch}]${p_gitstatus}\\n"
+                ;;
+            esac
         fi
     fi
 }
