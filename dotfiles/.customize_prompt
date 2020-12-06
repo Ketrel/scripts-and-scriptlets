@@ -70,9 +70,9 @@ p_checkGit(){
         #intend to switch to use this rather than the branch check
         #git rev-parse --git-dir 1>/dev/null 2>&1
         if git branch 1>/dev/null 2>&1; then
+            #intend to switch to use this rather than check pwd
+            #git rev-parse --is-inside-git-dir 1>/dev/null 2>&1
             case "${PWD}" in
-                #intend to switch to use this rather than check pwd
-                #git rev-parse --is-inside-git-dir 1>/dev/null 2>&1
                 */.git/*|*/.git)
                     p_gitinfo="[\\001${p_time}\\002Other\\001${p_res}\\002][\\001${p_red}\\002In Git Dir\\001${p_res}\\002]\\n"
                 ;;
